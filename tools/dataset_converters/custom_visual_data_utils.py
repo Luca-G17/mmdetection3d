@@ -37,7 +37,7 @@ class CustomVisualData(object):
 
         assert split in ['train', 'val']
         split_file = osp.join(self.split_dir, f'{split}.txt')
-        mmengine.check_file_exists(split_file)
+        mmengine.check_file_exist(split_file)
         self.sample_id_list = map(int, mmengine.list_from_file(split_file))
         self.image_dir = osp.join(self.root_dir, 'images')
         self.calib_dir = osp.join(self.root_dir, 'calibs')
