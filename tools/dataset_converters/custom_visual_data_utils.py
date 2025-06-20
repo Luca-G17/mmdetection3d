@@ -40,7 +40,7 @@ class CustomVisualData(object):
         mmengine.check_file_exist(split_file)
         self.sample_id_list = map(int, mmengine.list_from_file(split_file))
         self.image_dir = osp.join(self.root_dir, 'images')
-        self.calib_dir = osp.join(self.root_dir, 'calibs')
+        self.calib_dir = osp.join(self.root_dir, 'calib')
         self.label_dir = osp.join(self.root_dir, 'labels')
     
     def __len__(self):
