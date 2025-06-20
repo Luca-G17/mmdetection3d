@@ -80,7 +80,6 @@ class SUNRGBDDataset(Det3DDataset):
             test_mode=test_mode,
             **kwargs)
         
-        print("FUCK")
         assert 'use_camera' in self.modality and \
             'use_lidar' in self.modality
         assert self.modality['use_camera'] or self.modality['use_lidar']
