@@ -20,7 +20,7 @@ class CustomVisualInstance(object):
         self.width = data[4]
         self.height = data[5]
         self.heading_angle = self.yaw
-        self.box3d = np.concatenate(self.centroid, self.size, self.yaw)
+        self.box3d = np.concatenate([self.centroid, self.size, self.yaw])
 
 class CustomVisualData(object):
 
