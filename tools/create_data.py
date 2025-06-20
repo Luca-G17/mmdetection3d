@@ -425,6 +425,6 @@ if __name__ == '__main__':
         semantickitti_data_prep(
             info_prefix=args.extra_tag, out_dir=args.out_dir)
     elif args.dataset == 'custom_visual':
-        custom_visual_data_prep(root_path=args.root_path, info_prefix=args.extra_tag, out_dir=args.out_dir, orkers=args.workers)
+        custom_visual_data_prep(root_path=args.root_path, info_prefix=args.extra_tag, out_dir=args.out_dir, workers=args.workers)
     else:
         raise NotImplementedError(f'Don\'t support {args.dataset} dataset.')
