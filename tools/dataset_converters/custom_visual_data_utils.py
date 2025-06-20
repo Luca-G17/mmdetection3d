@@ -50,7 +50,7 @@ class CustomVisualData(object):
         # For now we only have 1 image per scene
         # also need to change indexing to have zero padding probably
         scene_dir = osp.join(self.image_dir, f'images_{idx}')
-        image_filename = osp.join(scene_dir, f'{idx:06d}.jpg')
+        image_filename = osp.join(scene_dir, f'{idx:06d}.png')
         return mmcv.imread(image_filename)
     
     def get_image_shape(self, idx):
@@ -81,7 +81,7 @@ class CustomVisualData(object):
             info = dict()
 
             scene_path = osp.join(self.image_dir, f'images_{sample_idx}')
-            image_path = osp.join(scene_path, f'{sample_idx:06d}.jpg')
+            image_path = osp.join(scene_path, f'{sample_idx:06d}.png')
             image_info = {
                 'image_idx': sample_idx,
                 'image_shape': self.get_image_shape(sample_idx),
