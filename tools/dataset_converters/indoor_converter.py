@@ -8,6 +8,7 @@ from tools.dataset_converters.s3dis_data_utils import S3DISData, S3DISSegData
 from tools.dataset_converters.scannet_data_utils import (ScanNetData,
                                                          ScanNetSegData)
 from tools.dataset_converters.sunrgbd_data_utils import SUNRGBDData
+from tools.dataset_converters.custom_visual_data_utils import CustomVisualData
 
 
 def create_indoor_info_file(data_path,
@@ -28,22 +29,23 @@ def create_indoor_info_file(data_path,
         workers (int, optional): Number of threads to be used. Default: 4.
     """
     assert os.path.exists(data_path)
-    assert pkl_prefix in ['sunrgbd', 'scannet', 's3dis'], \
+    assert pkl_prefix in ['sunrgbd', 'scannet', 's3dis', 'custom_visual'], \
         f'unsupported indoor dataset {pkl_prefix}'
     save_path = data_path if save_path is None else save_path
     assert os.path.exists(save_path)
 
     # generate infos for both detection and segmentation task
-    if pkl_prefix in ['sunrgbd', 'scannet']:
+    if pkl_prefix in ['sunrgbd', 'scannet', 'custom_visual']:
         train_filename = os.path.join(save_path,
                                       f'{pkl_prefix}_infos_train.pkl')
         val_filename = os.path.join(save_path, f'{pkl_prefix}_infos_val.pkl')
         if pkl_prefix == 'sunrgbd':
             # SUN RGB-D has a train-val split
-            train_dataset = SUNRGBDData(
-                root_path=data_path, split='train', use_v1=use_v1)
-            val_dataset = SUNRGBDData(
-                root_path=data_path, split='val', use_v1=use_v1)
+            train_dataset = SUNRGBDData(root_path=data_path, split='train', use_v1=use_v1)
+            val_dataset = SUNRGBDData(root_path=data_path, split='val', use_v1=use_v1)
+        elif pkl_prefix == "custom_visual":
+            train_dataset = CustomVisualData(root_path=data_path, split='train')
+            val_dataset = CustomVisualData(root_path=data_path, split='val')
         else:
             # ScanNet has a train-val-test split
             train_dataset = ScanNetData(root_path=data_path, split='train')
@@ -52,8 +54,8 @@ def create_indoor_info_file(data_path,
             test_filename = os.path.join(save_path,
                                          f'{pkl_prefix}_infos_test.pkl')
 
-        infos_train = train_dataset.get_infos(
-            num_workers=workers, has_label=True)
+            
+        infos_train = train_dataset.get_infos(num_workers=workers, has_label=True)
         mmengine.dump(infos_train, train_filename, 'pkl')
         print(f'{pkl_prefix} info train file is saved to {train_filename}')
 
