@@ -48,7 +48,7 @@ model = dict(
     train_cfg=dict(),
     test_cfg=dict(nms_pre=1000, iou_thr=.25, score_thr=.01))
 
-dataset_type = 'CustomVisualDataset'
+dataset_type = 'SUNRGBDDataset'
 data_root = 'data/data/custom'
 class_names = [
     'Cube'
