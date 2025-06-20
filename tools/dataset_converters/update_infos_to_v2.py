@@ -676,7 +676,7 @@ def update_scannet_infos(pkl_path, out_dir):
     converted_data_info = dict(metainfo=metainfo, data_list=converted_list)
 
     mmengine.dump(converted_data_info, out_path, 'pkl')
-
+    
 
 def update_sunrgbd_infos(pkl_path, out_dir):
     print(f'{pkl_path} will be modified.')
@@ -756,6 +756,77 @@ def update_sunrgbd_infos(pkl_path, out_dir):
 
     mmengine.dump(converted_data_info, out_path, 'pkl')
 
+def update_custom_visual_infos(pkl_path, out_dir):
+    print(f'{pkl_path} will be modified.')
+    if out_dir in pkl_path:
+        print(f'Warning, you may overwriting '
+              f'the original data {pkl_path}.')
+        time.sleep(5)
+    METAINFO = {
+        'classes': ('Cube')
+    }
+    print(f'Reading from input file: {pkl_path}.')
+    data_list = mmengine.load(pkl_path)
+    print('Start updating:')
+    converted_list = []
+    for ori_info_dict in mmengine.track_iter_progress(data_list):
+        temp_data_info = get_empty_standard_data_info()
+        #temp_data_info['lidar_points']['num_pts_feats'] = ori_info_dict['point_cloud']['num_features']
+        #temp_data_info['lidar_points']['lidar_path'] = Path(ori_info_dict['pts_path']).name
+
+        calib = ori_info_dict['calib']
+        rt_mat = calib['Rt']
+        # follow Coord3DMode.convert_point
+        # rt_mat = np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]]) @ rt_mat.transpose(1, 0)
+
+        cam2img = calib['K'] @ rt_mat
+        temp_data_info['images']['CAM0']['cam2img'] = cam2img.tolist()
+        temp_data_info['images']['CAM0']['img_path'] = Path(ori_info_dict['image']['image_path']).name
+        h, w = ori_info_dict['image']['image_shape']
+        temp_data_info['images']['CAM0']['height'] = h
+        temp_data_info['images']['CAM0']['width'] = w
+
+        anns = ori_info_dict.get('annos', None)
+        if anns is not None:
+            if anns['gt_num'] == 0:
+                instance_list = []
+            else:
+                num_instances = len(anns['name'])
+                ignore_class_name = set()
+                instance_list = []
+                for instance_id in range(num_instances):
+                    empty_instance = get_empty_instance()
+                    empty_instance['bbox_3d'] = anns['gt_boxes_upright_depth'][instance_id].tolist()
+                    empty_instance['bbox'] = anns['bbox'][instance_id].tolist()
+                    if anns['name'][instance_id] in METAINFO['classes']:
+                        empty_instance['bbox_label_3d'] = METAINFO['classes'].index(anns['name'][instance_id])
+                        empty_instance['bbox_label'] = empty_instance['bbox_label_3d']
+                    else:
+                        ignore_class_name.add(anns['name'][instance_id])
+                        empty_instance['bbox_label_3d'] = -1
+                        empty_instance['bbox_label'] = -1
+                    empty_instance = clear_instance_unused_keys(empty_instance)
+                    instance_list.append(empty_instance)
+            temp_data_info['instances'] = instance_list
+        temp_data_info, _ = clear_data_info_unused_keys(temp_data_info)
+        converted_list.append(temp_data_info)
+    pkl_name = Path(pkl_path).name
+    out_path = osp.join(out_dir, pkl_name)
+    print(f'Writing to output file: {out_path}.')
+    print(f'ignore classes: {ignore_class_name}')
+
+    # dataset metainfo
+    metainfo = dict()
+    metainfo['categories'] = {k: i for i, k in enumerate(METAINFO['classes'])}
+    if ignore_class_name:
+        for ignore_class in ignore_class_name:
+            metainfo['categories'][ignore_class] = -1
+    metainfo['dataset'] = 'sunrgbd'
+    metainfo['info_version'] = '1.1'
+
+    converted_data_info = dict(metainfo=metainfo, data_list=converted_list)
+
+    mmengine.dump(converted_data_info, out_path, 'pkl')
 
 def update_lyft_infos(pkl_path, out_dir):
     print(f'{pkl_path} will be modified.')
@@ -1148,6 +1219,8 @@ def update_pkl_infos(dataset, out_dir, pkl_path):
         update_nuscenes_infos(pkl_path=pkl_path, out_dir=out_dir)
     elif dataset.lower() == 's3dis':
         update_s3dis_infos(pkl_path=pkl_path, out_dir=out_dir)
+    elif dataset.lower() == 'custom_visual':
+        update_custom_visual_infos(pkl_path=pkl_path, out_dir=out_dir)
     else:
         raise NotImplementedError(f'Do not support convert {dataset} to v2.')
 

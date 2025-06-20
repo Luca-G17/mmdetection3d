@@ -168,12 +168,11 @@ def sunrgbd_data_prep(root_path, info_prefix, out_dir, workers):
 
 
 def custom_visual_data_prep(root_path, info_prefix, out_dir, workers):
-    indoor.create_indoor_info_file(
-        root_path, info_prefix, out_dir, workers=workers)
+    indoor.create_indoor_info_file(root_path, info_prefix, out_dir, workers=workers)
     info_train_path = osp.join(out_dir, f'{info_prefix}_infos_train.pkl')
     info_val_path = osp.join(out_dir, f'{info_prefix}_infos_val.pkl')
-    update_pkl_infos('sunrgbd', out_dir=out_dir, pkl_path=info_train_path)
-    update_pkl_infos('sunrgbd', out_dir=out_dir, pkl_path=info_val_path)
+    update_pkl_infos('custom_visual', out_dir=out_dir, pkl_path=info_train_path)
+    update_pkl_infos('custom_visual', out_dir=out_dir, pkl_path=info_val_path)
 
 
 def waymo_data_prep(root_path,
