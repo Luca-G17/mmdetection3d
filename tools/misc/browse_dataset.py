@@ -72,6 +72,8 @@ def build_data_cfg(config_path, aug, cfg_options):
 
     train_data_cfg = cfg.train_dataloader.dataset
 
+    print(train_data_cfg)
+
     if aug:
         show_pipeline = cfg.train_pipeline
     else:
