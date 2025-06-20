@@ -107,10 +107,10 @@ class CustomVisualData(object):
                         if obj.classname in self.cat2label.keys()
                     ])
 
-                    annotations['bbox'] = np.concatenate([
-                        obj.box2d.reshape(1, 4) for obj in obj_list
-                        if obj.classname in self.cat2label.keys()
-                    ], axis=0)
+                    # annotations['bbox'] = np.concatenate([
+                    #     obj.box2d.reshape(1, 4) for obj in obj_list
+                    #     if obj.classname in self.cat2label.keys()
+                    # ], axis=0)
 
                     annotations['location'] = np.concatenate([
                         obj.centroid.reshape(1, 3) for obj in obj_list
