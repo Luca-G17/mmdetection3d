@@ -14,7 +14,7 @@ class CustomVisualInstance(object):
         data[:-1] = [float(x) for x in data[:-1]]
         self.classname = data[-1]
         self.centroid = np.array([data[0], data[1], data[2]])
-        self.size = np.array([data[3], data[4], data[5]])
+        self.size = np.array([data[3], data[4], data[5]]) / 4
         self.yaw = np.array([data[6]])
         self.length = data[3] / 2
         self.width = data[4] / 2
