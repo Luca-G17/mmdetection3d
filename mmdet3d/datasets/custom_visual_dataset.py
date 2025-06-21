@@ -57,6 +57,7 @@ class CustomVisualDataset(Det3DDataset):
             dict: Has `ann_info` in training stage. And
             all path has been converted to absolute path.
         """
+        print(self.data_prefix.get('img', ''))
 
         if self.modality['use_camera']:
             for cam_id, img_info in info['images'].items():
