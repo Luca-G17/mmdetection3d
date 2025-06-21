@@ -129,8 +129,11 @@ param_scheduler = [
         gamma=0.1)
 ]
 
+vis_backends = [dict(type='LocalVisBackend')]  # Visualization backends. Refer to https://mmengine.readthedocs.io/en/latest/advanced_tutorials/visualization.html
+visualizer = dict(type='Det3DLocalVisualizer', vis_backends=vis_backends, name='visualizer')
+
 # hooks
-default_hooks = dict(checkpoint=dict(type='CheckpointHook', max_keep_ckpts=1))
+default_hooks = dict(checkpoint=dict(type='CheckpointHook', max_keep_ckpts=1), visualization=dict(type='Det3DVisualizationHook'))
 
 # runtime
 find_unused_parameters = True  # only 1 of 4 FPN outputs is used
