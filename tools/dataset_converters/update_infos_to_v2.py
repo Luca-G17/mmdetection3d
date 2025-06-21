@@ -777,9 +777,9 @@ def update_custom_visual_infos(pkl_path, out_dir):
         calib = ori_info_dict['calib']
         rt_mat = calib['Rt']
         # follow Coord3DMode.convert_point
-        rt_mat = np.array([[1, 0, 0],
-                        [0, 0, -1],
-                        [0, 1, 0]]) @ rt_mat.transpose(1, 0)
+        # rt_mat = np.array([[1, 0, 0],
+        #                 [0, 0, -1],
+        #                 [0, 1, 0]]) @ rt_mat.transpose(1, 0)
         cam2img = calib['K'] @ rt_mat
         temp_data_info['images']['CAM0']['cam2img'] = cam2img.tolist()
         temp_data_info['images']['CAM0']['img_path'] = Path(ori_info_dict['image']['image_path']).name

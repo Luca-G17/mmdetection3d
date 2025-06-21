@@ -4,7 +4,7 @@ from typing import Callable, List, Optional, Union
 import numpy as np
 
 from mmdet3d.registry import DATASETS
-from mmdet3d.structures import DepthInstance3DBoxes
+from mmdet3d.structures import CameraInstance3DBoxes
 from .det3d_dataset import Det3DDataset
 
 
@@ -92,7 +92,7 @@ class CustomVisualDataset(Det3DDataset):
             ann_info['gt_bboxes_3d'] = np.zeros((0, 6), dtype=np.float32)
             ann_info['gt_labels_3d'] = np.zeros((0, ), dtype=np.int64)
         # to target box structure
-        ann_info['gt_bboxes_3d'] = DepthInstance3DBoxes(
+        ann_info['gt_bboxes_3d'] = CameraInstance3DBoxes(
             ann_info['gt_bboxes_3d'],
             origin=(0.5, 0.5, 0.5)).convert_to(self.box_mode_3d)
 
