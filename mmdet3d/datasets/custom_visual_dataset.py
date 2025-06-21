@@ -57,12 +57,12 @@ class CustomVisualDataset(Det3DDataset):
             dict: Has `ann_info` in training stage. And
             all path has been converted to absolute path.
         """
-        print(info)
 
         if self.modality['use_camera']:
             for cam_id, img_info in info['images'].items():
                 if 'img_path' in img_info:
-                    img_info['img_path'] = osp.join(self.data_prefix.get('img', ''), img_info['img_path'])
+                    idx = int(osp.basename(img_info['img_path']))
+                    img_info['img_path'] = osp.join(f"{self.data_prefix.get('img', '')}_{idx}", img_info['img_path'])
                     print(img_info['img_path'])
             if self.default_cam_key is not None:
                 info['img_path'] = info['images'][self.default_cam_key]['img_path']
