@@ -14,11 +14,11 @@ class CustomVisualInstance(object):
         data[:-1] = [float(x) for x in data[:-1]]
         self.classname = data[-1]
         self.centroid = np.array([data[0], data[1], data[2]])
-        self.size = np.array([data[3], data[4], data[5]]) / 4
+        self.size = np.array([data[3], data[4], data[5]]) / 2.0
         self.yaw = np.array([data[6]])
-        self.length = data[3] / 2
-        self.width = data[4] / 2
-        self.height = data[5] / 2
+        self.length = data[3]
+        self.width = data[4]
+        self.height = data[5]
         self.heading_angle = self.yaw
         self.box3d = np.concatenate([self.centroid, self.size, self.yaw])
 
