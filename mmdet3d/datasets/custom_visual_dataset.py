@@ -40,6 +40,7 @@ class CustomVisualDataset(Det3DDataset):
             test_mode=test_mode,
             **kwargs)
         
+        print(data_prefix)
         assert 'use_camera' in self.modality
         assert self.modality['use_camera'] or self.modality['use_lidar']
 
