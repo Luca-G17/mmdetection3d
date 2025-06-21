@@ -197,7 +197,7 @@ class SUNRGBDData(object):
                         if obj.classname in self.cat2label.keys()
                     ],
                                                              axis=0)
-                    annotations['dimensions'] = np.array([
+                    annotations['dimensions'] = 2 * np.array([
                         [obj.length, obj.width, obj.height] for obj in obj_list
                         if obj.classname in self.cat2label.keys()
                     ])  # lwh (depth) format
