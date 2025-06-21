@@ -63,8 +63,7 @@ class CustomVisualDataset(Det3DDataset):
             for cam_id, img_info in info['images'].items():
                 if 'img_path' in img_info:
                     idx = int(osp.splitext(osp.basename(img_info['img_path']))[0])
-                    scene_path = osp.join("images", f"{self.data_prefix.get('img', '')}_{idx}")
-                    print(scene_path)
+                    scene_path = osp.join(self.data_prefix.get('img', ''), f"images_{idx}")
                     img_info['img_path'] = osp.join(scene_path, img_info['img_path'])
                     print(img_info['img_path'])
             if self.default_cam_key is not None:
