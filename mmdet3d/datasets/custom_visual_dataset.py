@@ -19,7 +19,7 @@ class CustomVisualDataset(Det3DDataset):
                  data_root: str,
                  ann_file: str,
                  metainfo: Optional[dict] = None,
-                 data_prefix: dict = dict(img='image'),
+                 data_prefix: dict = dict(img='images'),
                  pipeline: List[Union[dict, Callable]] = [],
                  default_cam_key: str = 'CAM0',
                  modality: dict = dict(use_camera=True, use_lidar=False),
@@ -40,7 +40,6 @@ class CustomVisualDataset(Det3DDataset):
             test_mode=test_mode,
             **kwargs)
         
-        print(data_prefix)
         assert 'use_camera' in self.modality
         assert self.modality['use_camera'] or self.modality['use_lidar']
 
