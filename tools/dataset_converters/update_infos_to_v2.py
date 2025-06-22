@@ -790,8 +790,8 @@ def update_custom_visual_infos(pkl_path, out_dir):
         # rt_mat_new[:3, :3] = R_new
         # rt_mat_new[:3, 3] = t_new.flatten()
 
-        # K_4x4 = np.eye(4)
-        # K_4x4[:3, :3] = calib['K']
+        K_4x4 = np.eye(4)
+        K_4x4[:3, :3] = calib['K']
 
         cam2img = K_4x4 @ rt_mat
         temp_data_info['images']['CAM0']['cam2img'] = cam2img.tolist()
