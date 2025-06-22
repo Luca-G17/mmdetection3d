@@ -160,6 +160,7 @@ def proj_camera_bbox3d_to_img(bboxes_3d: CameraInstance3DBoxes,
 
     cam2img = copy.deepcopy(input_meta['cam2img'])
     corners_3d = bboxes_3d.corners
+    print(corners_3d)
     num_bbox = corners_3d.shape[0]
     points_3d = corners_3d.reshape(-1, 3)
     if not isinstance(cam2img, torch.Tensor):
@@ -173,5 +174,4 @@ def proj_camera_bbox3d_to_img(bboxes_3d: CameraInstance3DBoxes,
     uv_origin = points_cam2img(points_3d, cam2img)
     uv_origin = (uv_origin - 1).round()
     imgfov_pts_2d = uv_origin[..., :2].reshape(num_bbox, 8, 2).numpy()
-
     return imgfov_pts_2d

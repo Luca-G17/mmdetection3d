@@ -126,7 +126,6 @@ def main():
         # the 3D Boxes in input could be in any of three coordinates
         data_input = item['inputs']
         data_sample = item['data_samples'].numpy()
-        print(data_sample)
         out_file = osp.join(
             args.output_dir,
             f'{i}.jpg') if args.output_dir is not None else None
