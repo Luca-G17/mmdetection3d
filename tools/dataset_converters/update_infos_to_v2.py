@@ -781,7 +781,10 @@ def update_custom_visual_infos(pkl_path, out_dir):
                            [0, 1, 0, 0],
                            [0, 0, 1, 0],
                            [0, 0, 0, 1]]) @ rt_mat.transpose(1, 0)
-        cam2img = calib['K'] @ rt_mat[:3, :]
+        K_4x4 = np.eye(4)
+        K_4x4[:3, :3] = calib['K']
+
+        cam2img = K_4x4 @ rt_mat
         temp_data_info['images']['CAM0']['cam2img'] = cam2img.tolist()
         temp_data_info['images']['CAM0']['img_path'] = Path(ori_info_dict['image']['image_path']).name
         h, w = ori_info_dict['image']['image_shape']
