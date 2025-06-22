@@ -795,6 +795,7 @@ def update_custom_visual_infos(pkl_path, out_dir):
                 num_instances = len(anns['name'])
                 ignore_class_name = set()
                 instance_list = []
+                print(num_instances)
                 for instance_id in range(num_instances):
                     empty_instance = get_empty_instance()
                     empty_instance['bbox_3d'] = anns['gt_boxes_upright_depth'][instance_id].tolist()
