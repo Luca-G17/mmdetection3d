@@ -798,6 +798,7 @@ def update_custom_visual_infos(pkl_path, out_dir):
                 for instance_id in range(num_instances):
                     empty_instance = get_empty_instance()
                     empty_instance['bbox_3d'] = anns['gt_boxes_upright_depth'][instance_id].tolist()
+                    print(empty_instance['bbox_3d'])
                     #empty_instance['bbox'] = anns['bbox'][instance_id].tolist()
                     if anns['name'][instance_id] in METAINFO['classes']:
                         empty_instance['bbox_label_3d'] = METAINFO['classes'].index(anns['name'][instance_id])
