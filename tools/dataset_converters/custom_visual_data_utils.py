@@ -63,7 +63,7 @@ class CustomVisualData(object):
         K = np.array([float(x) for x in lines[0].split(' ')])
         K = np.reshape(K, (3, 3), order='F').astype(np.float32)
         Rt = np.array([float(x) for x in lines[1].split(' ')])
-        Rt = np.reshape(Rt, (3, 3), order='F').astype(np.float32)
+        Rt = np.reshape(Rt, (4, 4), order='F').astype(np.float32)
 
         return K, Rt
     
