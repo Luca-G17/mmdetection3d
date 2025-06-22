@@ -788,7 +788,7 @@ def update_custom_visual_infos(pkl_path, out_dir):
         ])
         R = rt_mat[:3, :3]
         t = rt_mat[:3, 3].reshape(3, 1)
-        R_new = P @ R @ R.T
+        R_new = P @ R @ P.T
         t_new = P @ t
         rt_mat_new = np.eye(4)
         rt_mat_new[:3, :3] = R_new
