@@ -784,7 +784,7 @@ def update_custom_visual_infos(pkl_path, out_dir):
         P = np.array([
             [0, 1, 0],
             [0, 0, 1],
-            [1, 0, 0]
+            [-1, 0, 0]
         ])
         R = rt_mat[:3, :3]
         t = rt_mat[:3, 3].reshape(3, 1)
