@@ -116,6 +116,7 @@ class CustomVisualDataset(Det3DDataset):
             # `self.ann_file` denotes the absolute annotation file path if
             # `self.root=None` or relative path if `self.root=/path/to/data/`.
             annotations = load(self.ann_file)
+            print(annotations)
             if not isinstance(annotations, dict):
                 raise TypeError(f'The annotations loaded from annotation file '
                                 f'should be a dict, but got {type(annotations)}!')
