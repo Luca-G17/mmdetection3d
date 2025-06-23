@@ -107,7 +107,7 @@ test_dataloader = val_dataloader
 
 val_evaluator = dict(
     type='IndoorMetric',
-    ann_file=data_root + 'custom_visual_infos_val.pkl',
+    #ann_file=data_root + 'custom_visual_infos_val.pkl',
     metric='bbox')
 test_evaluator = val_evaluator
 
