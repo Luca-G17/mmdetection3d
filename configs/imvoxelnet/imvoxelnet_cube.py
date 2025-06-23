@@ -3,7 +3,7 @@ _base_ = [
 ]
 prior_generator = dict(
     type='AlignedAnchor3DRangeGenerator',
-    ranges=[[-3.2, -0.2, -2.28, 3.2, 6.2, 0.28]],
+    ranges=[[-2.0, 0.0, 2.0, 2.0, 2.0, 5.0]],
     rotations=[.0])
 model = dict(
     type='ImVoxelNet',
@@ -43,7 +43,7 @@ model = dict(
         pts_center_threshold=18,
         prior_generator=prior_generator),
     prior_generator=prior_generator,
-    n_voxels=[80, 80, 18],
+    n_voxels=[40, 40, 16],
     coord_type='CAMERA',
     train_cfg=dict(),
     test_cfg=dict(nms_pre=1000, iou_thr=.25, score_thr=.01))
@@ -60,7 +60,7 @@ backend_args = None
 train_pipeline = [
     dict(type='LoadAnnotations3D', backend_args=backend_args),
     dict(type='LoadImageFromFile', backend_args=backend_args),
-    dict(type='RandomResize', scale=[(512, 384), (768, 576)], keep_ratio=True),
+    dict(type='Resize', scale=(640, 480), keep_ratio=True),
     dict(type='RandomFlip3D', flip_ratio_bev_horizontal=0.5),
     dict(type='Pack3DDetInputs', keys=['img', 'gt_bboxes_3d', 'gt_labels_3d'])
 ]
