@@ -265,6 +265,8 @@ class ImVoxelHead(BaseModule):
         points = torch.cat(points)
 
         # cls loss
+        print(cls_targets.shape)
+        print(valid_preds.shape)
         pos_inds = torch.nonzero(
             torch.logical_and(cls_targets >= 0, valid_preds)).squeeze(1)
         n_pos = points.new_tensor(len(pos_inds))
