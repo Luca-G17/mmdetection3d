@@ -118,7 +118,7 @@ class CustomVisualDataset(Det3DDataset):
         """
         # avoid `cls.METAINFO` being overwritten by `metainfo`
         cls_metainfo = copy.deepcopy(cls.METAINFO)
-        print(cls_metainfo)
+
         if metainfo is None:
             return cls_metainfo
         if not isinstance(metainfo, (Mapping, Config)):

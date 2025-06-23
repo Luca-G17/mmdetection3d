@@ -53,7 +53,7 @@ data_root = '/data/data/custom'
 class_names = [
     'Cube'
 ]
-metainfo = dict(CLASSES=class_names), 14400
+metainfo = dict(CLASSES=class_names)
 
 backend_args = None
 
