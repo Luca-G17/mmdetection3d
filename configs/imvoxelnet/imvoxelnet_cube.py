@@ -35,7 +35,7 @@ model = dict(
         n_blocks=[1, 1, 1]),
     bbox_head=dict(
         type='ImVoxelHead',
-        n_classes=1,
+        n_classes=10,
         n_levels=3,
         n_channels=128,
         n_reg_outs=7,
@@ -43,7 +43,7 @@ model = dict(
         pts_center_threshold=18,
         prior_generator=prior_generator),
     prior_generator=prior_generator,
-    n_voxels=[40, 40, 16],
+    n_voxels=[40, 40, 8],
     coord_type='CAMERA',
     train_cfg=dict(),
     test_cfg=dict(nms_pre=1000, iou_thr=.25, score_thr=.01))
