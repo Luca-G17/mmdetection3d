@@ -36,14 +36,14 @@ model = dict(
     bbox_head=dict(
         type='ImVoxelHead',
         n_classes=4,
-        n_levels=3,
+        n_levels=2,
         n_channels=128,
         n_reg_outs=7,
         pts_assign_threshold=27,
         pts_center_threshold=18,
         prior_generator=prior_generator),
     prior_generator=prior_generator,
-    n_voxels=[64, 64, 64],
+    n_voxels=[40, 40, 16],
     coord_type='CAMERA',
     train_cfg=dict(),
     test_cfg=dict(nms_pre=1000, iou_thr=.25, score_thr=.01))
