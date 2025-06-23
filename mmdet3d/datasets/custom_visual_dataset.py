@@ -96,7 +96,7 @@ class CustomVisualDataset(Det3DDataset):
         ann_info['gt_bboxes_3d'].rotate(np.array([
             [ 1, 0, 0],
             [0, 0, 1],
-            [0, 1, 0]
+            [0, -1, 0]
         ]))
 
         return ann_info
