@@ -171,7 +171,6 @@ def proj_camera_bbox3d_to_img(bboxes_3d: CameraInstance3DBoxes,
 
     # project to 2d to get image coords (uv)
     uv_origin = points_cam2img(points_3d, cam2img)
-    print(uv_origin)
     uv_origin = (uv_origin - 1).round()
     imgfov_pts_2d = uv_origin[..., :2].reshape(num_bbox, 8, 2).numpy()
     #print(imgfov_pts_2d)

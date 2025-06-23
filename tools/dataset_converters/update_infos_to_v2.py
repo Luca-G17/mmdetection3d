@@ -777,19 +777,6 @@ def update_custom_visual_infos(pkl_path, out_dir):
         calib = ori_info_dict['calib']
         rt_mat = calib['Rt']
 
-        # P = np.array([
-        #     [0, 1, 0],
-        #     [0, 0, 1],
-        #     [-1, 0, 0]
-        # ])
-        # R = rt_mat[:3, :3]
-        # t = rt_mat[:3, 3].reshape(3, 1)
-        # R_new = P @ R @ P.T
-        # t_new = P @ t
-        # rt_mat_new = np.eye(4)
-        # rt_mat_new[:3, :3] = R_new
-        # rt_mat_new[:3, 3] = t_new.flatten()
-
         K_4x4 = np.eye(4)
         K_4x4[:3, :3] = calib['K']
 
@@ -808,11 +795,9 @@ def update_custom_visual_infos(pkl_path, out_dir):
                 num_instances = len(anns['name'])
                 ignore_class_name = set()
                 instance_list = []
-                print(num_instances)
                 for instance_id in range(num_instances):
                     empty_instance = get_empty_instance()
                     empty_instance['bbox_3d'] = anns['gt_boxes_upright_depth'][instance_id].tolist()
-                    print(empty_instance['bbox_3d'])
                     #empty_instance['bbox'] = anns['bbox'][instance_id].tolist()
                     if anns['name'][instance_id] in METAINFO['classes']:
                         empty_instance['bbox_label_3d'] = METAINFO['classes'].index(anns['name'][instance_id])
