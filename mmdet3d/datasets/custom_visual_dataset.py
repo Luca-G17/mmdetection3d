@@ -94,9 +94,9 @@ class CustomVisualDataset(Det3DDataset):
         # to target box structure
         ann_info['gt_bboxes_3d'] = CameraInstance3DBoxes(ann_info['gt_bboxes_3d']).convert_to(self.box_mode_3d)
         ann_info['gt_bboxes_3d'].rotate(np.array([
-            [ 1, 0, 0],
-            [0, 0, -1],
-            [0, 1, 0]
+            [ 0, 0, 1],
+            [0, 1, 0],
+            [-1, 0, 0]
         ]))
 
         return ann_info
