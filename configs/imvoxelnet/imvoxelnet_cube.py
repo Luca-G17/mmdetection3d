@@ -105,10 +105,7 @@ val_dataloader = dict(
         backend_args=backend_args))
 test_dataloader = val_dataloader
 
-val_evaluator = dict(
-    type='IndoorMetric',
-    #ann_file=data_root + 'custom_visual_infos_val.pkl',
-    metric='bbox')
+val_evaluator = dict(type='IndoorMetric')
 test_evaluator = val_evaluator
 
 # optimizer
