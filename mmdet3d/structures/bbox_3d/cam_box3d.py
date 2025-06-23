@@ -49,7 +49,7 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
         with_yaw (bool): If True, the value of yaw will be set to 0 as minmax
             boxes.
     """
-    YAW_AXIS = 2
+    YAW_AXIS = 1
 
     def __init__(
         self,
