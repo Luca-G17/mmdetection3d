@@ -821,7 +821,7 @@ def update_custom_visual_infos(pkl_path, out_dir):
     if ignore_class_name:
         for ignore_class in ignore_class_name:
             metainfo['categories'][ignore_class] = -1
-    metainfo['dataset'] = 'sunrgbd'
+    metainfo['dataset'] = 'custom_visual'
     metainfo['info_version'] = '1.1'
 
     converted_data_info = dict(metainfo=metainfo, data_list=converted_list)

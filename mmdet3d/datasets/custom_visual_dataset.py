@@ -100,3 +100,58 @@ class CustomVisualDataset(Det3DDataset):
         # ]))
 
         return ann_info
+
+    def load_data_list(self) -> List[dict]:
+            """Load annotations from an annotation file named as ``self.ann_file``
+
+            If the annotation file does not follow `OpenMMLab 2.0 format dataset
+            <https://mmengine.readthedocs.io/en/latest/advanced_tutorials/basedataset.html>`_ .
+            The subclass must override this method for load annotations. The meta
+            information of annotation file will be overwritten :attr:`METAINFO`
+            and ``metainfo`` argument of constructor.
+
+            Returns:
+                list[dict]: A list of annotation.
+            """  # noqa: E501
+            # `self.ann_file` denotes the absolute annotation file path if
+            # `self.root=None` or relative path if `self.root=/path/to/data/`.
+            annotations = load(self.ann_file)
+            if not isinstance(annotations, dict):
+                raise TypeError(f'The annotations loaded from annotation file '
+                                f'should be a dict, but got {type(annotations)}!')
+            if 'data_list' not in annotations or 'metainfo' not in annotations:
+                raise ValueError('Annotation must have data_list and metainfo '
+                                'keys')
+            metainfo = annotations['metainfo']
+            raw_data_list = annotations['data_list']
+
+            # Meta information load from annotation file will not influence the
+            # existed meta information load from `BaseDataset.METAINFO` and
+            # `metainfo` arguments defined in constructor.
+            for k, v in metainfo.items():
+                self._metainfo.setdefault(k, v)
+
+            # load and parse data_infos.
+            data_list = []
+            for raw_data_info in raw_data_list:
+                # parse raw data information to target format
+                data_info = self.parse_data_info(raw_data_info)
+                if isinstance(data_info, dict):
+                    # For image tasks, `data_info` should information if single
+                    # image, such as dict(img_path='xxx', width=360, ...)
+                    data_list.append(data_info)
+                elif isinstance(data_info, list):
+                    # For video tasks, `data_info` could contain image
+                    # information of multiple frames, such as
+                    # [dict(video_path='xxx', timestamps=...),
+                    #  dict(video_path='xxx', timestamps=...)]
+                    for item in data_info:
+                        if not isinstance(item, dict):
+                            raise TypeError('data_info must be list of dict, but '
+                                            f'got {type(item)}')
+                    data_list.extend(data_info)
+                else:
+                    raise TypeError('data_info should be a dict or list of dict, '
+                                    f'but got {type(data_info)}')
+
+            return data_list
