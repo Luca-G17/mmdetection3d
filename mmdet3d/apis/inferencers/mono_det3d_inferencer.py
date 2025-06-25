@@ -180,7 +180,7 @@ class MonoDet3DInferencer(Base3DInferencer):
                   pred_score_thr: float = 0.3,
                   no_save_vis: bool = False,
                   img_out_dir: str = '',
-                  cam_type_dir: str = 'CAM2') -> Union[List[np.ndarray], None]:
+                  cam_type_dir: str = 'CAM0') -> Union[List[np.ndarray], None]:
         """Visualize predictions.
 
         Args:
