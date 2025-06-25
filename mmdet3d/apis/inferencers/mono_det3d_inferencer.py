@@ -249,4 +249,5 @@ class MonoDet3DInferencer(Base3DInferencer):
             results.append(img)
             self.num_visualized_imgs += 1
 
+        print(img_out_dir)
         return results
