@@ -763,7 +763,7 @@ def update_custom_visual_infos(pkl_path, out_dir):
               f'the original data {pkl_path}.')
         time.sleep(5)
     METAINFO = {
-        'classes': ('Cube')
+        'classes': ['Cube']
     }
     print(f'Reading from input file: {pkl_path}.')
     data_list = mmengine.load(pkl_path)
