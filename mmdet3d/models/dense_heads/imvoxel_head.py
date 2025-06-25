@@ -249,13 +249,11 @@ class ImVoxelHead(BaseModule):
         Returns:
             tuple[Tensor]: Centerness, bbox, and classification loss values.
         """
-        print(valid_preds)
         points = self._get_points(center_preds)
 
         center_targets, bbox_targets, cls_targets = self._get_targets(
             points, gt_bboxes, gt_labels)
 
-        print(cls_targets)
         center_preds = torch.cat(
             [x.permute(1, 2, 3, 0).reshape(-1) for x in center_preds])
         bbox_preds = torch.cat([
