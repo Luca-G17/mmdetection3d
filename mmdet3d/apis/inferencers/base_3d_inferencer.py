@@ -200,7 +200,7 @@ class Base3DInferencer(BaseInferencer):
             postprocess_kwargs,
         ) = self._dispatch_kwargs(**kwargs)
 
-        cam_type = preprocess_kwargs.pop('cam_type', 'CAM2')
+        cam_type = preprocess_kwargs.pop('cam_type', 'CAM0')
         ori_inputs = self._inputs_to_list(inputs, cam_type=cam_type)
         inputs = self.preprocess(
             ori_inputs, batch_size=batch_size, **preprocess_kwargs)
