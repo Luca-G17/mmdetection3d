@@ -817,12 +817,14 @@ def update_custom_visual_infos(pkl_path, out_dir):
 
     # dataset metainfo
     metainfo = dict()
+    print(METAINFO['classes'])
     metainfo['categories'] = {k: i for i, k in enumerate(METAINFO['classes'])}
     if ignore_class_name:
         for ignore_class in ignore_class_name:
             metainfo['categories'][ignore_class] = -1
     metainfo['dataset'] = 'custom_visual'
     metainfo['info_version'] = '1.1'
+    metainfo['box_type_3d'] = 'camera'
 
     converted_data_info = dict(metainfo=metainfo, data_list=converted_list)
 
