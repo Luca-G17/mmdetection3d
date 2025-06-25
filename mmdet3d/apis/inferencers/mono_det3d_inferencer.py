@@ -103,7 +103,7 @@ class MonoDet3DInferencer(Base3DInferencer):
                 inputs = [inputs]
 
             # get cam2img, lidar2cam and lidar2img from infos
-            print(mmengine.load(infos))
+            print(infos)
             info_list = mmengine.load(infos)['data_list']
             assert len(info_list) == len(inputs)
             for index, input in enumerate(inputs):
