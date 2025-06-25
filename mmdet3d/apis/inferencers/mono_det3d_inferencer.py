@@ -232,6 +232,7 @@ class MonoDet3DInferencer(Base3DInferencer):
 
             out_file = osp.join(img_out_dir, 'vis_camera', cam_type_dir,
                                 img_name) if img_out_dir != '' else None
+            print(out_file)
 
             data_input = dict(img=img)
             self.visualizer.add_datasample(
@@ -249,5 +250,4 @@ class MonoDet3DInferencer(Base3DInferencer):
             results.append(img)
             self.num_visualized_imgs += 1
 
-        print(img_out_dir)
         return results
