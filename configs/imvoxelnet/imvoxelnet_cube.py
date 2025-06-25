@@ -3,7 +3,7 @@ _base_ = [
 ]
 prior_generator = dict(
     type='AlignedAnchor3DRangeGenerator',
-    ranges=[[-2.0, 0.0, 2.0, 2.0, 2.0, 5.0]],
+    ranges=[[-10, -10, -2, 10, 10, 6]],
     rotations=[.0])
 model = dict(
     type='ImVoxelNet',

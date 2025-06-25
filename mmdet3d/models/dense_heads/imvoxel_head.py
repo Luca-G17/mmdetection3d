@@ -266,8 +266,6 @@ class ImVoxelHead(BaseModule):
         points = torch.cat(points)
 
         # cls loss
-        print(cls_targets.shape)
-        print(valid_preds.shape)
         pos_inds = torch.nonzero(
             torch.logical_and(cls_targets >= 0, valid_preds)).squeeze(1)
         n_pos = points.new_tensor(len(pos_inds))
@@ -334,7 +332,6 @@ class ImVoxelHead(BaseModule):
         Returns:
             dict: Centerness, bbox, and classification loss values.
         """
-        print(valid_pred.shape)
         valid_preds = self._upsample_valid_preds(valid_pred, center_preds)
         center_losses, bbox_losses, cls_losses = [], [], []
         for i in range(len(batch_input_metas)):
