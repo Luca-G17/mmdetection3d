@@ -64,7 +64,7 @@ class MonoDet3DInferencer(Base3DInferencer):
 
     def _inputs_to_list(self,
                         inputs: Union[dict, list],
-                        cam_type='CAM2',
+                        cam_type='CAM0',
                         **kwargs) -> list:
         """Preprocess the inputs to a list.
 
