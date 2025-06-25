@@ -817,7 +817,6 @@ def update_custom_visual_infos(pkl_path, out_dir):
 
     # dataset metainfo
     metainfo = dict()
-    print(METAINFO['classes'])
     metainfo['categories'] = {k: i for i, k in enumerate(METAINFO['classes'])}
     if ignore_class_name:
         for ignore_class in ignore_class_name:
