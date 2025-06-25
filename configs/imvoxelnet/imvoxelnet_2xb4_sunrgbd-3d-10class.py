@@ -49,7 +49,7 @@ model = dict(
     test_cfg=dict(nms_pre=1000, iou_thr=.25, score_thr=.01))
 
 dataset_type = 'SUNRGBDDataset'
-data_root = 'data/sunrgbd/'
+data_root = '/data/data/sunrgbd/'
 class_names = [
     'bed', 'table', 'sofa', 'chair', 'toilet', 'desk', 'dresser',
     'night_stand', 'bookshelf', 'bathtub'
@@ -107,9 +107,7 @@ val_dataloader = dict(
 test_dataloader = val_dataloader
 
 val_evaluator = dict(
-    type='IndoorMetric',
-    ann_file=data_root + 'sunrgbd_infos_val.pkl',
-    metric='bbox')
+    type='IndoorMetric')
 test_evaluator = val_evaluator
 
 # optimizer
