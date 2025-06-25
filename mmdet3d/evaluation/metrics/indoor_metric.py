@@ -79,7 +79,7 @@ class IndoorMetric(BaseMetric):
         box_type_3d, box_mode_3d = get_box_type(
             self.dataset_meta.get('box_type_3d', 'depth'))
 
-        print(box_type_3d)
+        print(self.dataset_meta)
         ret_dict = indoor_eval(
             ann_infos,
             pred_results,
