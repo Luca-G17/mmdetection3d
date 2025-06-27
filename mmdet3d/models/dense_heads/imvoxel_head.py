@@ -462,6 +462,7 @@ class ImVoxelHead(BaseModule):
         Returns:
             list(Tensor): Final locations for all feature levels.
         """
+        print(len(features))
         points = []
         for x in features:
             n_voxels = x.size()[-3:][::-1]
