@@ -250,16 +250,12 @@ class ImVoxelHead(BaseModule):
         """
         points = self._get_points(center_preds)
 
-        center_targets, bbox_targets, cls_targets = self._get_targets(
-            points, gt_bboxes, gt_labels)
+        center_targets, bbox_targets, cls_targets = self._get_targets(points, gt_bboxes, gt_labels)
 
-        print(cls_targets.shape)
-        print(len(valid_preds))
         center_preds = torch.cat([x.permute(1, 2, 3, 0).reshape(-1) for x in center_preds])
         bbox_preds = torch.cat([x.permute(1, 2, 3, 0).reshape(-1, x.shape[0]) for x in bbox_preds])
         cls_preds = torch.cat([x.permute(1, 2, 3, 0).reshape(-1, x.shape[0]) for x in cls_preds])
         valid_preds = torch.cat([x.permute(1, 2, 3, 0).reshape(-1) for x in valid_preds])
-        print(valid_preds.shape)
         points = torch.cat(points)
 
         # cls loss
@@ -633,6 +629,7 @@ class ImVoxelHead(BaseModule):
             bbox_targets = bbox_targets[:, :-1]
         cls_targets = gt_labels[min_inds]
         cls_targets = torch.where(min_volumes == float_max, -1, cls_targets)
+        print(cls_targets.shape)
         return center_targets, bbox_targets, cls_targets
 
     # Originally ImVoxelNet utilizes 2d nms as mmdetection3d didn't
