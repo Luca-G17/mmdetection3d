@@ -127,7 +127,7 @@ class ImVoxelHead(BaseModule):
         Returns:
             dict: A dictionary of loss components.
         """
-        print(valid_pred[0].shape)
+        print(x[0].shape)
         valid_pred = x[-1]
         outs = self(x[:-1])
         batch_gt_instances_3d = []
