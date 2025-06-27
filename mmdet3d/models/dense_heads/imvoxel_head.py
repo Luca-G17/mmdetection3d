@@ -97,7 +97,9 @@ class ImVoxelHead(BaseModule):
         reg_distance = torch.exp(scale(reg_final[:, :6]))
         reg_angle = reg_final[:, 6:]
         bbox_pred = torch.cat((reg_distance, reg_angle), dim=1)
-        return self.conv_center(x), bbox_pred, self.conv_cls(x)
+        out = self.conv_center(x), bbox_pred, self.conv_cls(x)
+        print(out[0].shape)
+        return out
 
     def forward(self, x: Tensor):
         """Forward function.
