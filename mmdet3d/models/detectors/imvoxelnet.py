@@ -211,6 +211,7 @@ class ImVoxelNet(Base3DDetector):
         if self.coord_type == 'DEPTH' or self.coord_type == 'CAMERA':
             x += (valid_preds, )
         
+        print("poo")
         print(x[-1].shape)
         results = self.bbox_head.forward(x)
         return results
