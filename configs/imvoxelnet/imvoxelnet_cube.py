@@ -62,7 +62,6 @@ train_pipeline = [
     dict(type='LoadImageFromFile', backend_args=backend_args),
     dict(type='Resize', scale=(640, 480), keep_ratio=True),
     dict(type='RandomFlip3D', flip_ratio_bev_horizontal=0.5),
-    dict(type='RandomAffine'),
     dict(type='Pack3DDetInputs', keys=['img', 'gt_bboxes_3d', 'gt_labels_3d'])
 ]
 test_pipeline = [
