@@ -68,6 +68,7 @@ class ImVoxelHead(BaseModule):
         self.cls_loss = MODELS.build(cls_loss)
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
+        print(n_classes)
         self._init_layers(n_channels, n_reg_outs, n_classes, n_levels)
 
     def _init_layers(self, n_channels, n_reg_outs, n_classes, n_levels):
