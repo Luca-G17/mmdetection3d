@@ -130,7 +130,7 @@ class ImVoxelHead(BaseModule):
         valid_pred = x[-1]
         outs = self(x[:-1])
 
-        print(outs[0].shape)
+        print(outs[0][0].shape)
         batch_gt_instances_3d = []
         batch_gt_instances_ignore = []
         batch_input_metas = []
