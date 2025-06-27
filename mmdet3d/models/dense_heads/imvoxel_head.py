@@ -110,7 +110,6 @@ class ImVoxelHead(BaseModule):
             tuple[Tensor]: Centerness, bbox and classification predictions.
         """
         out = multi_apply(self._forward_single, x, self.scales)
-        print(out[0][-1].shape)
         return out
 
     def loss(self, x: Tuple[Tensor], batch_data_samples: SampleList,
@@ -254,9 +253,7 @@ class ImVoxelHead(BaseModule):
         points = self._get_points(center_preds)
 
         center_targets, bbox_targets, cls_targets = self._get_targets(points, gt_bboxes, gt_labels)
-
-        print(valid_preds[0].shape)
-        print(len(valid_preds))
+        
         center_preds = torch.cat([x.permute(1, 2, 3, 0).reshape(-1) for x in center_preds])
         bbox_preds = torch.cat([x.permute(1, 2, 3, 0).reshape(-1, x.shape[0]) for x in bbox_preds])
         cls_preds = torch.cat([x.permute(1, 2, 3, 0).reshape(-1, x.shape[0]) for x in cls_preds])
