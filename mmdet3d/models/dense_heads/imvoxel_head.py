@@ -257,10 +257,9 @@ class ImVoxelHead(BaseModule):
         cls_preds = torch.cat([x.permute(1, 2, 3, 0).reshape(-1, x.shape[0]) for x in cls_preds])
         valid_preds = torch.cat([x.permute(1, 2, 3, 0).reshape(-1) for x in valid_preds])
         points = torch.cat(points)
-
+        cls_targets = cls_targets.to(center_preds[0].device)
         # cls loss
-        pos_inds = torch.nonzero(
-            torch.logical_and(cls_targets >= 0, valid_preds)).squeeze(1)
+        pos_inds = torch.nonzero(torch.logical_and(cls_targets >= 0, valid_preds)).squeeze(1)
         n_pos = points.new_tensor(len(pos_inds))
         n_pos = max(reduce_mean(n_pos), 1.)
         if torch.any(valid_preds):
