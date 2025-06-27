@@ -31,13 +31,13 @@ model = dict(
     neck_3d=dict(
         type='IndoorImVoxelNeck',
         in_channels=256,
-        out_channels=8,
+        out_channels=1,
         n_blocks=[1, 1, 1]),
     bbox_head=dict(
         type='ImVoxelHead',
         n_classes=1,
         n_levels=3,
-        n_channels=8,
+        n_channels=1,
         n_reg_outs=7,
         pts_assign_threshold=3,
         pts_center_threshold=1,
@@ -62,6 +62,7 @@ train_pipeline = [
     dict(type='LoadImageFromFile', backend_args=backend_args),
     dict(type='Resize', scale=(640, 480), keep_ratio=True),
     dict(type='RandomFlip3D', flip_ratio_bev_horizontal=0.5),
+    dict(type='RandomAffine'),
     dict(type='Pack3DDetInputs', keys=['img', 'gt_bboxes_3d', 'gt_labels_3d'])
 ]
 test_pipeline = [

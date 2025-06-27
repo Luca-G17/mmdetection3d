@@ -112,6 +112,7 @@ class IndoorImVoxelNeck(BaseModule):
                 x = self.__getattr__(f'up_block_{i + 1}')(x)
                 x = down_outs[i] + x
             out = self.__getattr__(f'out_block_{i}')(x)
+            print(f"Neck Level {i} output shape: {out.shape}")  # Add this
             outs.append(out)
         return outs[::-1]
 
