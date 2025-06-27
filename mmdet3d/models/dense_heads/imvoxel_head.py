@@ -254,6 +254,7 @@ class ImVoxelHead(BaseModule):
 
         center_targets, bbox_targets, cls_targets = self._get_targets(points, gt_bboxes, gt_labels)
 
+        print(cls_targets.shape)
         center_preds = torch.cat([x.permute(1, 2, 3, 0).reshape(-1) for x in center_preds])
         bbox_preds = torch.cat([x.permute(1, 2, 3, 0).reshape(-1, x.shape[0]) for x in bbox_preds])
         cls_preds = torch.cat([x.permute(1, 2, 3, 0).reshape(-1, x.shape[0]) for x in cls_preds])
@@ -261,8 +262,6 @@ class ImVoxelHead(BaseModule):
         points = torch.cat(points)
         cls_targets = cls_targets.to(center_preds[0].device)
 
-        print(cls_targets.shape)
-        print(valid_preds.shape)
 
         # cls loss
         pos_inds = torch.nonzero(torch.logical_and(cls_targets >= 0, valid_preds)).squeeze(1)
