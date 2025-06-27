@@ -254,7 +254,7 @@ class ImVoxelHead(BaseModule):
             points, gt_bboxes, gt_labels)
 
         print(cls_targets.shape)
-
+        print(len(valid_preds))
         center_preds = torch.cat(
             [x.permute(1, 2, 3, 0).reshape(-1) for x in center_preds])
         bbox_preds = torch.cat([
@@ -334,7 +334,6 @@ class ImVoxelHead(BaseModule):
             dict: Centerness, bbox, and classification loss values.
         """
         valid_preds = self._upsample_valid_preds(valid_pred, center_preds)
-        print(valid_preds[0][0].shape)
         center_losses, bbox_losses, cls_losses = [], [], []
         for i in range(len(batch_input_metas)):
             center_loss, bbox_loss, cls_loss = self._loss_by_feat_single(
