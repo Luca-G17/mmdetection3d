@@ -251,7 +251,6 @@ class ImVoxelHead(BaseModule):
             tuple[Tensor]: Centerness, bbox, and classification loss values.
         """
         points = self._get_points(center_preds)
-        print(points[0].shape)
 
         center_targets, bbox_targets, cls_targets = self._get_targets(points, gt_bboxes, gt_labels)
 
@@ -261,6 +260,9 @@ class ImVoxelHead(BaseModule):
         valid_preds = torch.cat([x.permute(1, 2, 3, 0).reshape(-1) for x in valid_preds])
         points = torch.cat(points)
         cls_targets = cls_targets.to(center_preds[0].device)
+
+        print(cls_targets.shape)
+        print(valid_preds.shape)
 
         # cls loss
         pos_inds = torch.nonzero(torch.logical_and(cls_targets >= 0, valid_preds)).squeeze(1)
@@ -467,7 +469,6 @@ class ImVoxelHead(BaseModule):
             list(Tensor): Final locations for all feature levels.
         """
         points = []
-        print(features[0].shape)
         for x in features:
             n_voxels = x.size()[-3:][::-1]
             points.append(
