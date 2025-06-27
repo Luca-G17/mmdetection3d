@@ -72,7 +72,7 @@ class ImVoxelHead(BaseModule):
 
     def _init_layers(self, n_channels, n_reg_outs, n_classes, n_levels):
         """Initialize neural network layers of the head."""
-        self.conv_center = nn.Conv3d(n_channels, 1, 3, padding=1, bias=False)
+        self.conv_center = nn.Conv3d(n_channels, n_channels, 3, padding=1, bias=False)
         self.conv_reg = nn.Conv3d(n_channels, n_reg_outs, 3, padding=1, bias=False)
         self.conv_cls = nn.Conv3d(n_channels, n_classes, 3, padding=1)
         self.scales = nn.ModuleList([Scale(1.) for _ in range(n_levels)])

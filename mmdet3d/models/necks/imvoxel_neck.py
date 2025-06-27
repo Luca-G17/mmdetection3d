@@ -114,7 +114,6 @@ class IndoorImVoxelNeck(BaseModule):
             out = self.__getattr__(f'out_block_{i}')(x)
             outs.append(out)
 
-        print(outs[::-1][0].shape)
         return outs[::-1]
 
     @staticmethod
