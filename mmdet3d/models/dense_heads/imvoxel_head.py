@@ -630,6 +630,7 @@ class ImVoxelHead(BaseModule):
         cls_targets = gt_labels[min_inds]
         cls_targets = torch.where(min_volumes == float_max, -1, cls_targets)
         print(cls_targets.shape)
+        print(gt_labels.shape)
         return center_targets, bbox_targets, cls_targets
 
     # Originally ImVoxelNet utilizes 2d nms as mmdetection3d didn't
