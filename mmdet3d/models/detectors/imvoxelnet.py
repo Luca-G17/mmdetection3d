@@ -142,7 +142,7 @@ class ImVoxelNet(Base3DDetector):
                                            batch_data_samples)
         # For indoor datasets ImVoxelNet uses ImVoxelHead that handles
         # mask of visible voxels.
-        if self.coord_type == 'DEPTH':
+        if self.coord_type == 'DEPTH' or self.coord_type == 'CAMERA':
             x += (valid_preds, )
         losses = self.bbox_head.loss(x, batch_data_samples, **kwargs)
         return losses
@@ -179,7 +179,7 @@ class ImVoxelNet(Base3DDetector):
                                            batch_data_samples)
         # For indoor datasets ImVoxelNet uses ImVoxelHead that handles
         # mask of visible voxels.
-        if self.coord_type == 'DEPTH':
+        if self.coord_type == 'DEPTH' or self.coord_type == 'CAMERA':
             x += (valid_preds, )
         results_list = \
             self.bbox_head.predict(x, batch_data_samples, **kwargs)
