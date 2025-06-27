@@ -98,7 +98,6 @@ class ImVoxelHead(BaseModule):
         reg_angle = reg_final[:, 6:]
         bbox_pred = torch.cat((reg_distance, reg_angle), dim=1)
         out = self.conv_center(x), bbox_pred, self.conv_cls(x)
-        print(out[0].shape)
         return out
 
     def forward(self, x: Tensor):
@@ -110,7 +109,9 @@ class ImVoxelHead(BaseModule):
         Returns:
             tuple[Tensor]: Centerness, bbox and classification predictions.
         """
-        return multi_apply(self._forward_single, x, self.scales)
+        out = multi_apply(self._forward_single, x, self.scales)
+        print(out[0].shape)
+        return out
 
     def loss(self, x: Tuple[Tensor], batch_data_samples: SampleList,
              **kwargs) -> dict:
