@@ -462,9 +462,9 @@ class ImVoxelHead(BaseModule):
         Returns:
             list(Tensor): Final locations for all feature levels.
         """
-        print(len(features))
         points = []
         for x in features:
+            print(x.shape)
             n_voxels = x.size()[-3:][::-1]
             points.append(
                 self.prior_generator.grid_anchors(
