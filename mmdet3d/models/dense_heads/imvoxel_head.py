@@ -129,7 +129,6 @@ class ImVoxelHead(BaseModule):
         """
         valid_pred = x[-1]
         outs = self(x[:-1])
-        print(outs[0][0].shape)
 
         batch_gt_instances_3d = []
         batch_gt_instances_ignore = []
@@ -328,6 +327,7 @@ class ImVoxelHead(BaseModule):
         Returns:
             dict: Centerness, bbox, and classification loss values.
         """
+        print(center_preds.shape)
         valid_preds = self._upsample_valid_preds(valid_pred, center_preds)
         center_losses, bbox_losses, cls_losses = [], [], []
         for i in range(len(batch_input_metas)):
