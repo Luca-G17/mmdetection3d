@@ -335,7 +335,7 @@ class ImVoxelHead(BaseModule):
             dict: Centerness, bbox, and classification loss values.
         """
         valid_preds = self._upsample_valid_preds(valid_pred, center_preds)
-
+        print(len(batch_input_metas))
         center_losses, bbox_losses, cls_losses = [], [], []
         for i in range(len(batch_input_metas)):
             center_loss, bbox_loss, cls_loss = self._loss_by_feat_single(
