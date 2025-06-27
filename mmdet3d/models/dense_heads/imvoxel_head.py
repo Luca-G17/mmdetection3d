@@ -177,7 +177,7 @@ class ImVoxelHead(BaseModule):
 
         valid_pred = x[-1]
         outs = self(x[:-1])
-
+        print(outs.shape)
         loss_inputs = outs + (valid_pred, batch_gt_instances_3d,
                               batch_input_metas, batch_gt_instances_ignore)
         losses = self.loss_by_feat(*loss_inputs)
