@@ -465,7 +465,6 @@ class ImVoxelHead(BaseModule):
         """
         points = []
         for x in features:
-            print(x.shape)
             n_voxels = x.size()[-3:][::-1]
             points.append(
                 self.prior_generator.grid_anchors(
