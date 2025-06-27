@@ -208,7 +208,7 @@ class ImVoxelNet(Base3DDetector):
                                            batch_data_samples)
         # For indoor datasets ImVoxelNet uses ImVoxelHead that handles
         # mask of visible voxels.
-        if self.coord_type == 'DEPTH':
+        if self.coord_type == 'DEPTH' or self.coord_type == 'CAMERA':
             x += (valid_preds, )
         results = self.bbox_head.forward(x)
         return results
