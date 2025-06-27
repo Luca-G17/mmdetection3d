@@ -210,6 +210,8 @@ class ImVoxelNet(Base3DDetector):
         # mask of visible voxels.
         if self.coord_type == 'DEPTH' or self.coord_type == 'CAMERA':
             x += (valid_preds, )
+        
+        print(x[-1].shape)
         results = self.bbox_head.forward(x)
         return results
 
