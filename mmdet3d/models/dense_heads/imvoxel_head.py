@@ -68,7 +68,6 @@ class ImVoxelHead(BaseModule):
         self.cls_loss = MODELS.build(cls_loss)
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
-        print(n_classes)
         self._init_layers(n_channels, n_reg_outs, n_classes, n_levels)
 
     def _init_layers(self, n_channels, n_reg_outs, n_classes, n_levels):
@@ -99,7 +98,6 @@ class ImVoxelHead(BaseModule):
         reg_angle = reg_final[:, 6:]
         bbox_pred = torch.cat((reg_distance, reg_angle), dim=1)
         out = self.conv_center(x), bbox_pred, self.conv_cls(x)
-        print(out[-1].shape)
         return out
 
     def forward(self, x: Tensor):
