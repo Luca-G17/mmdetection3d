@@ -28,7 +28,7 @@ class CustomVisualDataset(Det3DDataset):
                  pipeline: List[Union[dict, Callable]] = [],
                  default_cam_key: str = 'CAM0',
                  modality: dict = dict(use_camera=True, use_lidar=False),
-                 box_type_3d: str = 'Depth',
+                 box_type_3d: str = 'Camera',
                  filter_empty_gt: bool = True,
                  test_mode: bool = False,
                  **kwargs) -> None:
@@ -71,7 +71,7 @@ class CustomVisualDataset(Det3DDataset):
                     img_info['img_path'] = osp.join(scene_path, img_info['img_path'])
             if self.default_cam_key is not None:
                 info['img_path'] = info['images'][self.default_cam_key]['img_path']
-                info['depth2img'] = np.array(info['images'][self.default_cam_key]['depth2img'], dtype=np.float32)
+                info['cam2img'] = np.array(info['images'][self.default_cam_key]['cam2img'], dtype=np.float32)
 
         if not self.test_mode:
             info['ann_info'] = self.parse_ann_info(info)
@@ -96,7 +96,7 @@ class CustomVisualDataset(Det3DDataset):
             ann_info['gt_bboxes_3d'] = np.zeros((0, 6), dtype=np.float32)
             ann_info['gt_labels_3d'] = np.zeros((0, ), dtype=np.int64)
         # to target box structure
-        ann_info['gt_bboxes_3d'] = DepthInstance3DBoxes(ann_info['gt_bboxes_3d'], origin=(0.5, 0.5, 0.5))
+        ann_info['gt_bboxes_3d'] = CameraInstance3DBoxes(ann_info['gt_bboxes_3d'], origin=(0.5, 0.5, 0.5))
 
         return ann_info
     
