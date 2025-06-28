@@ -17,7 +17,7 @@ import logging
 class CustomVisualDataset(Det3DDataset):
 
     METAINFO = {
-        'classes': ('Cube')
+        'classes': ['Cube']
     }
 
     def __init__(self,
@@ -28,7 +28,7 @@ class CustomVisualDataset(Det3DDataset):
                  pipeline: List[Union[dict, Callable]] = [],
                  default_cam_key: str = 'CAM0',
                  modality: dict = dict(use_camera=True, use_lidar=False),
-                 box_type_3d: str = 'Camera',
+                 box_type_3d: str = 'Depth',
                  filter_empty_gt: bool = True,
                  test_mode: bool = False,
                  **kwargs) -> None:
@@ -71,7 +71,7 @@ class CustomVisualDataset(Det3DDataset):
                     img_info['img_path'] = osp.join(scene_path, img_info['img_path'])
             if self.default_cam_key is not None:
                 info['img_path'] = info['images'][self.default_cam_key]['img_path']
-                info['cam2img'] = np.array(info['images'][self.default_cam_key]['cam2img'], dtype=np.float32)
+                info['depth2img'] = np.array(info['images'][self.default_cam_key]['depth2img'], dtype=np.float32)
 
         if not self.test_mode:
             info['ann_info'] = self.parse_ann_info(info)
