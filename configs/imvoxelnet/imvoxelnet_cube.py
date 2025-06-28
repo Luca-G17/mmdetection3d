@@ -44,7 +44,7 @@ model = dict(
         prior_generator=prior_generator),
     prior_generator=prior_generator,
     n_voxels=[40, 40, 16],
-    coord_type='CAMERA',
+    coord_type='Depth',
     train_cfg=dict(),
     test_cfg=dict(nms_pre=1000, iou_thr=.25, score_thr=.01))
 
@@ -85,7 +85,7 @@ train_dataloader = dict(
             pipeline=train_pipeline,
             test_mode=False,
             filter_empty_gt=True,
-            box_type_3d='Camera',
+            box_type_3d='Depth',
             metainfo=metainfo,
             backend_args=backend_args)))
 val_dataloader = dict(
@@ -100,7 +100,7 @@ val_dataloader = dict(
         ann_file='custom_visual_infos_val.pkl',
         pipeline=test_pipeline,
         test_mode=True,
-        box_type_3d='Camera',
+        box_type_3d='Depth',
         metainfo=metainfo,
         backend_args=backend_args))
 test_dataloader = val_dataloader
