@@ -780,8 +780,8 @@ def update_custom_visual_infos(pkl_path, out_dir):
         K_4x4 = np.eye(4)
         K_4x4[:3, :3] = calib['K']
 
-        cam2img = K_4x4 @ rt_mat
-        temp_data_info['images']['CAM0']['cam2img'] = cam2img.tolist()
+        depth2img = K_4x4 @ rt_mat
+        temp_data_info['images']['CAM0']['depth2img'] = depth2img.tolist()
         temp_data_info['images']['CAM0']['img_path'] = Path(ori_info_dict['image']['image_path']).name
         h, w = ori_info_dict['image']['image_shape']
         temp_data_info['images']['CAM0']['height'] = h
@@ -823,7 +823,7 @@ def update_custom_visual_infos(pkl_path, out_dir):
             metainfo['categories'][ignore_class] = -1
     metainfo['dataset'] = 'custom_visual'
     metainfo['info_version'] = '1.1'
-    metainfo['box_type_3d'] = 'camera'
+    metainfo['box_type_3d'] = 'depth'
 
     converted_data_info = dict(metainfo=metainfo, data_list=converted_list)
 
