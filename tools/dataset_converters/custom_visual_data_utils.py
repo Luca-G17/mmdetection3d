@@ -24,9 +24,10 @@ class CustomVisualInstance(object):
 
 class CustomVisualData(object):
 
-    def __init__(self, root_path, split='train'):
+    def __init__(self, root_path, split='train', cams=["CAM0", "CAM1"]):
         self.root_dir = root_path
         self.split = split
+        self.cams = cams
         self.split_dir = osp.join(root_path, 'ImageSets')
         self.classes = ['Cube']
         self.cat2label = {cat: self.classes.index(cat) for cat in self.classes}
@@ -46,26 +47,28 @@ class CustomVisualData(object):
     def __len__(self):
         return len(self.sample_id_list)
     
-    def get_image(self, idx):
-        # For now we only have 1 image per scene
-        # also need to change indexing to have zero padding probably
-        scene_dir = osp.join(self.image_dir, f'images_{idx}')
-        image_filename = osp.join(scene_dir, f'{idx:06d}.png')
+    def get_image(self, idx, cam):
+        cam_dir = osp.join(self.image_dir, f'images_{cam}')
+        image_filename = osp.join(cam_dir, f'{idx:06d}.png')
         return mmcv.imread(image_filename)
     
-    def get_image_shape(self, idx):
-        image = self.get_image(idx)
+    def get_image_shape(self, idx, cam):
+        image = self.get_image(idx, cam)
         return np.array(image.shape[:2], dtype=np.int32)
     
     def get_calibration(self, idx):
         calib_filepath = osp.join(self.calib_dir, f'{idx:06d}.txt')
         lines = [line.rstrip() for line in open(calib_filepath)]
-        K = np.array([float(x) for x in lines[0].split(' ')])
-        K = np.reshape(K, (3, 3), order='F').astype(np.float32)
-        Rt = np.array([float(x) for x in lines[1].split(' ')])
-        Rt = np.reshape(Rt, (4, 4), order='F').astype(np.float32)
+        
+        calibs = []
+        for i in range(0, self.get_n_cams * 2, 2):
+            K = np.array([float(x) for x in lines[i].split(' ')])
+            K = np.reshape(K, (3, 3), order='F').astype(np.float32)
+            Rt = np.array([float(x) for x in lines[i+1].split(' ')])
+            Rt = np.reshape(Rt, (4, 4), order='F').astype(np.float32)
+            calibs.append((K, Rt))
 
-        return K, Rt
+        return calibs
     
     def get_label_objects(self, idx):
         label_filename = osp.join(self.label_dir, f'{idx:06d}.txt')
@@ -73,26 +76,30 @@ class CustomVisualData(object):
         objects = [CustomVisualInstance(line) for line in lines]
         return objects
     
+    def get_n_cams(self):
+        return len(self.cams)
+    
     def get_infos(self, num_workers=4, has_label=True, sample_id_list=None):
-
 
         def process_single_scene(sample_idx):
             print(f'{self.split} sample_idx: {sample_idx}')
             info = dict()
+            
 
-            scene_path = osp.join(self.image_dir, f'images_{sample_idx}')
-            image_path = osp.join(scene_path, f'{sample_idx:06d}.png')
-            image_info = {
-                'image_idx': sample_idx,
-                'image_shape': self.get_image_shape(sample_idx),
-                'image_path': image_path
-            }
+            calibs = self.get_calibration(sample_idx)
 
-            info['image'] = image_info
-
-            K, Rt = self.get_calibration(sample_idx)
-            calib_info = {'K': K, 'Rt': Rt}
-            info['calib'] = calib_info
+            for i in range(1, self.get_n_cams() + 1):
+                cam_path = osp.join(self.image_dir, f'images_{i}')
+                image_path = osp.join(cam_path, f'{sample_idx:06d}.png')
+                image_info = {
+                    'image_idx': sample_idx,
+                    'image_shape': self.get_image_shape(sample_idx, i),
+                    'image_path': image_path
+                }
+                info['images'][f'CAM{i-1}'] = image_info
+                K, Rt = calibs[i-1]
+                calib_info = {'K': K, 'Rt': Rt}
+                info['calib'][f'CAM{i-1}'] = calib_info
 
             if has_label:
                 obj_list = self.get_label_objects(sample_idx)

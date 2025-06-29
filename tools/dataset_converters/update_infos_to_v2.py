@@ -774,18 +774,22 @@ def update_custom_visual_infos(pkl_path, out_dir):
         #temp_data_info['lidar_points']['num_pts_feats'] = ori_info_dict['point_cloud']['num_features']
         #temp_data_info['lidar_points']['lidar_path'] = Path(ori_info_dict['pts_path']).name
 
-        calib = ori_info_dict['calib']
-        rt_mat = calib['Rt']
+        n_cams = len(ori_info_dict['images'].keys())
 
-        K_4x4 = np.eye(4)
-        K_4x4[:3, :3] = calib['K']
+        for i in range(n_cams):
+            cam = f'CAM{i}'
+            calib = ori_info_dict['calib'][cam]
+            rt_mat = calib['Rt']
 
-        cam2img = K_4x4 @ rt_mat
-        temp_data_info['images']['CAM0']['cam2img'] = cam2img.tolist()
-        temp_data_info['images']['CAM0']['img_path'] = Path(ori_info_dict['image']['image_path']).name
-        h, w = ori_info_dict['image']['image_shape']
-        temp_data_info['images']['CAM0']['height'] = h
-        temp_data_info['images']['CAM0']['width'] = w
+            K_4x4 = np.eye(4)
+            K_4x4[:3, :3] = calib['K']
+
+            cam2img = K_4x4 @ rt_mat
+            temp_data_info['images'][cam]['cam2img'] = cam2img.tolist()
+            temp_data_info['images'][cam]['img_path'] = Path(ori_info_dict['image'][cam]['image_path']).name
+            h, w = ori_info_dict['image'][cam]['image_shape']
+            temp_data_info['images'][cam]['height'] = h
+            temp_data_info['images'][cam]['width'] = w
 
         anns = ori_info_dict.get('annos', None)
         if anns is not None:
