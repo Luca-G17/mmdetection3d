@@ -24,7 +24,7 @@ class CustomVisualDataset(Det3DDataset):
                  data_root: str,
                  ann_file: str,
                  metainfo: Optional[dict] = None,
-                 data_prefix: dict = dict(img='images'),
+                 data_prefix: dict = dict(img='images', CAM0='images/images_1', CAM1='images/images_2'),
                  pipeline: List[Union[dict, Callable]] = [],
                  default_cam_key: str = 'CAM0',
                  modality: dict = dict(use_camera=True, use_lidar=False),
