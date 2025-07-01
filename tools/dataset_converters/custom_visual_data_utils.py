@@ -84,6 +84,8 @@ class CustomVisualData(object):
         def process_single_scene(sample_idx):
             print(f'{self.split} sample_idx: {sample_idx}')
             info = dict()
+            info['images'] = {}
+            info['calib'] = {}
             
 
             calibs = self.get_calibration(sample_idx)
