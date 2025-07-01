@@ -786,7 +786,7 @@ def update_custom_visual_infos(pkl_path, out_dir):
 
             cam2img = K_4x4 @ rt_mat
             temp_data_info['images'][cam]['cam2img'] = cam2img.tolist()
-            temp_data_info['images'][cam]['img_path'] = Path(ori_info_dict['image'][cam]['image_path']).name
+            temp_data_info['images'][cam]['img_path'] = Path(ori_info_dict['images'][cam]['image_path']).name
             h, w = ori_info_dict['image'][cam]['image_shape']
             temp_data_info['images'][cam]['height'] = h
             temp_data_info['images'][cam]['width'] = w
