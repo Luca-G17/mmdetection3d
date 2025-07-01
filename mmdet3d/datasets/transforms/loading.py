@@ -73,6 +73,7 @@ class LoadMultiViewImageFromFiles(BaseTransform):
         """
         # TODO: consider split the multi-sweep part out of this pipeline
         # Derive the mask and transform for loading of multi-sweep data
+        print(results)
         if self.num_ref_frames > 0:
             # init choice with the current frame
             init_choice = np.array([0], dtype=np.int64)
@@ -152,7 +153,6 @@ class LoadMultiViewImageFromFiles(BaseTransform):
         # Support multi-view images with different shapes
         # TODO: record the origin shape and padded shape
         filename, cam2img, lidar2cam = [], [], []
-        print(results)
         for _, cam_item in results['images'].items():
             filename.append(cam_item['img_path'])
             cam2img.append(cam_item['cam2img'])
