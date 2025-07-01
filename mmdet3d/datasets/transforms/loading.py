@@ -155,7 +155,7 @@ class LoadMultiViewImageFromFiles(BaseTransform):
         for _, cam_item in results['images'].items():
             filename.append(cam_item['img_path'])
             cam2img.append(cam_item['cam2img'])
-            lidar2cam.append(cam_item['lidar2cam'])
+            #lidar2cam.append(cam_item['lidar2cam'])
         results['filename'] = filename
         results['cam2img'] = cam2img
         results['lidar2cam'] = lidar2cam
