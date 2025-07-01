@@ -61,7 +61,7 @@ class CustomVisualData(object):
         lines = [line.rstrip() for line in open(calib_filepath)]
         
         calibs = []
-        for i in range(0, self.get_n_cams * 2, 2):
+        for i in range(0, self.get_n_cams() * 2, 2):
             K = np.array([float(x) for x in lines[i].split(' ')])
             K = np.reshape(K, (3, 3), order='F').astype(np.float32)
             Rt = np.array([float(x) for x in lines[i+1].split(' ')])
