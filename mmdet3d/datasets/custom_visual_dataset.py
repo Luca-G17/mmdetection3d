@@ -66,12 +66,14 @@ class CustomVisualDataset(Det3DDataset):
         if self.modality['use_camera']:
             for cam_id, img_info in info['images'].items():
                 if 'img_path' in img_info:
-                    idx = int(osp.splitext(osp.basename(img_info['img_path']))[0])
-                    scene_path = osp.join(self.data_prefix.get('img', ''), f"images_{idx}")
-                    img_info['img_path'] = osp.join(scene_path, img_info['img_path'])
-            if self.default_cam_key is not None:
-                info['img_path'] = info['images'][self.default_cam_key]['img_path']
-                info['cam2img'] = np.array(info['images'][self.default_cam_key]['cam2img'], dtype=np.float32)
+                    if cam_id in self.data_prefix:
+                        cam_prefix = self.data_prefix[cam_id]
+                    else:
+                        cam_prefix = self.data_prefix.get('img', '')
+                    img_info['img_path'] = osp.join(cam_prefix, img_info['img_path'])
+            # if self.default_cam_key is not None:
+            #     info['img_path'] = info['images'][self.default_cam_key]['img_path']
+            #     info['cam2img'] = np.array(info['images'][self.default_cam_key]['cam2img'], dtype=np.float32)
 
         if not self.test_mode:
             info['ann_info'] = self.parse_ann_info(info)
