@@ -98,6 +98,7 @@ class CustomVisualData(object):
                     'image_shape': self.get_image_shape(sample_idx, i),
                     'image_path': image_path
                 }
+                print(image_path)
                 info['images'][f'CAM{i-1}'] = image_info
                 K, Rt = calibs[i-1]
                 calib_info = {'K': K, 'Rt': Rt}
