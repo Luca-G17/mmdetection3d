@@ -13,7 +13,7 @@ from mmengine.fileio import get
 from mmdet3d.registry import TRANSFORMS
 from mmdet3d.structures.bbox_3d import get_box_type
 from mmdet3d.structures.points import BasePoints, get_points_type
-
+import traceback
 
 @TRANSFORMS.register_module()
 class LoadMultiViewImageFromFiles(BaseTransform):
@@ -73,7 +73,8 @@ class LoadMultiViewImageFromFiles(BaseTransform):
         """
         # TODO: consider split the multi-sweep part out of this pipeline
         # Derive the mask and transform for loading of multi-sweep data
-        print(results)
+        #print(results)
+        traceback.print_stack()
         if self.num_ref_frames > 0:
             # init choice with the current frame
             init_choice = np.array([0], dtype=np.int64)
