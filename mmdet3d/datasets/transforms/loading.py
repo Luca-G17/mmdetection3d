@@ -73,8 +73,7 @@ class LoadMultiViewImageFromFiles(BaseTransform):
         """
         # TODO: consider split the multi-sweep part out of this pipeline
         # Derive the mask and transform for loading of multi-sweep data
-        #print(results)
-        traceback.print_stack()
+        print(results)
         if self.num_ref_frames > 0:
             # init choice with the current frame
             init_choice = np.array([0], dtype=np.int64)
