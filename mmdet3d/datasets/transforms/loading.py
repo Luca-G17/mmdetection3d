@@ -152,6 +152,7 @@ class LoadMultiViewImageFromFiles(BaseTransform):
         # Support multi-view images with different shapes
         # TODO: record the origin shape and padded shape
         filename, cam2img, lidar2cam = [], [], []
+        print(results)
         for _, cam_item in results['images'].items():
             filename.append(cam_item['img_path'])
             cam2img.append(cam_item['cam2img'])
