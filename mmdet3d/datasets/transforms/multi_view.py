@@ -1,10 +1,10 @@
 import numpy as np
 
-from mmdet.registry import TRANSFORMS
-from mmdet.datasets.transforms import Compose, RandomFlip, LoadImageFromFile
+from mmdet3d.registry import TRANSFORMS
+from mmdet3d.datasets.transforms import Compose, RandomFlip, LoadImageFromFile
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class MultiViewPipeline:
     def __init__(self, transforms, n_images):
         self.transforms = Compose(transforms)
