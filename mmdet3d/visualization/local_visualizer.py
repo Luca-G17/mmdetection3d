@@ -531,7 +531,6 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
         edge_colors_norm = color_val_matplotlib(edge_colors)
 
         corners_2d = proj_bbox3d_to_img(bboxes_3d, input_meta)
-        print(corners_2d)
         if img_size is not None:
             # Filter out the bbox where half of stuff is outside the image.
             # This is for the visualization of multi-view image.
@@ -548,6 +547,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                     filter_edge_colors_norm.append(edge_colors_norm[i])
             edge_colors = filter_edge_colors
             edge_colors_norm = filter_edge_colors_norm
+        print(corners_2d)
 
         lines_verts_idx = [0, 1, 2, 3, 7, 6, 5, 4, 0, 3, 7, 4, 5, 1, 2, 6]
         lines_verts = corners_2d[:, lines_verts_idx, :]
