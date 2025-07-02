@@ -566,7 +566,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
             linewidths=line_widths,
             linestyles=line_styles)
 
-        print(p)
+        print(len(pathpatches))
         self.ax_save.add_collection(p)
 
         # draw a mask on the front of project bboxes
