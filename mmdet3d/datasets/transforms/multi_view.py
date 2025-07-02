@@ -12,7 +12,7 @@ class MultiViewPipeline:
     def __call__(self, results):
         imgs = []
         extrinsics = []
-        print(results['images'])
+        print(len(results['images']))
         ids = np.arange(len(results['images']))
         replace = True if self.n_images > len(ids) else False
         ids = np.random.choice(ids, self.n_images, replace=replace)
