@@ -531,22 +531,22 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
         edge_colors_norm = color_val_matplotlib(edge_colors)
 
         corners_2d = proj_bbox3d_to_img(bboxes_3d, input_meta)
-        if img_size is not None:
-            # Filter out the bbox where half of stuff is outside the image.
-            # This is for the visualization of multi-view image.
-            valid_point_idx = (corners_2d[..., 0] >= 0) & \
-                        (corners_2d[..., 0] <= img_size[0]) & \
-                        (corners_2d[..., 1] >= 0) & (corners_2d[..., 1] <= img_size[1])  # noqa: E501
-            valid_bbox_idx = valid_point_idx.sum(axis=-1) >= 4
-            #corners_2d = corners_2d[valid_bbox_idx]
-            filter_edge_colors = []
-            filter_edge_colors_norm = []
-            for i, color in enumerate(edge_colors):
-                if valid_bbox_idx[i] or True:
-                    filter_edge_colors.append(color)
-                    filter_edge_colors_norm.append(edge_colors_norm[i])
-            edge_colors = filter_edge_colors
-            edge_colors_norm = filter_edge_colors_norm
+        # if img_size is not None:
+        #     # Filter out the bbox where half of stuff is outside the image.
+        #     # This is for the visualization of multi-view image.
+        #     valid_point_idx = (corners_2d[..., 0] >= 0) & \
+        #                 (corners_2d[..., 0] <= img_size[0]) & \
+        #                 (corners_2d[..., 1] >= 0) & (corners_2d[..., 1] <= img_size[1])  # noqa: E501
+        #     valid_bbox_idx = valid_point_idx.sum(axis=-1) >= 4
+        #     #corners_2d = corners_2d[valid_bbox_idx]
+        #     filter_edge_colors = []
+        #     filter_edge_colors_norm = []
+        #     for i, color in enumerate(edge_colors):
+        #         if valid_bbox_idx[i] or True:
+        #             filter_edge_colors.append(color)
+        #             filter_edge_colors_norm.append(edge_colors_norm[i])
+        #     edge_colors = filter_edge_colors
+        #     edge_colors_norm = filter_edge_colors_norm
 
         lines_verts_idx = [0, 1, 2, 3, 7, 6, 5, 4, 0, 3, 7, 4, 5, 1, 2, 6]
         lines_verts = corners_2d[:, lines_verts_idx, :]
@@ -570,7 +570,6 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
 
         # draw a mask on the front of project bboxes
         front_polys = [front_poly for front_poly in front_polys]
-        print(len(front_polys))
         return self.draw_polygons(
             front_polys,
             alpha=alpha,
