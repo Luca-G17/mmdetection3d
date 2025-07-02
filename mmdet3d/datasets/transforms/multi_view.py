@@ -1,7 +1,7 @@
 import numpy as np
 
 from mmdet3d.registry import TRANSFORMS
-from mmdet3d.datasets.transforms import Compose, RandomFlip, LoadImageFromFile
+from mmdet.datasets.transforms import Compose, RandomFlip, LoadImageFromFile
 
 
 @TRANSFORMS.register_module()
