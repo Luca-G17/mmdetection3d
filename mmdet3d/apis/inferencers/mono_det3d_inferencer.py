@@ -103,7 +103,6 @@ class MonoDet3DInferencer(Base3DInferencer):
                 inputs = [inputs]
 
             # get cam2img, lidar2cam and lidar2img from infos
-            print(infos)
             info_list = mmengine.load(infos)['data_list']
             assert len(info_list) == len(inputs)
             for index, input in enumerate(inputs):
@@ -232,7 +231,6 @@ class MonoDet3DInferencer(Base3DInferencer):
 
             out_file = osp.join(img_out_dir, 'vis_camera', cam_type_dir,
                                 img_name) if img_out_dir != '' else None
-            print(out_file)
 
             data_input = dict(img=img)
             self.visualizer.add_datasample(
