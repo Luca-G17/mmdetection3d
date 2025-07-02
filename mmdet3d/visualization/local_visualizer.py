@@ -674,6 +674,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
             if isinstance(img, list) or (isinstance(img, (np.ndarray, Tensor))
                                          and len(img.shape) == 4):
                 # show multi-view images
+                print("adding data")
                 img_size = img[0].shape[:2] if isinstance(
                     img, list) else img.shape[-2:]  # noqa: E501
                 img_col = self.multi_imgs_col
