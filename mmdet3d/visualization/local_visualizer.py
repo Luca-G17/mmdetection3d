@@ -636,7 +636,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
 
         data_3d = dict()
 
-        if vis_task in ['lidar_det']:
+        if vis_task in ['lidar_det', 'multi-modality_det']:
             assert 'points' in data_input
             points = data_input['points']
             check_type('points', points, (np.ndarray, Tensor))
@@ -807,7 +807,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
         if hasattr(self, '_image'):
             if drawn_img is None and drawn_img_3d is None:
                 # use the image got by Visualizer.get_image()
-                if vis_task != 'multi-modality_det':
+                if vis_task == 'multi-modality_det':
                     import matplotlib.pyplot as plt
                     is_inline = 'inline' in plt.get_backend()
                     img = self.get_image() if drawn_img is None else drawn_img
