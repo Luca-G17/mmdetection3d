@@ -702,7 +702,6 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                         else self.bbox_color
                     bbox_palette = get_palette(bbox_color, max_label + 1)
                     colors = [bbox_palette[label] for label in labels_3d]
-                    print(bboxes_3d)
                     self.draw_proj_bboxes_3d(
                         bboxes_3d,
                         single_img_meta,
@@ -996,7 +995,6 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
         ]:
             self.o3d_vis = self._initialize_o3d_vis(show=show)
 
-        print(data_sample)
         if draw_gt and data_sample is not None:
             if 'gt_instances_3d' in data_sample:
                 gt_data_3d = self._draw_instances_3d(
@@ -1068,7 +1066,6 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
         else:
             drawn_img_3d = None
 
-        print(drawn_img_3d)
         # 2d object detection image
         if gt_img_data is not None and pred_img_data is not None:
             drawn_img = np.concatenate((gt_img_data, pred_img_data), axis=1)

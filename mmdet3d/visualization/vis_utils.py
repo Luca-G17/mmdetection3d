@@ -162,6 +162,7 @@ def proj_camera_bbox3d_to_img(bboxes_3d: CameraInstance3DBoxes,
     corners_3d = bboxes_3d.corners
     num_bbox = corners_3d.shape[0]
     points_3d = corners_3d.reshape(-1, 3)
+    print(points_3d)
     if not isinstance(cam2img, torch.Tensor):
         cam2img = torch.from_numpy(np.array(cam2img))
 
