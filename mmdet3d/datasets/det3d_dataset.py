@@ -382,7 +382,6 @@ class Det3DDataset(BaseDataset):
             if len(input_dict['ann_info']['gt_labels_3d']) == 0:
                 return None
 
-        print(input_dict)
         example = self.pipeline(input_dict)
 
         if not self.test_mode and self.filter_empty_gt:

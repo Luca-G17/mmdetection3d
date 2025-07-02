@@ -65,7 +65,6 @@ class CustomVisualDataset(Det3DDataset):
 
         if self.modality['use_camera']:
             for cam_id, img_info in info['images'].items():
-                print(cam_id)
                 if 'img_path' in img_info:
                     if cam_id in self.data_prefix:
                         cam_prefix = self.data_prefix[cam_id]
