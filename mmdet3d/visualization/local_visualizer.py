@@ -1068,6 +1068,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
         else:
             drawn_img_3d = None
 
+        print(drawn_img_3d)
         # 2d object detection image
         if gt_img_data is not None and pred_img_data is not None:
             drawn_img = np.concatenate((gt_img_data, pred_img_data), axis=1)
