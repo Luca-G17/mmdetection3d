@@ -538,11 +538,11 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                         (corners_2d[..., 0] <= img_size[0]) & \
                         (corners_2d[..., 1] >= 0) & (corners_2d[..., 1] <= img_size[1])  # noqa: E501
             valid_bbox_idx = valid_point_idx.sum(axis=-1) >= 4
-            corners_2d = corners_2d[valid_bbox_idx]
+            #corners_2d = corners_2d[valid_bbox_idx]
             filter_edge_colors = []
             filter_edge_colors_norm = []
             for i, color in enumerate(edge_colors):
-                if valid_bbox_idx[i]:
+                if valid_bbox_idx[i] or True:
                     filter_edge_colors.append(color)
                     filter_edge_colors_norm.append(edge_colors_norm[i])
             edge_colors = filter_edge_colors
