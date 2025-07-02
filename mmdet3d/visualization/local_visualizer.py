@@ -565,8 +565,6 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
             edgecolors=edge_colors_norm,
             linewidths=line_widths,
             linestyles=line_styles)
-
-        print(len(pathpatches))
         self.ax_save.add_collection(p)
 
         # draw a mask on the front of project bboxes
@@ -1057,7 +1055,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                                        keep_index)
 
         # monocular 3d object detection image
-        if vis_task in ['mono_det', 'multi-modality_det']:
+        if vis_task in ['mono_det', 'multi-modality_det', 'multi-view_det']:
             if gt_data_3d is not None and pred_data_3d is not None:
                 drawn_img_3d = np.concatenate(
                     (gt_data_3d['img'], pred_data_3d['img']), axis=1)
