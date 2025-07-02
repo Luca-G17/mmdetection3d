@@ -636,7 +636,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
 
         data_3d = dict()
 
-        if vis_task in ['lidar_det', 'multi-modality_det']:
+        if vis_task in ['lidar_det']:
             assert 'points' in data_input
             points = data_input['points']
             check_type('points', points, (np.ndarray, Tensor))

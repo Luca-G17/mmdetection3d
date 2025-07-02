@@ -136,7 +136,6 @@ def main():
             and vis_task in ['lidar_det', 'lidar_seg', 'multi-modality_det']
             and not args.not_show) else None
 
-        print(item["data_samples"])
         visualizer.add_datasample(
             '3d visualzier',
             data_input,
