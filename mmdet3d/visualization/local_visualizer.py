@@ -997,6 +997,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
         ]:
             self.o3d_vis = self._initialize_o3d_vis(show=show)
 
+        print(data_sample)
         if draw_gt and data_sample is not None:
             if 'gt_instances_3d' in data_sample:
                 gt_data_3d = self._draw_instances_3d(

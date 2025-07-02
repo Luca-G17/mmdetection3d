@@ -72,7 +72,6 @@ def build_data_cfg(config_path, aug, cfg_options):
 
     train_data_cfg = cfg.train_dataloader.dataset
 
-    print(train_data_cfg)
 
     if aug:
         show_pipeline = cfg.train_pipeline
@@ -136,7 +135,6 @@ def main():
             and vis_task in ['lidar_det', 'lidar_seg', 'multi-modality_det']
             and not args.not_show) else None
 
-        print(args.not_show)
         visualizer.add_datasample(
             '3d visualzier',
             data_input,
