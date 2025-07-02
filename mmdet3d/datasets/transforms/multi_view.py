@@ -1,7 +1,7 @@
 import numpy as np
 
 from mmdet3d.registry import TRANSFORMS
-from mmdet.datasets.pipelines import Compose
+from mmengine.dataset import Compose
 
 @TRANSFORMS.register_module()
 class MultiViewPipeline:
