@@ -85,7 +85,7 @@ class ImVoxelNet(Base3DDetector):
         """
         print(batch_inputs_dict.keys())
         img = batch_inputs_dict['img']
-        print(img)
+        print(img.shape)
         batch_img_metas = [
             data_samples.metainfo for data_samples in batch_data_samples
         ]
