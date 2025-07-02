@@ -674,7 +674,6 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
             if isinstance(img, list) or (isinstance(img, (np.ndarray, Tensor))
                                          and len(img.shape) == 4):
                 # show multi-view images
-                print("adding data")
                 img_size = img[0].shape[:2] if isinstance(
                     img, list) else img.shape[-2:]  # noqa: E501
                 img_col = self.multi_imgs_col
@@ -704,7 +703,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                         else self.bbox_color
                     bbox_palette = get_palette(bbox_color, max_label + 1)
                     colors = [bbox_palette[label] for label in labels_3d]
-
+                    print(bboxes_3d)
                     self.draw_proj_bboxes_3d(
                         bboxes_3d,
                         single_img_meta,
