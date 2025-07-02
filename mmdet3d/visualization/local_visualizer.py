@@ -570,6 +570,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
 
         # draw a mask on the front of project bboxes
         front_polys = [front_poly for front_poly in front_polys]
+        print(len(front_polys))
         return self.draw_polygons(
             front_polys,
             alpha=alpha,
