@@ -668,7 +668,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
             data_3d['bboxes_3d'] = tensor2ndarray(bboxes_3d_depth.tensor)
             data_3d['points'] = points
 
-        if vis_task in ['mono_det', 'multi-modality_det']:
+        if vis_task in ['mono_det', 'multi-modality_det', 'multi-view_det']:
             assert 'img' in data_input
             img = data_input['img']
             if isinstance(img, list) or (isinstance(img, (np.ndarray, Tensor))
