@@ -547,7 +547,6 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                     filter_edge_colors_norm.append(edge_colors_norm[i])
             edge_colors = filter_edge_colors
             edge_colors_norm = filter_edge_colors_norm
-        print(corners_2d)
 
         lines_verts_idx = [0, 1, 2, 3, 7, 6, 5, 4, 0, 3, 7, 4, 5, 1, 2, 6]
         lines_verts = corners_2d[:, lines_verts_idx, :]
@@ -571,6 +570,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
 
         # draw a mask on the front of project bboxes
         front_polys = [front_poly for front_poly in front_polys]
+        print(len(front_polys))
         return self.draw_polygons(
             front_polys,
             alpha=alpha,
