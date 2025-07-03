@@ -186,8 +186,6 @@ class ImVoxelNet(Base3DDetector):
         self.save_pointcloud_from_voxels(
             fused_volumes[0],
             valid_preds[0],
-            voxel_size=self.voxel_size,
-            point_cloud_range=self.point_cloud_range,
             filename='first_scene.ply'
         )
 
