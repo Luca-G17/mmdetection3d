@@ -152,7 +152,7 @@ class ImVoxelNet(Base3DDetector):
 
         # Step 2: Get valid voxels mask and features from scene 0
         valid_mask = valid_preds[0].squeeze(0).reshape(-1)  # (N_voxels,)
-        scene_features = x[0, 0].reshape(-1)  # Use channel 0 as intensity (or avg of channels if needed)
+        scene_features = x[0][0].reshape(-1)  # Use channel 0 as intensity (or avg of channels if needed)
 
         # Step 3: Filter valid points
         valid_points = points[valid_mask]
