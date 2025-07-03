@@ -11,6 +11,8 @@ from mmdet3d.structures.bbox_3d import get_proj_mat_by_coord_type
 from mmdet3d.structures.det3d_data_sample import SampleList
 from mmdet3d.utils import ConfigType, OptConfigType, OptInstanceList
 import numpy as np
+import open3d as o3d
+import os
 
 @MODELS.register_module()
 class ImVoxelNet(Base3DDetector):
@@ -145,6 +147,33 @@ class ImVoxelNet(Base3DDetector):
         x = torch.stack(fused_volumes, dim=0)
         print("Fused volume stats:", x.min().item(), x.max().item(), x.mean().item())
         x = self.neck_3d(x)
+
+        points = self.prior_generator.grid_anchors([self.n_voxels[::-1]], device=x.device)[0][:, :3]  # (N_voxels, 3)
+
+        # Step 2: Get valid voxels mask and features from scene 0
+        valid_mask = valid_preds[0].squeeze(0).reshape(-1)  # (N_voxels,)
+        scene_features = x[0, 0].reshape(-1)  # Use channel 0 as intensity (or avg of channels if needed)
+
+        # Step 3: Filter valid points
+        valid_points = points[valid_mask]
+        valid_features = scene_features[valid_mask]
+
+        # Step 4: Normalize features to [0, 1] for color
+        colors = valid_features.detach().cpu().numpy()
+        colors = (colors - colors.min()) / (colors.max() - colors.min() + 1e-5)
+        colors = np.tile(colors[:, None], (1, 3))  # grayscale to RGB
+
+        pc_np = valid_points.detach().cpu().numpy()
+
+        # Step 6: Create Open3D point cloud
+        pcd = o3d.geometry.PointCloud()
+        pcd.points = o3d.utility.Vector3dVector(pc_np)
+        pcd.colors = o3d.utility.Vector3dVector(colors)
+
+        # Step 7: Save to PLY
+        save_path = 'scene0_voxels.ply'
+        os.makedirs(os.path.dirname(save_path) or ".", exist_ok=True)
+        o3d.io.write_point_cloud(save_path, pcd)
 
         return x, torch.stack(valid_preds).float()
 
