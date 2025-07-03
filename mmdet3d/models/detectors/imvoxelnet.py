@@ -94,7 +94,7 @@ class ImVoxelNet(Base3DDetector):
         # Optional: get color/intensity from volume[0] or mean across C channels
         intensity = volume.mean(0)[valid_mask] * 255  # [N]
         intensity = np.clip(intensity, 0, 255).astype(np.uint8)
-
+        
         # Create Open3D point cloud
         pcd = o3d.geometry.PointCloud()
         pcd.points = o3d.utility.Vector3dVector(xyz_points)
@@ -178,7 +178,9 @@ class ImVoxelNet(Base3DDetector):
             vols = torch.stack(vols, dim=0)
 
             fused_volume = vols.mean(dim=0)
-            valid_pred = ~torch.all(fused_volume == 0, dim=0, keepdim=True)
+           #  valid_pred = ~torch.all(fused_volume == 0, dim=0, keepdim=True)
+            intensity = torch.norm(fused_volume, dim=0, keepdim=True)  # Shape: [1, D, H, W]
+            valid_pred = intensity > 0.1  # e.g., 0.1 or 1.0
 
             fused_volumes.append(fused_volume)
             valid_preds.append(valid_pred)
