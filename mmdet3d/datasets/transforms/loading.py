@@ -41,7 +41,8 @@ class LoadMultiViewImageFromFiles(BaseTransform):
                  num_views: int = 5,
                  num_ref_frames: int = -1,
                  test_mode: bool = False,
-                 set_default_scale: bool = True) -> None:
+                 set_default_scale: bool = True,
+                 imdecode_backend='cv2') -> None:
         self.to_float32 = to_float32
         self.color_type = color_type
         self.backend_args = backend_args
@@ -52,6 +53,7 @@ class LoadMultiViewImageFromFiles(BaseTransform):
         # otherwise, select the earliest one
         self.test_mode = test_mode
         self.set_default_scale = set_default_scale
+        self.imdecode_backend = imdecode_backend
 
     def transform(self, results: dict) -> Optional[dict]:
         """Call function to load multi-view image from files.
