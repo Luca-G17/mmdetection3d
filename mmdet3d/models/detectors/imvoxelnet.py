@@ -65,6 +65,45 @@ class ImVoxelNet(Base3DDetector):
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
 
+    def save_pointcloud_from_voxels(volume, valid_mask, voxel_size=(1,1,1), point_cloud_range=(-10, -10, -10, 10, 10, 10), filename='scene.ply'):
+        """
+        Save non-zero voxels as a 3D point cloud in PLY format.
+
+        Args:
+            volume (torch.Tensor): (C, Z, Y, X)
+            valid_mask (torch.Tensor): (1, Z, Y, X)
+            voxel_size (tuple): (vx, vy, vz)
+            point_cloud_range (tuple): (x_min, y_min, z_min, x_max, y_max, z_max)
+            filename (str): Output PLY file name
+        """
+        volume = volume.cpu().numpy()
+        valid_mask = valid_mask[0].cpu().numpy()  # Remove channel dim
+
+        zyx_indices = np.stack(np.nonzero(valid_mask), axis=-1)  # [N, 3] in (z, y, x)
+
+        if len(zyx_indices) == 0:
+            print("No valid points to save.")
+            return
+
+        # Convert voxel indices to world coordinates
+        voxel_origin = np.array(point_cloud_range[:3])  # (x_min, y_min, z_min)
+        voxel_size = np.array(voxel_size)
+
+        xyz_points = zyx_indices[:, [2, 1, 0]] * voxel_size + voxel_origin  # Reorder to (x, y, z)
+
+        # Optional: get color/intensity from volume[0] or mean across C channels
+        intensity = volume.mean(0)[valid_mask] * 255  # [N]
+        intensity = np.clip(intensity, 0, 255).astype(np.uint8)
+
+        # Create Open3D point cloud
+        pcd = o3d.geometry.PointCloud()
+        pcd.points = o3d.utility.Vector3dVector(xyz_points)
+        pcd.colors = o3d.utility.Vector3dVector(np.stack([intensity]*3, axis=-1) / 255.0)  # Grayscale
+
+        o3d.io.write_point_cloud(filename, pcd)
+        print(f"Saved point cloud to {filename}")
+
+
     def extract_feat(self, batch_inputs_dict: dict,
                      batch_data_samples: SampleList):
         """Extract 3d features from the backbone -> fpn -> 3d projection.
@@ -144,37 +183,21 @@ class ImVoxelNet(Base3DDetector):
             fused_volumes.append(fused_volume)
             valid_preds.append(valid_pred)
 
+        save_pointcloud_from_voxels(
+            fused_volumes[0],
+            valid_preds[0],
+            voxel_size=self.voxel_size,
+            point_cloud_range=self.point_cloud_range,
+            filename='first_scene.ply'
+        )
+
         x = torch.stack(fused_volumes, dim=0)
-        print("Fused volume stats:", x.min().item(), x.max().item(), x.mean().item())
+
         x = self.neck_3d(x)
 
-        points = self.prior_generator.grid_anchors([self.n_voxels[::-1]], device=x[0].device)[0][:, :3]  # (N_voxels, 3)
-
-        scene_tensor = x[0]  # [C, X, Y, Z]
-        scene_features = scene_tensor.mean(dim=0)  # [X, Y, Z]
-        scene_features = scene_features.reshape(-1)  # [X * Y * Z]
-
-        valid_mask = valid_preds[0][0].reshape(-1)  # [X * Y * Z]
-        valid_features = scene_features[valid_mask]
-
-        # Step 4: Normalize features to [0, 1] for color
-        colors = valid_features.detach().cpu().numpy()
-        colors = (colors - colors.min()) / (colors.max() - colors.min() + 1e-5)
-        colors = np.tile(colors[:, None], (1, 3))  # grayscale to RGB
-
-        pc_np = valid_points.detach().cpu().numpy()
-
-        # Step 6: Create Open3D point cloud
-        pcd = o3d.geometry.PointCloud()
-        pcd.points = o3d.utility.Vector3dVector(pc_np)
-        pcd.colors = o3d.utility.Vector3dVector(colors)
-
-        # Step 7: Save to PLY
-        save_path = 'scene0_voxels.ply'
-        os.makedirs(os.path.dirname(save_path) or ".", exist_ok=True)
-        o3d.io.write_point_cloud(save_path, pcd)
-
         return x, torch.stack(valid_preds).float()
+
+   
 
     def loss(self, batch_inputs_dict: dict, batch_data_samples: SampleList,
              **kwargs) -> Union[dict, list]:
