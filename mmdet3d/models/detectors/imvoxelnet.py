@@ -148,7 +148,7 @@ class ImVoxelNet(Base3DDetector):
         print("Fused volume stats:", x.min().item(), x.max().item(), x.mean().item())
         x = self.neck_3d(x)
 
-        points = self.prior_generator.grid_anchors([self.n_voxels[::-1]], device=x.device)[0][:, :3]  # (N_voxels, 3)
+        points = self.prior_generator.grid_anchors([self.n_voxels[::-1]], device=x[0].device)[0][:, :3]  # (N_voxels, 3)
 
         # Step 2: Get valid voxels mask and features from scene 0
         valid_mask = valid_preds[0].squeeze(0).reshape(-1)  # (N_voxels,)
