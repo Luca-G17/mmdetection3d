@@ -35,7 +35,7 @@ class LoadMultiViewImageFromFiles(BaseTransform):
     """
 
     def __init__(self,
-                 to_float32: bool = False,
+                 to_float32: bool = True,
                  color_type: str = 'unchanged',
                  backend_args: Optional[dict] = None,
                  num_views: int = 5,
