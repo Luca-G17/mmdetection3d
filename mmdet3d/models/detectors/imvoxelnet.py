@@ -174,20 +174,23 @@ class ImVoxelNet(Base3DDetector):
         fused_volumes = []
         valid_preds = []
 
-        for vols, preds in zip(all_volumes, all_valid_preds):
-            vols = torch.stack(vols, dim=0)
+        for vols, valids in zip(all_volumes, all_valid_preds):
+            vols = torch.stack(vols, dim=0)        # [V, C, Z, Y, X]
+            valids = torch.stack(valids, dim=0).float()  # [V, 1, Z, Y, X]
 
-            fused_volume = vols.mean(dim=0)
-           #  valid_pred = ~torch.all(fused_volume == 0, dim=0, keepdim=True)
-            intensity = torch.norm(fused_volume, dim=0, keepdim=True)  # Shape: [1, D, H, W]
-            valid_pred = intensity > 0.5  # e.g., 0.1 or 1.0
+            valids_expand = valids.expand_as(vols)  # Broadcast to match feature channels
+
+            weighted_sum = (vols * valids_expand).sum(dim=0)  # sum weighted by valid mask
+            valid_sum = valids_expand.sum(dim=0) + 1e-6       # avoid division by zero
+
+            fused_volume = weighted_sum / valid_sum           # weighted average
+            valid_pred = valid_sum > 0                         # valid if any view is valid
+
+            # Optional: zero out invalid voxels explicitly
+            fused_volume[:, ~valid_pred[0]] = 0
 
             fused_volumes.append(fused_volume)
             valid_preds.append(valid_pred)
-            for i, vol in enumerate(vols):
-                print(f"Volume {i} stats: min {vol.min().item()}, max {vol.max().item()}, mean {vol.mean().item()}")
-
-            print(f"Fused volume stats: min {fused_volume.min().item()}, max {fused_volume.max().item()}, mean {fused_volume.mean().item()}")
 
         self.save_pointcloud_from_voxels(
             fused_volumes[0],
