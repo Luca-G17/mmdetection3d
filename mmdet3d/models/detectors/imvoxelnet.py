@@ -84,14 +84,14 @@ class ImVoxelNet(Base3DDetector):
             - torch.Tensor: Valid mask of shape (N, 1, N_x, N_y, N_z).
         """
         imgs = batch_inputs_dict['img']
-        imgs = torch.stack(imgs, dim=0)          # Tensor: [B, 2, 4, 480, 640]
+        imgs = torch.stack(imgs, dim=0)
         img = imgs[:, 0]
+        print(img)
         img = img[:, :3].float()
         print(img.shape)
         batch_img_metas = [
             data_samples.metainfo for data_samples in batch_data_samples
         ]
-        print(batch_img_metas)
         x = self.backbone(img)
         x = self.neck(x)[0]
         points = self.prior_generator.grid_anchors([self.n_voxels[::-1]],
