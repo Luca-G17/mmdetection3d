@@ -85,47 +85,66 @@ class ImVoxelNet(Base3DDetector):
         """
         imgs = batch_inputs_dict['img']
         imgs = torch.stack(imgs, dim=0)
-        img = imgs[:, 0]
-        print(img[0])
-        img = img[:, :3].float()
         batch_img_metas = [
             data_samples.metainfo for data_samples in batch_data_samples
         ]
-        x = self.backbone(img)
-        x = self.neck(x)[0]
-        points = self.prior_generator.grid_anchors([self.n_voxels[::-1]],
-                                                   device=img.device)[0][:, :3]
-        volumes, valid_preds = [], []
-        for feature, img_meta in zip(x, batch_img_metas):
-            scale = img_meta.get('scale_factor', 1)
-            if isinstance(scale, (list, tuple)):
-                img_scale_factor = points.new_tensor(scale[:2])
-            else:
-                img_scale_factor = points.new_tensor([scale, scale])
 
-            img_flip = img_meta['flip'] if 'flip' in img_meta.keys() else False
-            img_crop_offset = (
-                points.new_tensor(img_meta['img_crop_offset'])
-                if 'img_crop_offset' in img_meta.keys() else 0)
-            proj_mat = points.new_tensor(get_proj_mat_by_coord_type(img_meta, self.coord_type)[0])
-            volume = point_sample(
-                img_meta,
-                img_features=feature[None, ...],
-                points=points,
-                proj_mat=points.new_tensor(proj_mat),
-                coord_type=self.coord_type,
-                img_scale_factor=img_scale_factor,
-                img_crop_offset=img_crop_offset,
-                img_flip=img_flip,
-                img_pad_shape=img.shape[-2:],
-                img_shape=img_meta['img_shape'][:2],
-                aligned=False)
-            volumes.append(
-                volume.reshape(self.n_voxels[::-1] + [-1]).permute(3, 2, 1, 0))
-            valid_preds.append(
-                ~torch.all(volumes[-1] == 0, dim=0, keepdim=True))
-        x = torch.stack(volumes)
+        batch_size, n_views = len(imgs), len(imgs[0])
+        all_volumes = [[] for _ in range(batch_size)]
+        all_valid_preds = [[] for _ in range(batch_size)]
+
+        # iterate over each view (within the batch)
+        for i in range(len(imgs[0])):
+            img = imgs[:, i]
+            img = img[:, :3].float()
+            x = self.backbone(img)
+            x = self.neck(x)[0]
+            points = self.prior_generator.grid_anchors([self.n_voxels[::-1]], device=img.device)[0][:, :3]
+        
+            for b in range(batch_size):
+                img_meta = batch_img_metas[b]
+
+                scale = img_meta.get('scale_factor', 1)
+                if isinstance(scale, (list, tuple)):
+                    img_scale_factor = points.new_tensor(scale[:2])
+                else:
+                    img_scale_factor = points.new_tensor([scale, scale])
+
+                img_flip = img_meta.get('flip', False)
+                img_crop_offset = points.new_tensor(img_meta.get('img_crop_offset', 0))
+
+                proj_mat = points.new_tensor(get_proj_mat_by_coord_type(img_meta, self.coord_type)[i])
+                volume = point_sample(
+                    img_meta,
+                    img_features=x[b][None, ...],
+                    points=points,
+                    proj_mat=points.new_tensor(proj_mat),
+                    coord_type=self.coord_type,
+                    img_scale_factor=img_scale_factor,
+                    img_crop_offset=img_crop_offset,
+                    img_flip=img_flip,
+                    img_pad_shape=img.shape[-2:],
+                    img_shape=img_meta['img_shape'][:2],
+                    aligned=False
+                )
+                all_volumes[b].append(volume)
+                all_valid_preds[b].append(~torch.all(volume == 0, dim=0, keepdim=True))
+
+        fused_volumes = []
+        valid_preds = []
+
+        for vols, preds in zip(all_volumes, all_valid_preds):
+            vols = torch.stack(vols, dim=0)
+
+            fused_volume = vols.mean(dim=0)
+            valid_pred = ~torch.all(fused_volume == 0, dim=0, keepdim=True)
+
+            fused_volumes.append(fused_volume)
+            valid_preds.append(valid_pred)
+
+        x = torch.stack(fused_volumes, dim=0)
         x = self.neck_3d(x)
+
         return x, torch.stack(valid_preds).float()
 
     def loss(self, batch_inputs_dict: dict, batch_data_samples: SampleList,
