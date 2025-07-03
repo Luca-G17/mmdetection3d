@@ -168,7 +168,7 @@ class LoadMultiViewImageFromFiles(BaseTransform):
             get(name, backend_args=self.backend_args) for name in filename
         ]
         imgs = [
-            mmcv.imfrombytes(img_byte, flag=self.color_type)
+            mmcv.imfrombytes(img_byte, flag=self.color_type, backend=self.imdecode_backend)
             for img_byte in img_bytes
         ]
         # handle the image with different shape
