@@ -91,6 +91,7 @@ class ImVoxelNet(Base3DDetector):
         batch_img_metas = [
             data_samples.metainfo for data_samples in batch_data_samples
         ]
+        print(batch_img_metas)
         x = self.backbone(img)
         x = self.neck(x)[0]
         points = self.prior_generator.grid_anchors([self.n_voxels[::-1]],
@@ -102,7 +103,7 @@ class ImVoxelNet(Base3DDetector):
                 img_scale_factor = points.new_tensor(scale[:2])
             else:
                 img_scale_factor = points.new_tensor([scale, scale])
-                
+
             img_flip = img_meta['flip'] if 'flip' in img_meta.keys() else False
             img_crop_offset = (
                 points.new_tensor(img_meta['img_crop_offset'])
