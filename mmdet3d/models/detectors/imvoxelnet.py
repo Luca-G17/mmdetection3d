@@ -150,12 +150,11 @@ class ImVoxelNet(Base3DDetector):
 
         points = self.prior_generator.grid_anchors([self.n_voxels[::-1]], device=x[0].device)[0][:, :3]  # (N_voxels, 3)
 
-        # Step 2: Get valid voxels mask and features from scene 0
-        valid_mask = valid_preds[0].squeeze(0).reshape(-1)  # (N_voxels,)
-        scene_features = x[0][0].reshape(-1)  # Use channel 0 as intensity (or avg of channels if needed)
+        scene_tensor = x[0]  # [C, X, Y, Z]
+        scene_features = scene_tensor.mean(dim=0)  # [X, Y, Z]
+        scene_features = scene_features.reshape(-1)  # [X * Y * Z]
 
-        # Step 3: Filter valid points
-        valid_points = points[valid_mask]
+        valid_mask = valid_preds[0][0].reshape(-1)  # [X * Y * Z]
         valid_features = scene_features[valid_mask]
 
         # Step 4: Normalize features to [0, 1] for color
