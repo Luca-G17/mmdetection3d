@@ -10,7 +10,7 @@ from mmdet3d.registry import MODELS, TASK_UTILS
 from mmdet3d.structures.bbox_3d import get_proj_mat_by_coord_type
 from mmdet3d.structures.det3d_data_sample import SampleList
 from mmdet3d.utils import ConfigType, OptConfigType, OptInstanceList
-
+import numpy as np
 
 @MODELS.register_module()
 class ImVoxelNet(Base3DDetector):
@@ -87,7 +87,7 @@ class ImVoxelNet(Base3DDetector):
         imgs = batch_inputs_dict['img']
         imgs = torch.stack(imgs, dim=0)          # Tensor: [B, 2, 4, 480, 640]
         img = imgs[:, 0]
-        img = img[:, :3]
+        img = img[:, :3].astype(np.float32)
 
         batch_img_metas = [
             data_samples.metainfo for data_samples in batch_data_samples
