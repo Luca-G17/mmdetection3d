@@ -168,8 +168,13 @@ class ImVoxelNet(Base3DDetector):
                     img_shape=img_meta['img_shape'][:2],
                     aligned=False
                 )
-                all_volumes[b].append(volume.reshape(self.n_voxels[::-1] + [-1]).permute(3, 2, 1, 0))
-                all_valid_preds[b].append(~torch.all(volume == 0, dim=0, keepdim=True))
+                volume_reshaped = volume.reshape(self.n_voxels[::-1] + [-1]).permute(3, 2, 1, 0)  # [C, Z, Y, X]
+
+                # Valid if any feature channel is non-zero at that voxel
+                valid_mask = ~(volume_reshaped == 0).all(dim=0, keepdim=True)  # [1, Z, Y, X]
+
+                all_volumes[b].append(volume_reshaped)
+                all_valid_preds[b].append(valid_mask)
 
         fused_volumes = []
         valid_preds = []
