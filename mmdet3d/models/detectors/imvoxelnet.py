@@ -143,6 +143,7 @@ class ImVoxelNet(Base3DDetector):
             valid_preds.append(valid_pred)
 
         x = torch.stack(fused_volumes, dim=0)
+        print("Fused volume stats:", x.min().item(), x.max().item(), x.mean().item())
         x = self.neck_3d(x)
 
         return x, torch.stack(valid_preds).float()
