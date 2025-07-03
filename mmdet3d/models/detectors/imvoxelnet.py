@@ -90,7 +90,7 @@ class ImVoxelNet(Base3DDetector):
         ]
 
         batch_size, n_views = len(imgs), len(imgs[0])
-        all_volumes = [[] for _ in range(batch_size)]
+        all_volumes = [[] for _ in range(batch_size)] # [B, V, ...]
         all_valid_preds = [[] for _ in range(batch_size)]
 
         # iterate over each view (within the batch), each iteration yields 4 sets of points
@@ -127,13 +127,12 @@ class ImVoxelNet(Base3DDetector):
                     img_shape=img_meta['img_shape'][:2],
                     aligned=False
                 )
-                all_volumes[b].append(volume)
+                all_volumes[b].append(volume.reshape(self.n_voxels[::-1] + [-1]).permute(3, 2, 1, 0))
                 all_valid_preds[b].append(~torch.all(volume == 0, dim=0, keepdim=True))
 
         fused_volumes = []
         valid_preds = []
-        print(len(all_volumes))
-        print(len(all_volumes[0]))
+
         for vols, preds in zip(all_volumes, all_valid_preds):
             vols = torch.stack(vols, dim=0)
 
