@@ -84,7 +84,7 @@ class ImVoxelNet(Base3DDetector):
             - torch.Tensor: Valid mask of shape (N, 1, N_x, N_y, N_z).
         """
         print(batch_inputs_dict.keys())
-        img = batch_inputs_dict['img']
+        img = batch_inputs_dict['img'][:, 0]
        # img = img.reshape([-1] + list(img.shape)[2:])
 
         img = print(len(img))

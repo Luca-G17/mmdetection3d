@@ -49,7 +49,7 @@ model = dict(
     test_cfg=dict(nms_pre=1000, iou_thr=.25, score_thr=.01))
 
 dataset_type = 'CustomVisualDataset'
-data_root = '/data/data/cube_single_img'
+data_root = '/data/data/custom'
 class_names = [
     'Cube'
 ]
