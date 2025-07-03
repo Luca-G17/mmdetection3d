@@ -76,7 +76,7 @@ class ImVoxelNet(Base3DDetector):
             point_cloud_range (tuple): (x_min, y_min, z_min, x_max, y_max, z_max)
             filename (str): Output PLY file name
         """
-        volume = volume..detach().numpy()
+        volume = volume.detach().numpy()
         valid_mask = valid_mask[0].detach().numpy()  # Remove channel dim
 
         zyx_indices = np.stack(np.nonzero(valid_mask), axis=-1)  # [N, 3] in (z, y, x)
