@@ -184,12 +184,18 @@ class ImVoxelNet(Base3DDetector):
 
             fused_volumes.append(fused_volume)
             valid_preds.append(valid_pred)
+            for i, vol in enumerate(vols):
+                print(f"Volume {i} stats: min {vol.min().item()}, max {vol.max().item()}, mean {vol.mean().item()}")
+
+            print(f"Fused volume stats: min {fused_volume.min().item()}, max {fused_volume.max().item()}, mean {fused_volume.mean().item()}")
 
         self.save_pointcloud_from_voxels(
             fused_volumes[0],
             valid_preds[0],
             filename='first_scene.ply'
         )
+
+
 
         x = torch.stack(fused_volumes, dim=0)
 
