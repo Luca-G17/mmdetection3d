@@ -97,6 +97,7 @@ class ImVoxelNet(Base3DDetector):
                                                    device=img.device)[0][:, :3]
         volumes, valid_preds = [], []
         for feature, img_meta in zip(x, batch_img_metas):
+            print(img_meta)
             img_scale_factor = (
                 points.new_tensor(img_meta['scale_factor'][:2])
                 if 'scale_factor' in img_meta.keys() else 1)
