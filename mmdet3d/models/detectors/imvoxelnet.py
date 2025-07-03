@@ -65,7 +65,7 @@ class ImVoxelNet(Base3DDetector):
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
 
-    def save_pointcloud_from_voxels(volume, valid_mask, voxel_size=(1,1,1), point_cloud_range=(-10, -10, -10, 10, 10, 10), filename='scene.ply'):
+    def save_pointcloud_from_voxels(self, volume, valid_mask, voxel_size=(1,1,1), point_cloud_range=(-10, -10, -10, 10, 10, 10), filename='scene.ply'):
         """
         Save non-zero voxels as a 3D point cloud in PLY format.
 
@@ -183,7 +183,7 @@ class ImVoxelNet(Base3DDetector):
             fused_volumes.append(fused_volume)
             valid_preds.append(valid_pred)
 
-        save_pointcloud_from_voxels(
+        self.save_pointcloud_from_voxels(
             fused_volumes[0],
             valid_preds[0],
             voxel_size=self.voxel_size,
