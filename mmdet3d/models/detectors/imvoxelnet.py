@@ -108,8 +108,7 @@ class ImVoxelNet(Base3DDetector):
             img_crop_offset = (
                 points.new_tensor(img_meta['img_crop_offset'])
                 if 'img_crop_offset' in img_meta.keys() else 0)
-            proj_mat = points.new_tensor(
-                get_proj_mat_by_coord_type(img_meta, self.coord_type))
+            proj_mat = points.new_tensor(get_proj_mat_by_coord_type(img_meta, self.coord_type)[0])
             volume = point_sample(
                 img_meta,
                 img_features=feature[None, ...],
