@@ -85,9 +85,9 @@ class ImVoxelNet(Base3DDetector):
         """
         print(batch_inputs_dict.keys())
         img = batch_inputs_dict['img']
-        img = img.reshape([-1] + list(img.shape)[2:])
+       # img = img.reshape([-1] + list(img.shape)[2:])
 
-        print(len(img))
+        img = print(len(img))
         batch_img_metas = [
             data_samples.metainfo for data_samples in batch_data_samples
         ]
@@ -142,6 +142,7 @@ class ImVoxelNet(Base3DDetector):
         Returns:
             dict: A dictionary of loss components.
         """
+        print(batch_inputs_dict[0].shape)
         x, valid_preds = self.extract_feat(batch_inputs_dict,
                                            batch_data_samples)
         # For indoor datasets ImVoxelNet uses ImVoxelHead that handles
