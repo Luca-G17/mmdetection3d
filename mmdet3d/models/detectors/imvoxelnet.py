@@ -171,8 +171,8 @@ class ImVoxelNet(Base3DDetector):
                 all_volumes[b].append(volume.reshape(self.n_voxels[::-1] + [-1]).permute(3, 2, 1, 0))
                 all_valid_preds[b].append(~torch.all(volume == 0, dim=0, keepdim=True))
 
-        fused_volumes = all_volumes[:, 0]
-        valid_preds = all_valid_preds[:, 0]
+        fused_volumes = [vs[0] for vs in all_volumes]
+        valid_preds = [ps[0] for ps in all_valid_preds]
 
         # for vols, valids in zip(all_volumes, all_valid_preds):
         #     vols = torch.stack(vols, dim=0)        # [V, C, Z, Y, X]
