@@ -195,19 +195,25 @@ class ImVoxelNet(Base3DDetector):
         valid_preds = []
 
         for vols, preds in zip(all_volumes, all_valid_preds):
-            vols = torch.stack(vols, dim=0)      # [T, C, Z, Y, X]
-            preds = torch.stack(preds, dim=0)    # [T, 1, Z, Y, X]
+            vols = torch.stack(vols, dim=0)        # [T, C, Z, Y, X]
+            preds = torch.stack(preds, dim=0)      # [T, 1, Z, Y, X]
+            preds = preds.float()
 
-            masked_vols = vols * preds           # Zero out invalid voxels
+            masked_vols = vols * preds             # [T, C, Z, Y, X]
+            valid_count = preds.sum(dim=0)        # [1, Z, Y, X]
+            valid_count[valid_count == 0] = 1     # Avoid division by zero
 
-            fused_volume = masked_vols.sum(dim=0)  # [C, Z, Y, X]
-            valid_count = preds.sum(dim=0)         # [1, Z, Y, X]
-            valid_count[valid_count == 0] = 1      # Avoid division by zero
+            # Proper broadcasting for division
+            fused_volume = masked_vols.sum(dim=0) / valid_count.expand_as(masked_vols[0])
 
-            fused_volume = fused_volume / valid_count
+            # Final valid mask
+            final_valid_mask = valid_count > 0
+
+            # Zero out invalid voxels (important!)
+            fused_volume[:, ~final_valid_mask[0]] = 0
 
             fused_volumes.append(fused_volume)
-            valid_preds.append(valid_count > 0)    # Optional: final valid mask
+            valid_preds.append(final_valid_mask)
 
         print(batch_img_metas[b]["img_path"][0])
         print("")
