@@ -168,34 +168,29 @@ class ImVoxelNet(Base3DDetector):
                     img_shape=img_meta['img_shape'][:2],
                     aligned=False
                 )
-                volume_reshaped = volume.reshape(self.n_voxels[::-1] + [-1]).permute(3, 2, 1, 0)  # [C, Z, Y, X]
+                all_volumes[b].append(volume.reshape(self.n_voxels[::-1] + [-1]).permute(3, 2, 1, 0))
+                all_valid_preds[b].append(~torch.all(volume == 0, dim=0, keepdim=True))
 
-                # Valid if any feature channel is non-zero at that voxel
-                valid_mask = ~(volume_reshaped == 0).all(dim=0, keepdim=True)  # [1, Z, Y, X]
+        fused_volumes = all_volumes[:, 0]
+        valid_preds = all_valid_preds[:, 0]
 
-                all_volumes[b].append(volume_reshaped)
-                all_valid_preds[b].append(valid_mask)
+        # for vols, valids in zip(all_volumes, all_valid_preds):
+        #     vols = torch.stack(vols, dim=0)        # [V, C, Z, Y, X]
+        #     valids = torch.stack(valids, dim=0).float()  # [V, 1, Z, Y, X]
 
-        fused_volumes = []
-        valid_preds = []
+        #     valids_expand = valids.expand_as(vols)  # Broadcast to match feature channels
 
-        for vols, valids in zip(all_volumes, all_valid_preds):
-            vols = torch.stack(vols, dim=0)        # [V, C, Z, Y, X]
-            valids = torch.stack(valids, dim=0).float()  # [V, 1, Z, Y, X]
+        #     weighted_sum = (vols * valids_expand).sum(dim=0)  # sum weighted by valid mask
+        #     valid_sum = valids_expand.sum(dim=0) + 1e-6       # avoid division by zero
 
-            valids_expand = valids.expand_as(vols)  # Broadcast to match feature channels
+        #     fused_volume = weighted_sum / valid_sum           # weighted average
+        #     valid_pred = valid_sum > 0                         # valid if any view is valid
 
-            weighted_sum = (vols * valids_expand).sum(dim=0)  # sum weighted by valid mask
-            valid_sum = valids_expand.sum(dim=0) + 1e-6       # avoid division by zero
+        #     # Optional: zero out invalid voxels explicitly
+        #     fused_volume[:, ~valid_pred[0]] = 0
 
-            fused_volume = weighted_sum / valid_sum           # weighted average
-            valid_pred = valid_sum > 0                         # valid if any view is valid
-
-            # Optional: zero out invalid voxels explicitly
-            fused_volume[:, ~valid_pred[0]] = 0
-
-            fused_volumes.append(fused_volume)
-            valid_preds.append(valid_pred)
+        #     fused_volumes.append(fused_volume)
+        #     valid_preds.append(valid_pred)
 
         self.save_pointcloud_from_voxels(
             fused_volumes[0],
