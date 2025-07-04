@@ -191,26 +191,23 @@ class ImVoxelNet(Base3DDetector):
                 all_valid_preds[b].append(~torch.all(volume == 0, dim=0, keepdim=True))
                 all_volumes[b].append(volume)
 
-        fused_volumes = [vs[0] for vs in all_volumes]
-        valid_preds = [vp[0] for vp in all_valid_preds]
+        fused_volumes = []
+        valid_preds = []
 
-        # for vols, valids in zip(all_volumes, all_valid_preds):
-        #     vols = torch.stack(vols, dim=0)        # [V, C, Z, Y, X]
-        #     valids = torch.stack(valids, dim=0).float()  # [V, 1, Z, Y, X]
+        for vols, preds in zip(all_volumes, all_valid_preds):
+            vols = torch.stack(vols, dim=0)      # [T, C, Z, Y, X]
+            preds = torch.stack(preds, dim=0)    # [T, 1, Z, Y, X]
 
-        #     valids_expand = valids.expand_as(vols)  # Broadcast to match feature channels
+            masked_vols = vols * preds           # Zero out invalid voxels
 
-        #     weighted_sum = (vols * valids_expand).sum(dim=0)  # sum weighted by valid mask
-        #     valid_sum = valids_expand.sum(dim=0) + 1e-6       # avoid division by zero
+            fused_volume = masked_vols.sum(dim=0)  # [C, Z, Y, X]
+            valid_count = preds.sum(dim=0)         # [1, Z, Y, X]
+            valid_count[valid_count == 0] = 1      # Avoid division by zero
 
-        #     fused_volume = weighted_sum / valid_sum           # weighted average
-        #     valid_pred = valid_sum > 0                         # valid if any view is valid
+            fused_volume = fused_volume / valid_count
 
-        #     # Optional: zero out invalid voxels explicitly
-        #     fused_volume[:, ~valid_pred[0]] = 0
-
-        #     fused_volumes.append(fused_volume)
-        #     valid_preds.append(valid_pred)
+            fused_volumes.append(fused_volume)
+            valid_preds.append(valid_count > 0)    # Optional: final valid mask
 
         print(batch_img_metas[b]["img_path"][0])
         print("")
