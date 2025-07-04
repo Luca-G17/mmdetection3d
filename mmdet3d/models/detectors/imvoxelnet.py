@@ -171,7 +171,9 @@ class ImVoxelNet(Base3DDetector):
                 volume = volume.reshape(self.n_voxels[::-1] + [-1]).permute(3, 2, 1, 0)
                 nonzero_mask = (volume != 0).any(dim=0)  # shape: [Z, Y, X]
                 nonzero_count = nonzero_mask.sum().item()
-                print(f'Non-zero voxel count: {nonzero_count}')
+                total_voxels = nonzero_mask.numel()
+
+                print(f'Non-zero voxel count: {nonzero_count} / {total_voxels}')
                 all_valid_preds[b].append(~torch.all(volume == 0, dim=0, keepdim=True))
                 all_volumes[b].append(volume)
 
