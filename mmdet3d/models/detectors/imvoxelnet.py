@@ -96,8 +96,7 @@ class ImVoxelNet(Base3DDetector):
         valid_vals = mean_volume[valid_mask]
 
         vmin, vmax = valid_vals.min(), valid_vals.max()
-        print(vmin)
-        print(vmax)
+
         if vmin == vmax:
             print("Warning: Flat volume, all intensities are the same.")
             normalized = np.zeros_like(valid_vals)
@@ -115,8 +114,6 @@ class ImVoxelNet(Base3DDetector):
         pcd.colors = o3d.utility.Vector3dVector(colors)  # Grayscale
 
         o3d.io.write_point_cloud(filename, pcd)
-        print(f"Saved point cloud to {filename}")
-
 
     def extract_feat(self, batch_inputs_dict: dict,
                      batch_data_samples: SampleList):
@@ -183,11 +180,6 @@ class ImVoxelNet(Base3DDetector):
                     aligned=False
                 )
                 volume = volume.reshape(self.n_voxels[::-1] + [-1]).permute(3, 2, 1, 0)
-                # nonzero_mask = (volume != 0).any(dim=0)  # shape: [Z, Y, X]
-                # nonzero_count = nonzero_mask.sum().item()
-                # total_voxels = nonzero_mask.numel()
-
-                # print(f'Non-zero voxel count: {nonzero_count} / {total_voxels}')
                 all_valid_preds[b].append(~torch.all(volume == 0, dim=0, keepdim=True))
                 all_volumes[b].append(volume)
 
@@ -215,16 +207,11 @@ class ImVoxelNet(Base3DDetector):
             fused_volumes.append(fused_volume)
             valid_preds.append(final_valid_mask)
 
-        print(batch_img_metas[b]["img_path"][0])
-        print("")
         self.save_pointcloud_from_voxels(
             fused_volumes[0],
             valid_preds[0],
             filename='first_scene.ply'
         )
-
-
-
         x = torch.stack(fused_volumes, dim=0)
 
         x = self.neck_3d(x)
