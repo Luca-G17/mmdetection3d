@@ -246,7 +246,7 @@ class LoadImageFromFileMono3D(LoadImageFromFile):
         if 'CAM2' in results['images']:
             filename = results['images']['CAM2']['img_path']
             results['cam2img'] = results['images']['CAM2']['cam2img']
-        elif len(list(results['images'].keys())) == 1:
+        elif len(list(results['images'].keys())) == 1 or True:
             camera_type = list(results['images'].keys())[0]
             filename = results['images'][camera_type]['img_path']
             results['cam2img'] = results['images'][camera_type]['cam2img']

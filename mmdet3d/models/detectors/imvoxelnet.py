@@ -80,7 +80,6 @@ class ImVoxelNet(Base3DDetector):
         valid_mask = valid_mask[0].cpu().detach().numpy()  # Remove channel dim
 
         zyx_indices = np.stack(np.nonzero(valid_mask), axis=-1)  # [N, 3] in (z, y, x)
-        print(zyx_indices.shape)
         if len(zyx_indices) == 0:
             print("No valid points to save.")
             return
