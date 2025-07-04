@@ -188,26 +188,26 @@ class ImVoxelNet(Base3DDetector):
                 all_valid_preds[b].append(~torch.all(volume == 0, dim=0, keepdim=True))
                 all_volumes[b].append(volume)
 
-        fused_volumes = [vs[0] for vs in all_volumes]
-        valid_preds = [ps[0] for ps in all_valid_preds]
+        fused_volumes = []
+        valid_preds = []
 
-        # for vols, valids in zip(all_volumes, all_valid_preds):
-        #     vols = torch.stack(vols, dim=0)        # [V, C, Z, Y, X]
-        #     valids = torch.stack(valids, dim=0).float()  # [V, 1, Z, Y, X]
+        for vols, valids in zip(all_volumes, all_valid_preds):
+            vols = torch.stack(vols, dim=0)        # [V, C, Z, Y, X]
+            valids = torch.stack(valids, dim=0).float()  # [V, 1, Z, Y, X]
 
-        #     valids_expand = valids.expand_as(vols)  # Broadcast to match feature channels
+            valids_expand = valids.expand_as(vols)  # Broadcast to match feature channels
 
-        #     weighted_sum = (vols * valids_expand).sum(dim=0)  # sum weighted by valid mask
-        #     valid_sum = valids_expand.sum(dim=0) + 1e-6       # avoid division by zero
+            weighted_sum = (vols * valids_expand).sum(dim=0)  # sum weighted by valid mask
+            valid_sum = valids_expand.sum(dim=0) + 1e-6       # avoid division by zero
 
-        #     fused_volume = weighted_sum / valid_sum           # weighted average
-        #     valid_pred = valid_sum > 0                         # valid if any view is valid
+            fused_volume = weighted_sum / valid_sum           # weighted average
+            valid_pred = valid_sum > 0                         # valid if any view is valid
 
-        #     # Optional: zero out invalid voxels explicitly
-        #     fused_volume[:, ~valid_pred[0]] = 0
+            # Optional: zero out invalid voxels explicitly
+            fused_volume[:, ~valid_pred[0]] = 0
 
-        #     fused_volumes.append(fused_volume)
-        #     valid_preds.append(valid_pred)
+            fused_volumes.append(fused_volume)
+            valid_preds.append(valid_pred)
 
         print(batch_img_metas[b]["img_path"][0])
         print("")
