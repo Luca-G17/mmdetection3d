@@ -175,9 +175,6 @@ class ImVoxelNet(Base3DDetector):
         fused_volumes = [vs[0] for vs in all_volumes]
         valid_preds = [ps[0] for ps in all_valid_preds]
 
-        num_valid_voxels = valid_preds[0].sum().item()
-
-        print("Number of valid voxels:", num_valid_voxels)
         # for vols, valids in zip(all_volumes, all_valid_preds):
         #     vols = torch.stack(vols, dim=0)        # [V, C, Z, Y, X]
         #     valids = torch.stack(valids, dim=0).float()  # [V, 1, Z, Y, X]
@@ -196,11 +193,11 @@ class ImVoxelNet(Base3DDetector):
         #     fused_volumes.append(fused_volume)
         #     valid_preds.append(valid_pred)
 
-        self.save_pointcloud_from_voxels(
-            fused_volumes[0],
-            valid_preds[0],
-            filename='first_scene.ply'
-        )
+        # self.save_pointcloud_from_voxels(
+        #     fused_volumes[0],
+        #     valid_preds[0],
+        #     filename='first_scene.ply'
+        # )
 
 
 
