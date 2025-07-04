@@ -96,6 +96,8 @@ class ImVoxelNet(Base3DDetector):
         valid_vals = mean_volume[valid_mask]
 
         vmin, vmax = valid_vals.min(), valid_vals.max()
+        print(vmin)
+        print(vmax)
         if vmin == vmax:
             print("Warning: Flat volume, all intensities are the same.")
             normalized = np.zeros_like(valid_vals)
