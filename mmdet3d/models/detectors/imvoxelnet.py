@@ -180,11 +180,11 @@ class ImVoxelNet(Base3DDetector):
                     aligned=False
                 )
                 volume = volume.reshape(self.n_voxels[::-1] + [-1]).permute(3, 2, 1, 0)
-                nonzero_mask = (volume != 0).any(dim=0)  # shape: [Z, Y, X]
-                nonzero_count = nonzero_mask.sum().item()
-                total_voxels = nonzero_mask.numel()
+                # nonzero_mask = (volume != 0).any(dim=0)  # shape: [Z, Y, X]
+                # nonzero_count = nonzero_mask.sum().item()
+                # total_voxels = nonzero_mask.numel()
 
-                print(f'Non-zero voxel count: {nonzero_count} / {total_voxels}')
+                # print(f'Non-zero voxel count: {nonzero_count} / {total_voxels}')
                 all_valid_preds[b].append(~torch.all(volume == 0, dim=0, keepdim=True))
                 all_volumes[b].append(volume)
 
@@ -209,6 +209,8 @@ class ImVoxelNet(Base3DDetector):
         #     fused_volumes.append(fused_volume)
         #     valid_preds.append(valid_pred)
 
+        print(batch_img_metas[b].keys())
+        print("")
         self.save_pointcloud_from_voxels(
             fused_volumes[0],
             valid_preds[0],
