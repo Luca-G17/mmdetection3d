@@ -207,11 +207,11 @@ class ImVoxelNet(Base3DDetector):
         #     fused_volumes.append(fused_volume)
         #     valid_preds.append(valid_pred)
 
-        # self.save_pointcloud_from_voxels(
-        #     fused_volumes[0],
-        #     valid_preds[0],
-        #     filename='first_scene.ply'
-        # )
+        self.save_pointcloud_from_voxels(
+            fused_volumes[0],
+            valid_preds[0],
+            filename='first_scene.ply'
+        )
 
 
 
