@@ -196,14 +196,6 @@ class ImVoxelNet(Base3DDetector):
         #     fused_volumes.append(fused_volume)
         #     valid_preds.append(valid_pred)
 
-        valid_counts_per_sample = valid_preds.sum(dim=(1, 2, 3, 4))  # Shape: (N,)
-
-        # Count total valid voxels across the batch
-        total_valid_voxels = valid_counts_per_sample.sum()
-
-        print("Valid voxels per sample:", valid_counts_per_sample)
-        print("Total valid voxels:", total_valid_voxels)
-
         self.save_pointcloud_from_voxels(
             fused_volumes[0],
             valid_preds[0],
