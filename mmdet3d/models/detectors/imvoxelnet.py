@@ -209,7 +209,7 @@ class ImVoxelNet(Base3DDetector):
         #     fused_volumes.append(fused_volume)
         #     valid_preds.append(valid_pred)
 
-        print(batch_img_metas[b].keys())
+        print(batch_img_metas[b]["img_path"][0])
         print("")
         self.save_pointcloud_from_voxels(
             fused_volumes[0],
