@@ -104,12 +104,15 @@ class ImVoxelNet(Base3DDetector):
         else:
             normalized = (valid_vals - vmin) / (vmax - vmin)
 
-        intensity = (normalized * 255).astype(np.uint8)
-        
+        colors = np.stack([
+            1 - normalized,  # Red channel decreases
+            normalized,      # Green channel increases
+            np.zeros_like(normalized)  # Blue channel stays zero
+        ], axis=-1)
         # Create Open3D point cloud
         pcd = o3d.geometry.PointCloud()
         pcd.points = o3d.utility.Vector3dVector(xyz_points)
-        pcd.colors = o3d.utility.Vector3dVector(np.stack([intensity]*3, axis=-1) / 255.0)  # Grayscale
+        pcd.colors = o3d.utility.Vector3dVector(colors)  # Grayscale
 
         o3d.io.write_point_cloud(filename, pcd)
         print(f"Saved point cloud to {filename}")
