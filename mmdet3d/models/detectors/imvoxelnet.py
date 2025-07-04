@@ -168,6 +168,7 @@ class ImVoxelNet(Base3DDetector):
                     img_shape=img_meta['img_shape'][:2],
                     aligned=False
                 )
+                print(volume)
                 volume = volume.reshape(self.n_voxels[::-1] + [-1]).permute(3, 2, 1, 0)
                 all_valid_preds[b].append(~torch.all(volume == 0, dim=0, keepdim=True))
                 all_volumes[b].append(volume)
