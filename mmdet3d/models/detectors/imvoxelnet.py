@@ -92,8 +92,17 @@ class ImVoxelNet(Base3DDetector):
         xyz_points = zyx_indices[:, [2, 1, 0]] * voxel_size + voxel_origin  # Reorder to (x, y, z)
 
         # Optional: get color/intensity from volume[0] or mean across C channels
-        intensity = volume.mean(0)[valid_mask] * 255  # [N]
-        intensity = np.clip(intensity, 0, 255).astype(np.uint8)
+        mean_volume = volume.mean(0)
+        valid_vals = mean_volume[valid_mask]
+
+        vmin, vmax = valid_vals.min(), valid_vals.max()
+        if vmin == vmax:
+            print("Warning: Flat volume, all intensities are the same.")
+            normalized = np.zeros_like(valid_vals)
+        else:
+            normalized = (valid_vals - vmin) / (vmax - vmin)
+
+        intensity = (normalized * 255).astype(np.uint8)
         
         # Create Open3D point cloud
         pcd = o3d.geometry.PointCloud()
