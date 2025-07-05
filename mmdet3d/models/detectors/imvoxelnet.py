@@ -107,6 +107,12 @@ class ImVoxelNet(Base3DDetector):
             normalized,      # Green channel increases
             np.zeros_like(normalized)  # Blue channel stays zero
         ], axis=-1)
+
+        keep_mask = normalized < 1.0
+
+        xyz_points = xyz_points[keep_mask]
+        colors = colors[keep_mask]
+
         # Create Open3D point cloud
         pcd = o3d.geometry.PointCloud()
         pcd.points = o3d.utility.Vector3dVector(xyz_points)
