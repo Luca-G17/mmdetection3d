@@ -108,7 +108,7 @@ class ImVoxelNet(Base3DDetector):
             np.zeros_like(normalized)  # Blue channel stays zero
         ], axis=-1)
 
-        keep_mask = normalized < 1.0 and normalized > 0.0
+        keep_mask = (normalized < 1.0) & (normalized > 0.0)
 
         xyz_points = xyz_points[keep_mask]
         colors = colors[keep_mask]
