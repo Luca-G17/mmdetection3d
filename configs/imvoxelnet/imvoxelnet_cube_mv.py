@@ -39,7 +39,7 @@ model = dict(
         pts_center_threshold=1,
         prior_generator=prior_generator),
     prior_generator=prior_generator,
-    n_voxels=[64, 64, 32],
+    n_voxels=[40, 40, 40],
     coord_type='CAMERA',
     train_cfg=dict(),
     test_cfg=dict(nms_pre=1000, iou_thr=.25, score_thr=.01))
