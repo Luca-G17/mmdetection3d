@@ -830,7 +830,6 @@ def update_custom_visual_infos(pkl_path, out_dir):
     metainfo['box_type_3d'] = 'camera'
 
     converted_data_info = dict(metainfo=metainfo, data_list=converted_list)
-    print(converted_data_info)
     mmengine.dump(converted_data_info, out_path, 'pkl')
 
 def update_lyft_infos(pkl_path, out_dir):
