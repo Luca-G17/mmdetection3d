@@ -1,3 +1,4 @@
+data_root = '/data/data/4_test'
 _base_ = [
     '../_base_/schedules/mmdet-schedule-1x.py', '../_base_/default_runtime.py'
 ]
@@ -49,7 +50,6 @@ model = dict(
     test_cfg=dict(nms_pre=1000, iou_thr=.25, score_thr=.01))
 
 dataset_type = 'CustomVisualDataset'
-data_root = '/data/data/1000'
 class_names = [
     'Cube'
 ]
