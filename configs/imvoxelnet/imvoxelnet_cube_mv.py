@@ -5,7 +5,7 @@ _base_ = [
 ]
 prior_generator = dict(
     type='AlignedAnchor3DRangeGenerator',
-    ranges=[[-5, -5, -20, 5, 5, 20]],
+    ranges=[[-5, -5, -5, 5, 5, 5]],
     rotations=[.0])
 model = dict(
     type='ImVoxelNet',
@@ -39,7 +39,7 @@ model = dict(
         pts_center_threshold=1,
         prior_generator=prior_generator),
     prior_generator=prior_generator,
-    n_voxels=[40, 40, 16],
+    n_voxels=[80, 80, 32],
     coord_type='CAMERA',
     train_cfg=dict(),
     test_cfg=dict(nms_pre=1000, iou_thr=.25, score_thr=.01))
