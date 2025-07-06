@@ -39,7 +39,7 @@ model = dict(
         pts_center_threshold=1,
         prior_generator=prior_generator),
     prior_generator=prior_generator,
-    n_voxels=[40, 40, 40],
+    n_voxels=[64, 64, 64],
     coord_type='CAMERA',
     train_cfg=dict(),
     test_cfg=dict(nms_pre=1000, iou_thr=.25, score_thr=.01))
@@ -65,7 +65,7 @@ test_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=4,
+    batch_size=2,
     num_workers=1,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
