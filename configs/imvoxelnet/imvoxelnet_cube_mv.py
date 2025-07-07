@@ -1,4 +1,4 @@
-data_root = '/data/data/1000_test'
+data_root = '/data/data/1000_3'
 
 _base_ = [
     '../_base_/schedules/mmdet-schedule-1x.py', '../_base_/default_runtime.py'
