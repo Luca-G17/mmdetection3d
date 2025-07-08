@@ -49,6 +49,7 @@ class CustomVisualData(object):
         cams = []
         for i in range(n_cams):
             cams.append(f'CAM{i}')
+        print(n_cams)
 
     def __len__(self):
         return len(self.sample_id_list)
