@@ -49,7 +49,7 @@ class CustomVisualData(object):
         cams = []
         for i in range(n_cams+1):
             cams.append(f'CAM{i}')
-
+        
     def __len__(self):
         return len(self.sample_id_list)
     
@@ -96,6 +96,7 @@ class CustomVisualData(object):
 
             calibs = self.get_calibration(sample_idx)
             print(self.get_n_cams())
+            print(self.cams)
             for i in range(1, self.get_n_cams() + 1):
                 cam_path = osp.join(self.image_dir, f'images_{i}')
                 image_path = osp.join(cam_path, f'{sample_idx:06d}.png')
