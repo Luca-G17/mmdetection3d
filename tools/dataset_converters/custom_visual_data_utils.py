@@ -24,7 +24,7 @@ class CustomVisualInstance(object):
 
 class CustomVisualData(object):
 
-    def __init__(self, root_path, split='train', cams=["CAM0", "CAM1"]):
+    def __init__(self, root_path, split='train'):
         self.root_dir = root_path
         self.split = split
         self.cams = cams
@@ -47,6 +47,7 @@ class CustomVisualData(object):
         lines = [line.rstrip() for line in open(calib_filepath)]
         n_cams = int(len(lines) / 2)
         cams = []
+        print(n_cams)
         for i in range(n_cams+1):
             cams.append(f'CAM{i}')
         
@@ -95,8 +96,6 @@ class CustomVisualData(object):
             
 
             calibs = self.get_calibration(sample_idx)
-            print(self.get_n_cams())
-            print(self.cams)
             for i in range(1, self.get_n_cams() + 1):
                 cam_path = osp.join(self.image_dir, f'images_{i}')
                 image_path = osp.join(cam_path, f'{sample_idx:06d}.png')
