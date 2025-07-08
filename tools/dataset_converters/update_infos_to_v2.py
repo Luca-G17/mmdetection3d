@@ -775,7 +775,7 @@ def update_custom_visual_infos(pkl_path, out_dir):
         #temp_data_info['lidar_points']['lidar_path'] = Path(ori_info_dict['pts_path']).name
 
         n_cams = len(ori_info_dict['images'].keys())
-
+        print(n_cams)
         for i in range(n_cams):
             cam = f'CAM{i}'
             calib = ori_info_dict['calib'][cam]
