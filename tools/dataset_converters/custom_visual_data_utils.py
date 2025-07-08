@@ -95,6 +95,7 @@ class CustomVisualData(object):
             
 
             calibs = self.get_calibration(sample_idx)
+            print(self.get_n_cams())
             for i in range(1, self.get_n_cams() + 1):
                 cam_path = osp.join(self.image_dir, f'images_{i}')
                 image_path = osp.join(cam_path, f'{sample_idx:06d}.png')
