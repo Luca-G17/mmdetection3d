@@ -45,11 +45,11 @@ class CustomVisualData(object):
         self.label_dir = osp.join(self.root_dir, 'labels')
         calib_filepath = osp.join(self.calib_dir, f'000001.txt')
         lines = [line.rstrip() for line in open(calib_filepath)]
-        n_cams = len(lines) / 2
+        n_cams = int(len(lines) / 2)
         cams = []
         for i in range(len(n_cams)):
             cams.append(f'CAM{i}')
-            
+
     def __len__(self):
         return len(self.sample_id_list)
     
