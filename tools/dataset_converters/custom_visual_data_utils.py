@@ -46,7 +46,7 @@ class CustomVisualData(object):
         lines = [line.rstrip() for line in open(calib_filepath)]
         n_cams = int(len(lines) / 2)
         self.cams = []
-        for i in range(n_cams+1):
+        for i in range(n_cams):
             self.cams.append(f'CAM{i}')
         
     def __len__(self):
