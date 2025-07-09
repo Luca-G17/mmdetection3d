@@ -24,7 +24,7 @@ class CustomVisualDataset(Det3DDataset):
                  data_root: str,
                  ann_file: str,
                  metainfo: Optional[dict] = None,
-                 data_prefix: dict = dict(img='images', CAM0='images/images_1', CAM1='images/images_2', CAM2='images/images_2'),
+                 data_prefix: dict = dict(img='images'),
                  pipeline: List[Union[dict, Callable]] = [],
                  default_cam_key: str = 'CAM0',
                  modality: dict = dict(use_camera=True, use_lidar=False),
@@ -66,10 +66,7 @@ class CustomVisualDataset(Det3DDataset):
         if self.modality['use_camera']:
             for cam_id, img_info in info['images'].items():
                 if 'img_path' in img_info:
-                    if cam_id in self.data_prefix:
-                        cam_prefix = self.data_prefix[cam_id]
-                    else:
-                        cam_prefix = self.data_prefix.get('img', '')
+                    cam_prefix = f"{self.data_prefix['img']}/images_{cam_id[-1]}"
                     img_info['img_path'] = osp.join(cam_prefix, img_info['img_path'])
                     print(img_info['img_path'])
 
