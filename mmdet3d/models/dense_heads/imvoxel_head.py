@@ -368,13 +368,10 @@ class ImVoxelHead(BaseModule):
         """
         points = self._get_points(center_preds)
         mlvl_bboxes, mlvl_scores = [], []
-        for center_pred, bbox_pred, cls_pred, valid_pred, point in zip(
-                center_preds, bbox_preds, cls_preds, valid_preds, points):
+        for center_pred, bbox_pred, cls_pred, valid_pred, point in zip(center_preds, bbox_preds, cls_preds, valid_preds, points):
             center_pred = center_pred.permute(1, 2, 3, 0).reshape(-1, 1)
-            bbox_pred = bbox_pred.permute(1, 2, 3,
-                                          0).reshape(-1, bbox_pred.shape[0])
-            cls_pred = cls_pred.permute(1, 2, 3,
-                                        0).reshape(-1, cls_pred.shape[0])
+            bbox_pred = bbox_pred.permute(1, 2, 3, 0).reshape(-1, bbox_pred.shape[0])
+            cls_pred = cls_pred.permute(1, 2, 3,0).reshape(-1, cls_pred.shape[0])
             valid_pred = valid_pred.permute(1, 2, 3, 0).reshape(-1, 1)
 
             scores = cls_pred.sigmoid() * center_pred.sigmoid() * valid_pred
