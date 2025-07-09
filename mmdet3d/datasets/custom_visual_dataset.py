@@ -66,7 +66,7 @@ class CustomVisualDataset(Det3DDataset):
         if self.modality['use_camera']:
             for cam_id, img_info in info['images'].items():
                 if 'img_path' in img_info:
-                    cam_prefix = f"{self.data_prefix['img']}/images_{cam_id[-1]}"
+                    cam_prefix = f"{self.data_prefix['img']}/images_{int(cam_id[-1]) + 1}"
                     img_info['img_path'] = osp.join(cam_prefix, img_info['img_path'])
                     print(img_info['img_path'])
 
