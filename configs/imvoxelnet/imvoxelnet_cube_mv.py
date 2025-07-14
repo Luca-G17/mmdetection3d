@@ -32,7 +32,7 @@ model = dict(
     bbox_head=dict(
         type='ImVoxelHead',
         n_classes=4,
-        n_levels=3,
+        n_levels=4,
         n_channels=64,
         n_reg_outs=7,
         pts_assign_threshold=3,
@@ -42,7 +42,7 @@ model = dict(
     n_voxels=[40, 40, 40],
     coord_type='CAMERA',
     train_cfg=dict(),
-    test_cfg=dict(nms_pre=1000, iou_thr=.25, score_thr=.01))
+    test_cfg=dict(nms_pre=3000, iou_thr=.25, score_thr=.01))
 
 dataset_type = 'CustomVisualDataset'
 class_names = [
