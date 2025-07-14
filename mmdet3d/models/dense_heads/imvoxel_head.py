@@ -667,6 +667,7 @@ class ImVoxelHead(BaseModule):
 
             nms_ids = nms_function(class_bboxes, class_scores,
                                    self.test_cfg.iou_thr)
+            nms_ids = range(len(class_scores))
             nms_bboxes.append(class_bboxes[nms_ids])
             nms_scores.append(class_scores[nms_ids])
             nms_labels.append(
