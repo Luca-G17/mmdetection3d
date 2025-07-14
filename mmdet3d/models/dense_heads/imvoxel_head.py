@@ -377,6 +377,8 @@ class ImVoxelHead(BaseModule):
             scores = cls_pred.sigmoid() * center_pred.sigmoid() * valid_pred
             max_scores, _ = scores.max(dim=1)
 
+
+            print(len(scores))
             if len(scores) > self.test_cfg.nms_pre > 0:
                 _, ids = max_scores.topk(self.test_cfg.nms_pre)
                 bbox_pred = bbox_pred[ids]
