@@ -152,8 +152,7 @@ class ImVoxelNet(Base3DDetector):
         all_valid_preds = [[] for _ in range(batch_size)]
 
         # iterate over each view (within the batch), each iteration yields 4 sets of points
-        print(len(imgs[0]))
-        for i in range(len(imgs[0])):
+        for i in range(n_views):
             img = imgs[:, i]
             img = img[:, :3].float()
             x = self.backbone(img)
