@@ -2,6 +2,7 @@
 from typing import List, Tuple, Union
 
 import torch
+import torch.nn.functional as F
 from mmengine.structures import InstanceData
 
 from mmdet3d.models.detectors import Base3DDetector
@@ -154,11 +155,15 @@ class ImVoxelNet(Base3DDetector):
         for i in range(len(imgs[0])):
             img = imgs[:, i]
             img = img[:, :3].float()
+            print(img.shape)
             x = self.backbone(img)
             x = self.neck(x)[0]
             points = self.prior_generator.grid_anchors([self.n_voxels[::-1]], device=img.device)[0][:, :3]
         
             for b in range(batch_size):
+                sharpen_filter = SharpeningFilter(x[b].shape[0]).to(x.device)
+                sharpend_feat = sharpen_filter(x[b][None, ...])
+
                 img_meta = batch_img_metas[b]
 
                 scale = img_meta.get('scale_factor', 1)
@@ -173,7 +178,7 @@ class ImVoxelNet(Base3DDetector):
                 proj_mat = points.new_tensor(get_proj_mat_by_coord_type(img_meta, self.coord_type)[i])
                 volume = point_sample(
                     img_meta,
-                    img_features=x[b][None, ...],
+                    img_features=sharpend_feat,
                     points=points,
                     proj_mat=points.new_tensor(proj_mat),
                     coord_type=self.coord_type,
@@ -201,7 +206,7 @@ class ImVoxelNet(Base3DDetector):
             valid_count[valid_count == 0] = 1     # Avoid division by zero
 
             # Proper broadcasting for division
-            fused_volume = masked_vols.sum(dim=0) / valid_count.expand_as(masked_vols[0])
+            fused_volume = masked_vols.sum(dim=0) / len(vols)
 
             # Final valid mask
             final_valid_mask = valid_count > 0
@@ -377,3 +382,17 @@ class ImVoxelNet(Base3DDetector):
             data_sample.pred_instances_3d = data_instances_3d[i]
             data_sample.pred_instances = data_instances_2d[i]
         return data_samples
+
+class SharpeningFilter(torch.nn.Module):
+    def __init__(self, channels):
+        super().__init__()
+        kernel = torch.tensor([
+            [0, -1, 0],
+            [-1, 5, -1],
+            [0, -1, 0]
+        ], dtype=torch.float32).view(1, 1, 3, 3).repeat(channels, 1, 1, 1)
+        self.register_buffer('kernel', kernel)
+        self.groups = channels
+    
+    def forward(self, x):
+        return F.conv2d(x, self.kernel, padding=1, groups=self.groups)
