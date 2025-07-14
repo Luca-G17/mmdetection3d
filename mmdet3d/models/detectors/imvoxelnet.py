@@ -155,7 +155,6 @@ class ImVoxelNet(Base3DDetector):
         for i in range(len(imgs[0])):
             img = imgs[:, i]
             img = img[:, :3].float()
-            print(img.shape)
             x = self.backbone(img)
             x = self.neck(x)[0]
             points = self.prior_generator.grid_anchors([self.n_voxels[::-1]], device=img.device)[0][:, :3]
