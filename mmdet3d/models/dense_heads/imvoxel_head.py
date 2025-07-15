@@ -387,11 +387,12 @@ class ImVoxelHead(BaseModule):
                 point = point[ids]
 
             bboxes = self._bbox_pred_to_bbox(point, bbox_pred)
+            print(len(bboxes))
             mlvl_bboxes.append(bboxes)
             mlvl_scores.append(scores)
+
         bboxes = torch.cat(mlvl_bboxes)
         scores = torch.cat(mlvl_scores)
-        print(scores.shape)
         bboxes, scores, labels = self._single_scene_multiclass_nms(
             bboxes, scores, input_meta)
 
