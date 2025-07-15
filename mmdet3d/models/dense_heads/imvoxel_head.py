@@ -713,10 +713,8 @@ class ImVoxelHead(BaseModule):
     
     def pairwise_scale_difference(boxes):
         n_boxes = len(boxes)
-        for i in range(100):
-            print(f"Box {i}: {type(boxes[i])}")
-
-        sorted_boxes = sorted(boxes, key=lambda x: x.volume[0], reverse=True)
+        volumes = boxes.volume()
+        sorted_boxes = sorted(zip(boxes.tensor.cpu().numpy(), volumes), key=lambda x[1], reverse=True)
         scales = np.zeros((n_boxes, n_boxes))
         for i in range(n_boxes):
             for f in range(i, n_boxes):
