@@ -201,16 +201,12 @@ class ImVoxelNet(Base3DDetector):
             preds = preds.float()
 
             masked_vols = vols * preds             # [T, C, Z, Y, X]
-            valid_count = preds.sum(dim=0)        # [1, Z, Y, X]
-            valid_count[valid_count == 0] = 1     # Avoid division by zero
+            valid_count = preds.sum(dim=0)         # [1, Z, Y, X]
+            valid_count[valid_count == 0] = 1 
 
-            # Proper broadcasting for division
-            fused_volume = masked_vols.sum(dim=0) / len(vols)
+            fused_volume = masked_vols.sum(dim=0) / n_views
 
-            # Final valid mask
             final_valid_mask = valid_count > 0
-
-            # Zero out invalid voxels (important!)
             fused_volume[:, ~final_valid_mask[0]] = 0
 
             fused_volumes.append(fused_volume)
@@ -222,7 +218,6 @@ class ImVoxelNet(Base3DDetector):
             filename='first_scene.ply'
         )
         x = torch.stack(fused_volumes, dim=0)
-
         x = self.neck_3d(x)
 
         return x, torch.stack(valid_preds).float()
