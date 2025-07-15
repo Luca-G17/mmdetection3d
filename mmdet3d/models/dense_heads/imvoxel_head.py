@@ -698,17 +698,19 @@ class ImVoxelHead(BaseModule):
         sorted_box_instances = BaseInstance3DBoxes(tensor=sorted_boxes)
 
         ious = BaseInstance3DBoxes.overlaps(sorted_box_instances, sorted_box_instances)
-        ious = ious.cpu().numpy() - np.eye(len(sorted_boxes))
-        keep = np.ones(len(sorted_boxes), dtype=bool)
+        ious.fill_diagonal_(0)
+        keep = []
 
+        suppressed = torch.zeros(len(sorted_boxes), dtype=torch.bool, device=class_boxes.device)
         scales = ImVoxelHead.pairwise_scale_difference(sorted_box_instances)
 
         for i, (iou, scale_ratio) in enumerate(zip(ious, scales)):
-            if not keep[i]:
+            if suppressed[i]:
                 continue
-            
+
+            keep.append(i)
             mask = (iou * scale_ratio > iou_thr)
-            keep = keep & ~mask
+            suppressed |= mask
             
         return sorted_indices[keep]
     
