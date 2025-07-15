@@ -669,6 +669,7 @@ class ImVoxelHead(BaseModule):
             #nms_ids = nms_function(class_bboxes, class_scores,self.test_cfg.iou_thr)
             nms_ids = ImVoxelHead.scale_aware_nms(class_bboxes, class_scores, self.test_cfg.iou_thr)
             count = sum(score > self.test_cfg.score_thr for score in class_scores)
+            print(count)
             nms_bboxes.append(class_bboxes[nms_ids])
             nms_scores.append(class_scores[nms_ids])
             nms_labels.append(bboxes.new_full(class_scores[nms_ids].shape, i, dtype=torch.long))
