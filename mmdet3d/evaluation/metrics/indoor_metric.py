@@ -56,7 +56,7 @@ class IndoorMetric(BaseMetric):
                 else:
                     cpu_pred_3d[k] = v
 
-            print(cpu_pred_3d[0])
+            print(cpu_pred_3d)
             self.results.append((eval_ann_info, cpu_pred_3d))
 
     def compute_metrics(self, results: list) -> Dict[str, float]:
