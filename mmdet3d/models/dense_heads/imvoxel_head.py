@@ -688,7 +688,6 @@ class ImVoxelHead(BaseModule):
             box_dim = 6
             nms_bboxes = nms_bboxes[:, :box_dim]
 
-        print("DONE")
         return nms_bboxes, nms_scores, nms_labels
 
 
