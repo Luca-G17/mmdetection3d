@@ -693,7 +693,7 @@ class ImVoxelHead(BaseModule):
 
 
     def scale_aware_nms(class_boxes, class_scores, iou_thr):
-        sorted_indices = np.argsort(class_scores)[::-1]
+        sorted_indices = np.argsort(class_scores.cpu().numpy())[::-1]
         sorted_boxes = class_boxes[sorted_indices]
         sorted_boxes = BaseInstance3DBoxes(tensor=sorted_boxes)
 
