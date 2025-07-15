@@ -17,6 +17,8 @@ from mmdet3d.structures.det3d_data_sample import SampleList
 from mmdet3d.utils.typing_utils import (ConfigType, InstanceList,
                                         OptConfigType, OptInstanceList)
 
+from mmdet3d.structures.bbox_3d.base_box3d import (overlaps, BaseInstance3DBoxes)
+import numpy as np
 
 @MODELS.register_module()
 class ImVoxelHead(BaseModule):
@@ -665,16 +667,12 @@ class ImVoxelHead(BaseModule):
                     dim=1)
                 nms_function = nms3d_normal
 
-            nms_ids = nms_function(class_bboxes, class_scores,
-                                   self.test_cfg.iou_thr)
-            # nms_ids = range(len(class_bboxes))
-            print(len(class_bboxes))
-            print(class_bboxes[0].shape)
+            #nms_ids = nms_function(class_bboxes, class_scores,self.test_cfg.iou_thr)
+            nms_ids = ImVoxelHead.scale_aware_nms(class_bboxes, class_scores, self.test_cfg.iou_thr)
+
             nms_bboxes.append(class_bboxes[nms_ids])
             nms_scores.append(class_scores[nms_ids])
-            nms_labels.append(
-                bboxes.new_full(
-                    class_scores[nms_ids].shape, i, dtype=torch.long))
+            nms_labels.append(bboxes.new_full(class_scores[nms_ids].shape, i, dtype=torch.long))
 
         if len(nms_bboxes):
             nms_bboxes = torch.cat(nms_bboxes, dim=0)
@@ -695,4 +693,34 @@ class ImVoxelHead(BaseModule):
 
 
     def scale_aware_nms(class_boxes, class_scores, iou_thr):
-        print("TODO")
+        sorted_indices = np.argsort(class_scores)[::-1]
+        sorted_boxes = class_boxes[sorted_indices]
+        sorted_boxes = BaseInstance3DBoxes(tensor=sorted_boxes)
+
+        ious = overlaps(sorted_boxes, sorted_boxes)
+        ious = ious.numpy() - np.eye(len(sorted_boxes))
+        keep = np.ones(len(sorted_boxes), dtype=bool)
+
+        scales = ImVoxelHead.pairwise_scale_difference(sorted_boxes)
+
+        for i, (iou, scale_ratio) in enumerate(zip(ious, scales)):
+            if not keep[i]:
+                continue
+            
+            mask = (iou * scale_ratio > iou_thr)
+            keep = keep & ~mask
+            
+        return sorted_indices[keep]
+    
+    def pairwise_scale_difference(boxes):
+        n_boxes = len(boxes)
+        sorted_boxes = sorted(boxes, key=lambda x: x.volume(), reverse=True)
+        scales = np.zeros((n_boxes, n_boxes))
+        for i in range(n_boxes):
+            for f in range(i, n_boxes):
+                b1 = sorted_boxes[i]
+                b2 = sorted_boxes[f]
+                # b1 > b2
+                scales[i][f] = scales[f][i] = b2.volume() / b1.volume()
+
+        return scales
