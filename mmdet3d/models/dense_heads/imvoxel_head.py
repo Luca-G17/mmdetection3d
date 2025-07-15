@@ -694,13 +694,13 @@ class ImVoxelHead(BaseModule):
     def scale_aware_nms(class_boxes, class_scores, iou_thr):
         sorted_indices = torch.argsort(class_scores, descending=True)
         sorted_boxes = class_boxes[sorted_indices]
-        sorted_boxes = BaseInstance3DBoxes(tensor=sorted_boxes)
+        sorted_box_instances = BaseInstance3DBoxes(tensor=sorted_boxes)
 
-        ious = BaseInstance3DBoxes.overlaps(sorted_boxes, sorted_boxes)
+        ious = BaseInstance3DBoxes.overlaps(sorted_box_instances, sorted_box_instances)
         ious = ious.cpu().numpy() - np.eye(len(sorted_boxes))
         keep = np.ones(len(sorted_boxes), dtype=bool)
 
-        scales = ImVoxelHead.pairwise_scale_difference(sorted_boxes)
+        scales = ImVoxelHead.pairwise_scale_difference(sorted_box_instances)
 
         for i, (iou, scale_ratio) in enumerate(zip(ious, scales)):
             if not keep[i]:
