@@ -389,7 +389,7 @@ class ImVoxelHead(BaseModule):
             bboxes = self._bbox_pred_to_bbox(point, bbox_pred)
             mlvl_bboxes.append(bboxes)
             mlvl_scores.append(scores)
-
+        print(len(mlvl_bboxes))
         bboxes = torch.cat(mlvl_bboxes)
         scores = torch.cat(mlvl_scores)
         bboxes, scores, labels = self._single_scene_multiclass_nms(
@@ -649,7 +649,6 @@ class ImVoxelHead(BaseModule):
         Returns:
             tuple[Tensor]: Predicted bboxes, scores and labels.
         """
-        print(bboxes.shape)
         n_classes = scores.shape[1]
         with_yaw = bboxes.shape[1] == 7
         nms_bboxes, nms_scores, nms_labels = [], [], []
