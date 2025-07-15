@@ -668,7 +668,7 @@ class ImVoxelHead(BaseModule):
 
             #nms_ids = nms_function(class_bboxes, class_scores,self.test_cfg.iou_thr)
             nms_ids = ImVoxelHead.scale_aware_nms(class_bboxes, class_scores, self.test_cfg.iou_thr)
-
+            
             nms_bboxes.append(class_bboxes[nms_ids])
             nms_scores.append(class_scores[nms_ids])
             nms_labels.append(bboxes.new_full(class_scores[nms_ids].shape, i, dtype=torch.long))
@@ -688,6 +688,7 @@ class ImVoxelHead(BaseModule):
             box_dim = 6
             nms_bboxes = nms_bboxes[:, :box_dim]
 
+        print("DONE")
         return nms_bboxes, nms_scores, nms_labels
 
 
