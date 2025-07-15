@@ -17,7 +17,7 @@ from mmdet3d.structures.det3d_data_sample import SampleList
 from mmdet3d.utils.typing_utils import (ConfigType, InstanceList,
                                         OptConfigType, OptInstanceList)
 
-from mmdet3d.structures.bbox_3d.base_box3d import (overlaps, BaseInstance3DBoxes)
+from mmdet3d.structures.bbox_3d.base_box3d import BaseInstance3DBoxes
 import numpy as np
 
 @MODELS.register_module()
@@ -697,7 +697,7 @@ class ImVoxelHead(BaseModule):
         sorted_boxes = class_boxes[sorted_indices]
         sorted_boxes = BaseInstance3DBoxes(tensor=sorted_boxes)
 
-        ious = overlaps(sorted_boxes, sorted_boxes)
+        ious = BaseInstance3DBoxes.overlaps(sorted_boxes, sorted_boxes)
         ious = ious.numpy() - np.eye(len(sorted_boxes))
         keep = np.ones(len(sorted_boxes), dtype=bool)
 
