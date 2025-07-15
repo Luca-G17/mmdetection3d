@@ -698,7 +698,7 @@ class ImVoxelHead(BaseModule):
         sorted_boxes = BaseInstance3DBoxes(tensor=sorted_boxes)
 
         ious = BaseInstance3DBoxes.overlaps(sorted_boxes, sorted_boxes)
-        ious = ious.numpy() - np.eye(len(sorted_boxes))
+        ious = ious.cpu().numpy() - np.eye(len(sorted_boxes))
         keep = np.ones(len(sorted_boxes), dtype=bool)
 
         scales = ImVoxelHead.pairwise_scale_difference(sorted_boxes)
