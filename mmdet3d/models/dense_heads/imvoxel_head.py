@@ -700,6 +700,7 @@ class ImVoxelHead(BaseModule):
         ious = ious.cpu().numpy() - np.eye(len(sorted_boxes))
         keep = np.ones(len(sorted_boxes), dtype=bool)
 
+        print(type(sorted_boxes[0]))
         scales = ImVoxelHead.pairwise_scale_difference(sorted_boxes)
 
         for i, (iou, scale_ratio) in enumerate(zip(ious, scales)):
