@@ -387,14 +387,12 @@ class ImVoxelHead(BaseModule):
                 point = point[ids]
 
             bboxes = self._bbox_pred_to_bbox(point, bbox_pred)
-            print(len(bboxes))
             mlvl_bboxes.append(bboxes)
             mlvl_scores.append(scores)
 
         bboxes = torch.cat(mlvl_bboxes)
         scores = torch.cat(mlvl_scores)
-        bboxes, scores, labels = self._single_scene_multiclass_nms(
-            bboxes, scores, input_meta)
+        bboxes, scores, labels = self._single_scene_multiclass_nms(bboxes, scores, input_meta)
 
         bboxes = input_meta['box_type_3d'](
             bboxes,
@@ -694,9 +692,7 @@ class ImVoxelHead(BaseModule):
 
 
     def scale_aware_nms(class_boxes, class_scores, iou_thr):
-        sorted_indices = np.argsort(class_scores.cpu().numpy())[::-1]
-        print(class_scores)
-        print(sorted_indices.shape)
+        sorted_indices = torch.argsort(class_scores, descending=True)
         sorted_boxes = class_boxes[sorted_indices]
         sorted_boxes = BaseInstance3DBoxes(tensor=sorted_boxes)
 
