@@ -649,6 +649,7 @@ class ImVoxelHead(BaseModule):
         Returns:
             tuple[Tensor]: Predicted bboxes, scores and labels.
         """
+        print(bboxes.shape)
         n_classes = scores.shape[1]
         with_yaw = bboxes.shape[1] == 7
         nms_bboxes, nms_scores, nms_labels = [], [], []
