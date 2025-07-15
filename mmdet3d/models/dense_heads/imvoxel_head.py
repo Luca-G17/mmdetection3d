@@ -394,6 +394,7 @@ class ImVoxelHead(BaseModule):
         scores = torch.cat(mlvl_scores)
         bboxes, scores, labels = self._single_scene_multiclass_nms(bboxes, scores, input_meta)
 
+        print(bboxes.shape)
         bboxes = input_meta['box_type_3d'](
             bboxes,
             box_dim=bboxes.shape[1],
