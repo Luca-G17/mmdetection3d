@@ -437,7 +437,6 @@ class ImVoxelHead(BaseModule):
                     valid_preds=[x[i] for x in valid_preds],
                     input_meta=batch_input_metas[i]))
             
-        print(len(results[0]))
         return results
 
     @staticmethod
