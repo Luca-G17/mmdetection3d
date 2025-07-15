@@ -713,16 +713,7 @@ class ImVoxelHead(BaseModule):
         return sorted_indices[keep]
     
     def pairwise_scale_difference(boxes):
-        n_boxes = len(boxes)
         volumes = boxes.volume
-        scales = np.zeros((n_boxes, n_boxes))
-
-        for i in range(n_boxes):
-            for f in range(i, n_boxes):
-                v1 = volumes[i]
-                v2 = volumes[f]
-                v_min = min(v1, v2)
-                v_max = max(v1, v2)
-                scales[i][f] = scales[f][i] = v_min / v_max
-
-        return scales
+        v_min = torch.minimum(volumes[:, None], volumes[None, :])
+        v_max = torch.maximum(volumes[:, None], volumes[None, :])
+        return v_min / (v_max + 1e-6)
