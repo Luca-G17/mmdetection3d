@@ -516,7 +516,6 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
             alpha (int or float): The transparency of bboxes. Defaults to 0.4.
             img_size (tuple, optional): The size (w, h) of the image.
         """
-        print(len(bboxes_3d))
         check_type('bboxes', bboxes_3d, BaseInstance3DBoxes)
 
         if isinstance(bboxes_3d, DepthInstance3DBoxes):

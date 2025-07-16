@@ -143,6 +143,7 @@ class Det3DVisualizationHook(Hook):
             points = points.reshape(-1, num_pts_feats)
             data_input['points'] = points
 
+        print(len(outputs[0].pred_instances_3d.bboxes_3d))
         if total_curr_iter % self.interval == 0:
             self._visualizer.add_datasample(
                 'val sample',
