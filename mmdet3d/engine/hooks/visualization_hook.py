@@ -143,7 +143,6 @@ class Det3DVisualizationHook(Hook):
             points = points.reshape(-1, num_pts_feats)
             data_input['points'] = points
 
-        print(len(outputs[0].pred_instances_3d.bboxes_3d))
         if total_curr_iter % self.interval == 0:
             self._visualizer.add_datasample(
                 'val sample',
@@ -226,6 +225,7 @@ class Det3DVisualizationHook(Hook):
                         '.')[0] + '.png'
                     o3d_save_path = osp.join(self.test_out_dir, o3d_save_path)
 
+            print(len(data_sample.pred_instances_3d.bboxes_3d))
             self._visualizer.add_datasample(
                 'test sample',
                 data_input,
