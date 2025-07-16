@@ -247,6 +247,7 @@ def indoor_eval(gt_annos,
                 gt[int(label)][img_id] = []
             pred[int(label)][img_id].append((bbox, score))
 
+        print(len(det_anno['labels_3d']))
         # parse gt annotations
         gt_anno = gt_annos[img_id]
 
