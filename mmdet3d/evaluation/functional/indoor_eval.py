@@ -252,7 +252,7 @@ def indoor_eval(gt_annos,
 
         gt_boxes = gt_anno['gt_bboxes_3d']
         labels_3d = gt_anno['gt_labels_3d']
-        len(len(labels_3d))
+        len(labels_3d)
         for i in range(len(labels_3d)):
             label = labels_3d[i]
             bbox = gt_boxes[i]
