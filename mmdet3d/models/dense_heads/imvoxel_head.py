@@ -672,7 +672,7 @@ class ImVoxelHead(BaseModule):
             filtered_boxes = class_bboxes[nms_ids]
             filtered_scores = class_scores[nms_ids]
             
-            ids = filtered_scores[:, i] > 0.2
+            ids = filtered_scores > 0.2
             if not ids.any():
                 continue
             
