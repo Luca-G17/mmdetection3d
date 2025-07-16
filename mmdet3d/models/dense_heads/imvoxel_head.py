@@ -676,8 +676,8 @@ class ImVoxelHead(BaseModule):
             if not ids.any():
                 continue
             
-            class_scores = scores[ids, i]
-            class_bboxes = bboxes[ids]
+            class_scores = filtered_scores[ids, i]
+            class_bboxes = filtered_boxes[ids]
             nms_ids = ImVoxelHead.scale_aware_nms(class_bboxes, class_scores, 0.6)
 
 
