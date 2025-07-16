@@ -669,17 +669,6 @@ class ImVoxelHead(BaseModule):
 
             #nms_ids = nms_function(class_bboxes, class_scores,self.test_cfg.iou_thr)
             nms_ids = ImVoxelHead.scale_aware_nms(class_bboxes, class_scores, self.test_cfg.iou_thr)
-            filtered_boxes = class_bboxes[nms_ids]
-            filtered_scores = class_scores[nms_ids]
-            
-            ids = filtered_scores > 0.0
-            if not ids.any():
-                continue
-            
-            class_scores = filtered_scores[ids]
-            class_bboxes = filtered_boxes[ids]
-            nms_ids = ImVoxelHead.scale_aware_nms(class_bboxes, class_scores, 0.6)
-
 
             nms_bboxes.append(class_bboxes[nms_ids])
             nms_scores.append(class_scores[nms_ids])
