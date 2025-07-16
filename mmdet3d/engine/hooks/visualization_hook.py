@@ -225,7 +225,6 @@ class Det3DVisualizationHook(Hook):
                         '.')[0] + '.png'
                     o3d_save_path = osp.join(self.test_out_dir, o3d_save_path)
 
-            print(len(data_sample.pred_instances_3d.bboxes_3d))
             self._visualizer.add_datasample(
                 'test sample',
                 data_input,
