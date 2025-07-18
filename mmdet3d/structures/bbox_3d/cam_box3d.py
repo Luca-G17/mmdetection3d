@@ -85,10 +85,17 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
             self.with_yaw = with_yaw
         self.tensor = tensor.clone()
 
-        if origin != (0.5, 1.0, 0.5):
-            dst = self.tensor.new_tensor((0.5, 1.0, 0.5))
-            src = self.tensor.new_tensor(origin)
-            self.tensor[:, :3] += self.tensor[:, 3:6] * (dst - src)
+
+        width = self.tensor[:, 3]
+        theta = self.tensor[:, 6]
+        dx = width * torch.cos(theta)
+        dz = width * torch.sin(theta)
+        shift = torch.stack([dx, torch.zeros_like(dx), dz], dim=-1)
+        self.tensor[:, :3] += shift
+        # if origin != (0.5, 1.0, 0.5):
+        #     dst = self.tensor.new_tensor((0.5, 0.0, 0.5))
+        #     src = self.tensor.new_tensor(origin)
+        #     self.tensor[:, :3] += self.tensor[:, 3:6] * (dst - src)
 
     @property
     def height(self) -> Tensor:
