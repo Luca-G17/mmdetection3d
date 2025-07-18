@@ -86,12 +86,12 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
         self.tensor = tensor.clone()
 
 
-        width = self.tensor[:, 3]
-        theta = self.tensor[:, 6]
-        dx = width / 2.0 * torch.cos(theta)
-        dz = width / 2.0 * torch.sin(theta)
-        shift = torch.stack([dx, torch.zeros_like(dx), dz], dim=-1)
-        self.tensor[:, :3] += shift
+        # width = self.tensor[:, 3]
+        # theta = self.tensor[:, 6]
+        # dx = width / 2.0 * torch.cos(theta)
+        # dz = width / 2.0 * torch.sin(theta)
+        # shift = torch.stack([dx, torch.zeros_like(dx), dz], dim=-1)
+        # self.tensor[:, :3] += shift
         # if origin != (0.5, 1.0, 0.5):
         #     dst = self.tensor.new_tensor((0.5, 0.0, 0.5))
         #     src = self.tensor.new_tensor(origin)
