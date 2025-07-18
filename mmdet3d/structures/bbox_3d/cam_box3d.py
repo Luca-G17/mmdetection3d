@@ -84,7 +84,7 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
             self.box_dim = box_dim
             self.with_yaw = with_yaw
         self.tensor = tensor.clone()
-
+        self.origin = origin
 
         # width = self.tensor[:, 3]
         # theta = self.tensor[:, 6]
@@ -169,7 +169,7 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
 
         corners_norm = corners_norm[[0, 1, 3, 2, 4, 5, 7, 6]]
         # use relative origin (0.5, 1, 0.5)
-        corners_norm = corners_norm - dims.new_tensor([0.5, 0.5, 0.5])
+        corners_norm = corners_norm - dims.new_tensor(list(self.origin))
         corners = dims.view([-1, 1, 3]) * corners_norm.reshape([1, 8, 3])
 
         corners = rotation_3d_in_axis(corners, self.tensor[:, 6], axis=self.YAW_AXIS)

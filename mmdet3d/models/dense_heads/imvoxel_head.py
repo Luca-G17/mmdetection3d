@@ -667,8 +667,8 @@ class ImVoxelHead(BaseModule):
                     dim=1)
                 nms_function = nms3d_normal
 
-            #nms_ids = nms_function(class_bboxes, class_scores,self.test_cfg.iou_thr)
-            nms_ids = ImVoxelHead.scale_aware_nms(class_bboxes, class_scores, self.test_cfg.iou_thr)
+            nms_ids = nms_function(class_bboxes, class_scores,self.test_cfg.iou_thr)
+           # nms_ids = ImVoxelHead.scale_aware_nms(class_bboxes, class_scores, self.test_cfg.iou_thr)
             class_bboxes = class_bboxes[nms_ids]
             class_scores = class_scores[nms_ids]
 
