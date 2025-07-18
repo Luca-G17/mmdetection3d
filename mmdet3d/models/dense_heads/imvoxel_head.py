@@ -400,7 +400,7 @@ class ImVoxelHead(BaseModule):
             with_yaw=bboxes.shape[1] == 7,
             origin=(.5, .5, .5))
 
-        print(f"{len(scores)}, {len(sum(1 for x in scores if x > 0.3))}")
+        print(f"{len(scores)}, {sum(1 for x in scores if x > 0.3)}")
 
         results = InstanceData()
         results.bboxes_3d = bboxes
