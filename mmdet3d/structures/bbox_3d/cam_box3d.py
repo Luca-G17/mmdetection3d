@@ -88,8 +88,8 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
 
         width = self.tensor[:, 3]
         theta = self.tensor[:, 6]
-        dx = width * torch.cos(theta)
-        dz = width * torch.sin(theta)
+        dx = width / 2.0 * torch.cos(theta)
+        dz = width / 2.0 * torch.sin(theta)
         shift = torch.stack([dx, torch.zeros_like(dx), dz], dim=-1)
         self.tensor[:, :3] += shift
         # if origin != (0.5, 1.0, 0.5):
