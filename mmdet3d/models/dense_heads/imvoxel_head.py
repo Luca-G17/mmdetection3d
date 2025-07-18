@@ -400,6 +400,8 @@ class ImVoxelHead(BaseModule):
             with_yaw=bboxes.shape[1] == 7,
             origin=(.5, .5, .5))
 
+        print(f"{len(scores)}, {len(sum(1 for x in scores if x > 0.3))}")
+
         results = InstanceData()
         results.bboxes_3d = bboxes
         results.scores_3d = scores
@@ -671,7 +673,7 @@ class ImVoxelHead(BaseModule):
             nms_ids = ImVoxelHead.scale_aware_nms(class_bboxes, class_scores, self.test_cfg.iou_thr)
             class_bboxes = class_bboxes[nms_ids]
             class_scores = class_scores[nms_ids]
-            
+
             nms_bboxes.append(class_bboxes[nms_ids])
             nms_scores.append(class_scores[nms_ids])
             nms_labels.append(bboxes.new_full(class_scores[nms_ids].shape, i, dtype=torch.long))
