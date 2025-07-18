@@ -93,7 +93,7 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
         # shift = torch.stack([dx, torch.zeros_like(dx), dz], dim=-1)
         # self.tensor[:, :3] += shift
         if origin != (0.5, 1.0, 0.5):
-            dst = self.tensor.new_tensor((0.5, 0.5, 2))
+            dst = self.tensor.new_tensor((0.5, 0.5, 0.5))
             src = self.tensor.new_tensor(origin)
             self.tensor[:, :3] += self.tensor[:, 3:6] * (dst - src)
 
