@@ -678,7 +678,7 @@ class ImVoxelHead(BaseModule):
 
             nms_bboxes.append(class_bboxes[ids])
             nms_scores.append(class_scores[ids])
-            nms_labels.append(bboxes.new_full(class_scores[nms_ids].shape, i, dtype=torch.long))
+            nms_labels.append(bboxes.new_full(class_scores[ids].shape, i, dtype=torch.long))
 
         if len(nms_bboxes):
             nms_bboxes = torch.cat(nms_bboxes, dim=0)
