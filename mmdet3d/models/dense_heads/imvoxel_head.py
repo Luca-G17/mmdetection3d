@@ -675,7 +675,7 @@ class ImVoxelHead(BaseModule):
             ids = class_scores > 0.3
             if not ids.any():
                 continue
-            print(len([_ for i in ids if i]))
+            print(len([i for i in ids if i]))
             nms_bboxes.append(class_bboxes[nms_ids])
             nms_scores.append(class_scores[nms_ids])
             nms_labels.append(bboxes.new_full(class_scores[nms_ids].shape, i, dtype=torch.long))
