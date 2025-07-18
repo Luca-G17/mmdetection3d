@@ -233,7 +233,7 @@ class ImVoxelHead(BaseModule):
             valid_pred=valid_pred,
             batch_input_metas=batch_input_metas,
             rescale=rescale)
-        print(f"{len(predictions.scores_3d)}, {sum(1 for x in predictions.scores_3d if x > 0.3)}")
+        print(f"{len(predictions[0].scores_3d)}, {sum(1 for x in predictions[0].scores_3d if x > 0.3)}")
         return predictions
 
     def _loss_by_feat_single(self, center_preds, bbox_preds, cls_preds,
