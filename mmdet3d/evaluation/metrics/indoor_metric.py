@@ -48,8 +48,6 @@ class IndoorMetric(BaseMetric):
         """
         for data_sample in data_samples:
             pred_3d = data_sample['pred_instances_3d']
-            print(f"{len(pred_3d['scores_3d'])}, {sum(1 for x in pred_3d['scores_3d'] if x > 0.3)}")
-
             eval_ann_info = data_sample['eval_ann_info']
             cpu_pred_3d = dict()
             for k, v in pred_3d.items():
