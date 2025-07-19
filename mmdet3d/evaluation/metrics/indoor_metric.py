@@ -50,7 +50,7 @@ class IndoorMetric(BaseMetric):
             pred_3d = data_sample['pred_instances_3d']
             eval_ann_info = data_sample['eval_ann_info']
             cpu_pred_3d = dict()
-            print(pred_3d.items())
+            print(pred_3d)
             for k, v in pred_3d.items():
                 if hasattr(v, 'to'):
                     cpu_pred_3d[k] = v.to('cpu')
