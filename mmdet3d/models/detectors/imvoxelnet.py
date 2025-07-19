@@ -78,20 +78,18 @@ class ImVoxelNet(Base3DDetector):
             filename (str): Output PLY file name
         """
         volume = volume.cpu().detach().numpy()
-        valid_mask = valid_mask[0].cpu().detach().numpy()  # Remove channel dim
+        valid_mask = valid_mask[0].cpu().detach().numpy()
 
-        zyx_indices = np.stack(np.nonzero(valid_mask), axis=-1)  # [N, 3] in (z, y, x)
+        zyx_indices = np.stack(np.nonzero(valid_mask), axis=-1)
         if len(zyx_indices) == 0:
             print("No valid points to save.")
             return
 
-        # Convert voxel indices to world coordinates
-        voxel_origin = np.array(point_cloud_range[:3])  # (x_min, y_min, z_min)
+        voxel_origin = np.array(point_cloud_range[:3])
         voxel_size = np.array(voxel_size)
 
-        xyz_points = zyx_indices[:, [2, 1, 0]] * voxel_size + voxel_origin  # Reorder to (x, y, z)
+        xyz_points = zyx_indices[:, [2, 1, 0]] * voxel_size + voxel_origin
 
-        # Optional: get color/intensity from volume[0] or mean across C channels
         mean_volume = volume.mean(0)
         valid_vals = mean_volume[valid_mask]
 
@@ -104,9 +102,9 @@ class ImVoxelNet(Base3DDetector):
             normalized = (valid_vals - vmin) / (vmax - vmin)
 
         colors = np.stack([
-            1 - normalized,  # Red channel decreases
-            normalized,      # Green channel increases
-            np.zeros_like(normalized)  # Blue channel stays zero
+            1 - normalized,
+            normalized,
+            np.zeros_like(normalized)
         ], axis=-1)
 
         keep_mask = (normalized < 1.0) & (normalized > 0.3)
@@ -114,11 +112,9 @@ class ImVoxelNet(Base3DDetector):
         xyz_points = xyz_points[keep_mask]
         colors = colors[keep_mask]
 
-        # Create Open3D point cloud
         pcd = o3d.geometry.PointCloud()
         pcd.points = o3d.utility.Vector3dVector(xyz_points)
-        pcd.colors = o3d.utility.Vector3dVector(colors)  # Grayscale
-
+        pcd.colors = o3d.utility.Vector3dVector(colors)
         o3d.io.write_point_cloud(filename, pcd)
 
     def extract_feat(self, batch_inputs_dict: dict,
@@ -167,14 +163,14 @@ class ImVoxelNet(Base3DDetector):
 
                 scale = img_meta.get('scale_factor', 1)
                 if isinstance(scale, (list, tuple)):
-                    img_scale_factor = points.new_tensor(scale[:2])
+                    img_scale_factor = torch.tensor(scale[:2], dtype=points.dtype, device=points.device)
                 else:
-                    img_scale_factor = points.new_tensor([scale, scale])
+                    img_scale_factor = torch.tensor([scale, scale], dtype=points.dtype, device=points.device)
 
                 img_flip = img_meta.get('flip', False)
-                img_crop_offset = points.new_tensor(img_meta.get('img_crop_offset', 0))
+                img_crop_offset = torch.tensor(img_meta.get('img_crop_offset', 0), dtype=points.dtype, device=points.device)
+                proj_mat = torch.tensor(get_proj_mat_by_coord_type(img_meta, self.coord_type)[i], dtype=points.dtype, device=points.device)
 
-                proj_mat = points.new_tensor(get_proj_mat_by_coord_type(img_meta, self.coord_type)[i])
                 volume = point_sample(
                     img_meta,
                     img_features=sharpend_feat,
