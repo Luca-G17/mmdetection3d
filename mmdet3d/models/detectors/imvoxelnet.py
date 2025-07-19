@@ -117,8 +117,7 @@ class ImVoxelNet(Base3DDetector):
         pcd.colors = o3d.utility.Vector3dVector(colors)
         o3d.io.write_point_cloud(filename, pcd)
 
-    def extract_feat(self, batch_inputs_dict: dict,
-                     batch_data_samples: SampleList):
+    def extract_feat(self, batch_inputs_dict: dict, batch_data_samples: SampleList):
         """Extract 3d features from the backbone -> fpn -> 3d projection.
 
         -> 3d neck -> bbox_head.
@@ -144,7 +143,7 @@ class ImVoxelNet(Base3DDetector):
         ]
 
         batch_size, n_views = len(imgs), len(imgs[0])
-        all_volumes = [[] for _ in range(batch_size)] # [B, V, ...]
+        all_volumes = [[] for _ in range(batch_size)]
         all_valid_preds = [[] for _ in range(batch_size)]
 
         # iterate over each view (within the batch), each iteration yields 4 sets of points
@@ -218,7 +217,107 @@ class ImVoxelNet(Base3DDetector):
 
         return x, torch.stack(valid_preds).float()
 
-   
+    def project_volume_to_image(volume, voxel_coords, proj_mat, img_shape):
+        """
+        Project 3D volume into image space and sample features.
+
+        Args:
+            volume (Tensor): (C, Z, Y, X)
+            voxel_coords (Tensor): (N, 3)
+            proj_mat (Tensor): (4, 4)
+            img_shape (tuple): (H, W)
+
+        Returns:
+            Tensor: (C, H, W)
+        """
+        C, Z, Y, X = volume.shape
+        device = volume.device
+
+        ones = torch.ones((voxel_coords.shape[0], 1), device=device)
+        homo_coords = torch.cat([voxel_coords, ones], dim=1).T
+        cam_coords = proj_mat @ homo_coords
+        img_coords = cam_coords[:2] / cam_coords[2:].clamp(min=1e-5)
+        img_coords = img_coords.T
+
+        H, W = img_shape
+        norm_coords = img_coords.clone()
+        norm_coords[:, 0] = (norm_coords[:, 0] / (W - 1)) * 2 - 1
+        norm_coords[:, 1] = (norm_coords[:, 1] / (H - 1)) * 2 - 1
+        norm_coords = norm_coords.view(1, 1, -1, 2)
+
+        volume = volume.view(1, C, Z * Y * X, 1)
+        feat_2d = F.grid_sample(volume, norm_coords, align_corners=True).view(C, H, W)
+        return feat_2d
+    
+    def backproject_residual_to_volume(residual_2d, voxel_coords, proj_mat, img_shape, volume_shape):
+        """
+        Backproject 2D residual into 3D volume.
+
+        Args:
+            residual_2d (Tensor): (C, H, W)
+            voxel_coords (Tensor): (N, 3)
+            proj_mat (Tensor): (4, 4)
+            img_shape (tuple): (H, W)
+            volume_shape (tuple): (C, Z, Y, X)
+
+        Returns:
+            Tensor: (C, Z, Y, X)
+        """
+        C, Z, Y, X = volume_shape
+        device = residual_2d.device
+
+        ones = torch.ones((voxel_coords.shape[0], 1), device=device)
+        homo_coords = torch.cat([voxel_coords, ones], dim=1).T
+        cam_coords = proj_mat @ homo_coords
+        img_coords = cam_coords[:2] / cam_coords[2:].clamp(min=1e-5)
+        img_coords = img_coords.T
+
+        H, W = img_shape
+        norm_coords = img_coords.clone()
+        norm_coords[:, 0] = (norm_coords[:, 0] / (W - 1)) * 2 - 1
+        norm_coords[:, 1] = (norm_coords[:, 1] / (H - 1)) * 2 - 1
+        norm_coords = norm_coords.view(1, 1, -1, 2)
+
+        residual_2d = residual_2d.view(1, C, H, W)
+        sampled_residual = F.grid_sample(residual_2d, norm_coords, align_corners=True)
+        sampled_residual = sampled_residual.view(C, Z, Y, X)
+        return sampled_residual
+
+    def extract_feat_ART(self, batch_inputs_dict: dict, batch_data_samples: SampleList):
+        imgs = batch_inputs_dict['img']
+        imgs = torch.stack(imgs, dim=0)
+        batch_img_metas = [
+            data_samples.metainfo for data_samples in batch_data_samples
+        ]
+
+        batch_size, n_views = len(imgs), len(imgs[0])
+        all_volumes = [[] for _ in range(batch_size)]
+        all_valid_preds = [[] for _ in range(batch_size)]
+
+        feats = []
+        proj_mats = []
+        for i in range(n_views):
+            img = imgs[:, i]
+            feat = self.backbone(img)
+            feats.append(self.neck(feat)[0])
+
+        # iterate over each view (within the batch), each iteration yields 4 sets of points
+        iters = 5
+        for f in range(iters):
+            for i in range(n_views):
+                points = self.prior_generator.grid_anchors([self.n_voxels[::-1]], device=img.device)[0][:, :3]
+                feat = feats[i]
+                for b in range(batch_size):
+                    img_meta = batch_img_metas[b]
+                    proj_mat = torch.tensor(get_proj_mat_by_coord_type(img_meta, self.coord_type)[i], dtype=points.dtype, device=points.device)
+                    simulated_feat = project_volume_to_image(fused_volume, points, ...)
+                    
+                    residual = feat - simulated_feat
+                    
+                    # Back-projection: update 3D volume based on error
+                    correction = backproject_residual_to_volume(residual, proj_mat, ...)
+                    fused_volume += alpha * correction
+
 
     def loss(self, batch_inputs_dict: dict, batch_data_samples: SampleList,
              **kwargs) -> Union[dict, list]:
