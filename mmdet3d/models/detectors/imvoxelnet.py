@@ -291,33 +291,45 @@ class ImVoxelNet(Base3DDetector):
         ]
 
         batch_size, n_views = len(imgs), len(imgs[0])
-        all_volumes = [[] for _ in range(batch_size)]
-        all_valid_preds = [[] for _ in range(batch_size)]
-
+        C, Z, Y, X = self.neck.out_channels, *self.n_voxels
+        
         feats = []
-        proj_mats = []
         for i in range(n_views):
             img = imgs[:, i]
             feat = self.backbone(img)
             feats.append(self.neck(feat)[0])
 
+        fused_volumes = []
+        for b in range(batch_size):
+            img = imgs[b, 0]
+            fused_volumes.append(volume = torch.zeros((C, Z, Y, X), device=img.device))
+
         # iterate over each view (within the batch), each iteration yields 4 sets of points
         iters = 5
-        for f in range(iters):
+        for _ in range(iters):
             for i in range(n_views):
+                img = imgs[:, i]
                 points = self.prior_generator.grid_anchors([self.n_voxels[::-1]], device=img.device)[0][:, :3]
                 feat = feats[i]
                 for b in range(batch_size):
                     img_meta = batch_img_metas[b]
+                    img_shape =  img_meta['img_shape'][:2]
                     proj_mat = torch.tensor(get_proj_mat_by_coord_type(img_meta, self.coord_type)[i], dtype=points.dtype, device=points.device)
-                    simulated_feat = project_volume_to_image(fused_volume, points, ...)
+                    simulated_feat = ImVoxelNet.project_volume_to_image(fused_volume, points, proj_mat, img_shape)
                     
                     residual = feat - simulated_feat
                     
-                    # Back-projection: update 3D volume based on error
-                    correction = backproject_residual_to_volume(residual, proj_mat, ...)
-                    fused_volume += alpha * correction
+                    correction = ImVoxelNet.backproject_residual_to_volume(residual, proj_mat, img_shape, fused_volume.shape)
+                    fused_volume += self.alpha * correction
 
+        valid_preds = []
+        for volume in fused_volumes:
+            valid_preds.append(~torch.all(volume == 0, dim=0, keepdim=True))
+        
+        x = torch.stack(fused_volumes, dim=0)
+        x = self.neck_3d(x)
+
+        return x, torch.stack(valid_preds).float()
 
     def loss(self, batch_inputs_dict: dict, batch_data_samples: SampleList,
              **kwargs) -> Union[dict, list]:

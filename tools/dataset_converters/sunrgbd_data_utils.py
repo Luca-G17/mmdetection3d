@@ -109,7 +109,7 @@ class SUNRGBDData(object):
 
     def get_depth(self, idx):
         depth_filename = osp.join(self.depth_dir, f'{idx:06d}.mat')
-        depth = sio.loadmat(depth_filename)['instance']
+        depth = sio.loadmat(depth_filename)['points3d_rgb']
         return depth
 
     def get_calibration(self, idx):
