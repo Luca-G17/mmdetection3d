@@ -137,11 +137,10 @@ class ImVoxelNet(Base3DDetector):
             - torch.Tensor: Valid mask of shape (N, 1, N_x, N_y, N_z).
         """
         if "imgs" in batch_inputs_dict.keys():
-            imgs = batch_inputs_dict['imgs']
+            imgs = batch_inputs_dict['imgs'].unsqueeze(1)
         else:
             imgs = batch_inputs_dict['img']
 
-        print(batch_inputs_dict['imgs'].shape)
         imgs = torch.stack(imgs, dim=0)
         batch_img_metas = [
             data_samples.metainfo for data_samples in batch_data_samples
