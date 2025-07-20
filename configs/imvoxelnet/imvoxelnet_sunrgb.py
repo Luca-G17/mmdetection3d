@@ -49,7 +49,7 @@ model = dict(
     test_cfg=dict(nms_pre=1000, iou_thr=.25, score_thr=.01))
 
 dataset_type = 'SUNRGBDDataset'
-data_root = '/data/data/sunrgbd/sunrgbd_trainval'
+data_root = '/data/data/sunrgb'
 class_names = [
     'bed', 'table', 'sofa', 'chair', 'toilet', 'desk', 'dresser',
     'night_stand', 'bookshelf', 'bathtub'
