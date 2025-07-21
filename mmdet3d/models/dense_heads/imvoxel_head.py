@@ -19,6 +19,7 @@ from mmdet3d.utils.typing_utils import (ConfigType, InstanceList,
 
 from mmdet3d.structures.bbox_3d.base_box3d import BaseInstance3DBoxes
 import numpy as np
+import math
 
 @MODELS.register_module()
 class ImVoxelHead(BaseModule):
@@ -691,6 +692,67 @@ class ImVoxelHead(BaseModule):
 
         return nms_bboxes, nms_scores, nms_labels
 
+    def better_nms(class_boxes, class_scores, iou_thr):
+        alpha = 0.1
+        beta = 0.1
+        gamma = 0.8
+
+        sorted_indices = torch.argsort(class_scores, descending=True)
+        sorted_boxes = class_boxes[sorted_indices]
+        sorted_box_instances = BaseInstance3DBoxes(tensor=sorted_boxes)
+
+        ious = BaseInstance3DBoxes.overlaps(sorted_box_instances, sorted_box_instances)
+        ious.fill_diagonal_(0)
+
+        angles = ImVoxelHead.angle_scores(sorted_box_instances, sorted_box_instances)
+        centres = ImVoxelHead.center_scores(sorted_box_instances, sorted_box_instances)
+
+        similarity = alpha * angles + beta * centres + gamma * ious
+
+        keep = []
+        suppressed = torch.zeros(len(sorted_boxes), dtype=torch.bool, device=class_boxes.device)
+
+        for i, sim in enumerate(similarity):
+            if suppressed[i]:
+                continue
+            keep.append(i)
+            mask = sim > iou_thr
+            suppressed |= mask
+
+        return sorted_indices[keep]
+
+    def angle_scores(boxes1, boxes2):
+        rows = len(boxes1)
+        cols = len(boxes2)
+        if rows * cols == 0:
+            device = boxes1[0].angle.device if rows > 0 else boxes2[0].angle.device
+            return torch.zeros((rows, cols), dtype=torch.float, device=device)        
+
+        angles1 = torch.tensor([box[6] for box in boxes1.tensor], dtype=torch.float, device=boxes1.tensor[0][6].device).view(-1, 1)
+        angles2 = torch.tensor([box[6] for box in boxes2.tensor], dtype=torch.float, device=boxes2.tensor[0][6].device).view(1, -1)
+
+        raw_diff = torch.abs(angles1 - angles2)
+        wrapped_diff = torch.remainder(raw_diff, 2 * math.pi)
+        wrapped_diff = torch.minimum(wrapped_diff, 2 * math.pi - wrapped_diff)
+        return torch.cos(wrapped_diff) ** 2
+    
+    def center_scores(boxes1, boxes2, d_max):
+        rows = len(boxes1)
+        cols = len(boxes2)
+        if rows * cols == 0:
+            device = boxes1[0][0].device if rows > 0 else boxes2[0][0].device
+            return torch.zeros((rows, cols), dtype=torch.float, device=device)
+
+        centers1 = torch.stack([box[0:3] for box in boxes1], dim=0).to(dtype=torch.float)
+        centers2 = torch.stack([box[0:3] for box in boxes2], dim=0).to(dtype=torch.float)
+
+        diff = centers1[:, None, :] - centers2[None, :, :]
+        dists = torch.norm(diff, dim=2)
+
+        scores = (d_max - dists) / d_max
+        scores = scores.clamp(min=0.0, max=1.0)
+
+        return scores
 
     def scale_aware_nms(class_boxes, class_scores, iou_thr):
         sorted_indices = torch.argsort(class_scores, descending=True)
