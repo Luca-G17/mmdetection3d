@@ -216,6 +216,7 @@ class ImVoxelNet(Base3DDetector):
             fused_volumes.append(fused_volume)
             valid_preds.append(final_valid_mask)
 
+        print(batch_img_metas[0])
         self.save_pointcloud_from_voxels(
             fused_volumes[0],
             valid_preds[0],
@@ -497,9 +498,9 @@ class SharpeningFilter(torch.nn.Module):
     def __init__(self, channels):
         super().__init__()
         kernel = torch.tensor([
-            [0, -1, 0],
-            [-1, 5, -1],
-            [0, -1, 0]
+            [-1, -1, -1],
+            [-1, 8, -1],
+            [-1, -1, -1]
         ], dtype=torch.float32).view(1, 1, 3, 3).repeat(channels, 1, 1, 1)
         self.register_buffer('kernel', kernel)
         self.groups = channels
