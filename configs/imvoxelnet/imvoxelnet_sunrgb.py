@@ -46,7 +46,7 @@ model = dict(
     n_voxels=[40, 40, 16],
     coord_type='DEPTH',
     train_cfg=dict(),
-    test_cfg=dict(nms_pre=1000, iou_thr=.25, score_thr=.01))
+    test_cfg=dict(nms_pre=1000, iou_thr=.15, score_thr=.01))
 
 dataset_type = 'SUNRGBDDataset'
 data_root = '/data/data/sunrgb'
