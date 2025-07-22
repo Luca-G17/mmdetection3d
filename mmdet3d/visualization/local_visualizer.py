@@ -935,7 +935,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                        out_file: Optional[str] = None,
                        o3d_save_path: Optional[str] = None,
                        vis_task: str = 'mono_det',
-                       pred_score_thr: float = 0.3,
+                       pred_score_thr: float = 0.01,
                        step: int = 0,
                        show_pcd_rgb: bool = False) -> None:
         """Draw datasample and save to all backends.
