@@ -935,7 +935,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                        out_file: Optional[str] = None,
                        o3d_save_path: Optional[str] = None,
                        vis_task: str = 'mono_det',
-                       pred_score_thr: float = 0.01,
+                       pred_score_thr: float = 0.3,
                        step: int = 0,
                        show_pcd_rgb: bool = False) -> None:
         """Draw datasample and save to all backends.
@@ -1023,7 +1023,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                 pred_instances_3d = data_sample.pred_instances_3d
                 # .cpu can not be used for BaseInstance3DBoxes
                 # so we need to use .to('cpu')
-                pred_instances_3d = pred_instances_3d[pred_instances_3d.scores_3d > 0.1].to('cpu')
+                pred_instances_3d = pred_instances_3d[pred_instances_3d.scores_3d > pred_score_thr].to('cpu')
 
                 pred_data_3d = self._draw_instances_3d(data_input,
                                                        pred_instances_3d,
