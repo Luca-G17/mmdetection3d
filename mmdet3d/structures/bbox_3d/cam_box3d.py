@@ -92,10 +92,10 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
         # dz = width / 2.0 * torch.sin(theta)
         # shift = torch.stack([dx, torch.zeros_like(dx), dz], dim=-1)
         # self.tensor[:, :3] += shift
-        if origin != (0.5, 1.0, 0.5):
-            dst = self.tensor.new_tensor((0.5, 1.0, 0.5))
-            src = self.tensor.new_tensor(origin)
-            self.tensor[:, :3] += self.tensor[:, 3:6] * (dst - src)
+        # if origin != (0.5, 1.0, 0.5):
+        #     dst = self.tensor.new_tensor((0.5, 1.0, 0.5))
+        #     src = self.tensor.new_tensor(origin)
+        #     self.tensor[:, :3] += self.tensor[:, 3:6] * (dst - src)
 
     @property
     def height(self) -> Tensor:
@@ -170,7 +170,7 @@ class CameraInstance3DBoxes(BaseInstance3DBoxes):
         corners_norm = corners_norm[[0, 1, 3, 2, 4, 5, 7, 6]]
         # use relative origin (0.5, 1, 0.5)
         #corners_norm = corners_norm - dims.new_tensor(list(self.origin))
-        corners_norm = corners_norm - dims.new_tensor([0.5, 1, 0.5])
+        corners_norm = corners_norm - dims.new_tensor([0.5, 0.5, 0.5])
         corners = dims.view([-1, 1, 3]) * corners_norm.reshape([1, 8, 3])
 
         corners = rotation_3d_in_axis(corners, self.tensor[:, 6], axis=self.YAW_AXIS)
