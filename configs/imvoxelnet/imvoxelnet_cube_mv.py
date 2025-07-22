@@ -42,7 +42,7 @@ model = dict(
     n_voxels=[40, 40, 40],
     coord_type='CAMERA',
     train_cfg=dict(),
-    test_cfg=dict(nms_pre=10000, iou_thr=0.8, score_thr=1e-6))
+    test_cfg=dict(nms_pre=10000, iou_thr=0.2, score_thr=0.01))
 
 dataset_type = 'CustomVisualDataset'
 class_names = [
