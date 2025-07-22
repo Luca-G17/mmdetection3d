@@ -249,7 +249,6 @@ def indoor_eval(gt_annos,
 
             pred[int(label)][img_id].append((bbox, score))
 
-        if (pred[int(label)])
 
         # parse gt annotations
 
