@@ -228,6 +228,7 @@ def indoor_eval(gt_annos,
         dict[str, float]: Dict of results.
     """
     assert len(dt_annos) == len(gt_annos)
+    print(len(dt_annos))
     pred = {}  # map {class_id: pred}
     gt = {}  # map {class_id: gt}
     for img_id in range(len(dt_annos)):
@@ -245,10 +246,12 @@ def indoor_eval(gt_annos,
                 gt[int(label)] = {}
             if img_id not in gt[label]:
                 gt[int(label)][img_id] = []
+
             pred[int(label)][img_id].append((bbox, score))
 
+        if (pred[int(label)])
+
         # parse gt annotations
-        gt_anno = gt_annos[img_id]
 
         gt_boxes = gt_anno['gt_bboxes_3d']
         labels_3d = gt_anno['gt_labels_3d']
