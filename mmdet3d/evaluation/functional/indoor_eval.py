@@ -90,7 +90,6 @@ def eval_det_cls(pred, gt, iou_thr=None):
     ious = []
     for img_id in pred.keys():
         cur_num = len(pred[img_id])
-        print(f"Image ID: {img_id} — Number of predictions: {cur_num}")  #
         if cur_num == 0:
             continue
         pred_cur = torch.zeros((cur_num, 7), dtype=torch.float32)
