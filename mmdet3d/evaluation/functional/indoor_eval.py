@@ -90,6 +90,7 @@ def eval_det_cls(pred, gt, iou_thr=None):
     ious = []
     for img_id in pred.keys():
         cur_num = len(pred[img_id])
+        print(f"Image ID: {img_id} — Number of predictions: {cur_num}")  #
         if cur_num == 0:
             continue
         pred_cur = torch.zeros((cur_num, 7), dtype=torch.float32)
@@ -190,8 +191,7 @@ def eval_map_recall(pred, gt, ovthresh=None):
     for label in gt.keys():
         for iou_idx, thresh in enumerate(ovthresh):
             if label in pred:
-                recall[iou_idx][label], precision[iou_idx][label], ap[iou_idx][
-                    label] = ret_values[label][iou_idx]
+                recall[iou_idx][label], precision[iou_idx][label], ap[iou_idx][label] = ret_values[label][iou_idx]
             else:
                 recall[iou_idx][label] = np.zeros(1)
                 precision[iou_idx][label] = np.zeros(1)
