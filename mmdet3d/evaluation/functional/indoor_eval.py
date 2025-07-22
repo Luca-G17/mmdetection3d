@@ -228,7 +228,6 @@ def indoor_eval(gt_annos,
         dict[str, float]: Dict of results.
     """
     assert len(dt_annos) == len(gt_annos)
-    print(len(gt_annos))
     pred = {}  # map {class_id: pred}
     gt = {}  # map {class_id: gt}
     for img_id in range(len(dt_annos)):
@@ -238,6 +237,12 @@ def indoor_eval(gt_annos,
             label = det_anno['labels_3d'].numpy()[i]
             bbox = det_anno['bboxes_3d'].convert_to(box_mode_3d)[i]
             score = det_anno['scores_3d'].numpy()[i]
+
+            if img_id == 0:
+                # Save scores of first image to a file
+                scores = det_anno['scores_3d'].numpy()
+                np.savetxt("scores_img0.txt", scores, fmt="%.6f")
+            
             if label not in pred:
                 pred[int(label)] = {}
             if img_id not in pred[label]:
