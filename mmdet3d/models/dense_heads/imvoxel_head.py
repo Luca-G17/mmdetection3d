@@ -717,7 +717,7 @@ class ImVoxelHead(BaseModule):
             if suppressed[i]:
                 continue
             keep.append(i)
-            mask = sim > 0.5
+            mask = sim > 0.6
             suppressed |= mask
 
         return sorted_indices[keep]
