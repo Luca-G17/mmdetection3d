@@ -718,7 +718,7 @@ class ImVoxelHead(BaseModule):
                 continue
             keep.append(i)
             print(sorted(sim.tolist(), reverse=True)[:10])
-            mask = sim > iou_thr
+            mask = sim > 0.5
             suppressed |= mask
 
         return sorted_indices[keep]
