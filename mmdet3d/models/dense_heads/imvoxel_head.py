@@ -717,6 +717,7 @@ class ImVoxelHead(BaseModule):
             if suppressed[i]:
                 continue
             keep.append(i)
+            print(sorted(sim, reverse=True))
             mask = sim > iou_thr
             suppressed |= mask
 
