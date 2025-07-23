@@ -690,6 +690,7 @@ class ImVoxelHead(BaseModule):
             box_dim = 6
             nms_bboxes = nms_bboxes[:, :box_dim]
 
+        print("done another")
         return nms_bboxes, nms_scores, nms_labels
 
     def better_nms(class_boxes, class_scores, iou_thr):
