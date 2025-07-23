@@ -705,7 +705,7 @@ class ImVoxelHead(BaseModule):
         ious.fill_diagonal_(0)
 
         angles = ImVoxelHead.angle_scores(sorted_box_instances, sorted_box_instances)
-        centres = ImVoxelHead.center_scores(sorted_box_instances, sorted_box_instances)
+        centres = ImVoxelHead.center_scores(sorted_box_instances, sorted_box_instances, 5)
 
         similarity = alpha * angles + beta * centres + gamma * ious
 
