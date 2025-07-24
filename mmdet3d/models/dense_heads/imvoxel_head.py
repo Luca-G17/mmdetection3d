@@ -695,8 +695,8 @@ class ImVoxelHead(BaseModule):
 
     def better_nms(class_boxes, class_scores, iou_thr):
         alpha = 0.05
-        beta = 0.1
-        gamma = 0.85
+        beta = 0.05
+        gamma = 0.95
 
         sorted_indices = torch.argsort(class_scores, descending=True)
         sorted_boxes = class_boxes[sorted_indices]
