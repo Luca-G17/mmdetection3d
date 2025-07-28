@@ -145,10 +145,8 @@ class ImVoxelNet(Base3DDetector):
         batch_img_metas = [
             data_samples.metainfo for data_samples in batch_data_samples
         ]
-        print(imgs.shape)
 
-        imgs.unsqueeze(1)
-        print(imgs.shape)
+        imgs.unsqueeze_(1)
         batch_size, n_views = len(imgs), len(imgs[0])
         all_volumes = [[] for _ in range(batch_size)]
         all_valid_preds = [[] for _ in range(batch_size)]
