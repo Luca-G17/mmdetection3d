@@ -114,7 +114,7 @@ class MonoDet3DInferencer(Base3DInferencer):
                     raise ValueError(
                         f'the info file of {img_path} is not provided.')
                 
-                calib = input['calib'][cam_type]
+                calib = data_info['calib'][cam_type]
                 rt_mat = calib['Rt']
 
                 K_4x4 = np.eye(4)
