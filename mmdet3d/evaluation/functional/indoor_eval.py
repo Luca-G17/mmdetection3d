@@ -263,10 +263,10 @@ def indoor_eval(gt_annos,
             gt[label][img_id].append(bbox)
 
     rec, prec, ap = eval_map_recall(pred, gt, metric)
+    print(len(ap))
     ret_dict = dict()
     header = ['classes']
-    table_columns = [[label2cat[label]
-                      for label in ap[0].keys()] + ['Overall']]
+    table_columns = [[label2cat[label] for label in ap[0].keys()] + ['Overall']]
 
     for i, iou_thresh in enumerate(metric):
         header.append(f'AP_{iou_thresh:.2f}')
