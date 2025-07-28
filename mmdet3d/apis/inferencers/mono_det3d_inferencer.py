@@ -215,7 +215,7 @@ class MonoDet3DInferencer(Base3DInferencer):
         if no_save_vis is True:
             img_out_dir = ''
 
-        print(img_out_dir)
+        print(return_vis)
         if not show and img_out_dir == '' and not return_vis:
             return None
 
