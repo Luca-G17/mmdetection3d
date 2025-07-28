@@ -113,8 +113,15 @@ class MonoDet3DInferencer(Base3DInferencer):
                         osp.basename(img_path) != osp.basename(input['img']):
                     raise ValueError(
                         f'the info file of {img_path} is not provided.')
-                cam2img = np.asarray(
-                    data_info['images'][cam_type]['cam2img'], dtype=np.float32)
+                
+                calib = input['calib'][cam_type]
+                rt_mat = calib['Rt']
+
+                K_4x4 = np.eye(4)
+                K_4x4[:3, :3] = calib['K']
+
+                cam2img = K_4x4 @ rt_mat
+                #cam2img = np.asarray(data_info['images'][cam_type]['cam2img'], dtype=np.float32)
                 # lidar2cam = np.asarray(
                 #     data_info['images'][cam_type]['lidar2cam'],
                 #     dtype=np.float32)
