@@ -1018,6 +1018,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                                        data_sample.gt_pts_seg, palette,
                                        keep_index)
 
+        print(data_sample.keys())
         if draw_pred and data_sample is not None:
             if 'pred_instances_3d' in data_sample:
                 pred_instances_3d = data_sample.pred_instances_3d
@@ -1084,7 +1085,6 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                 wait_time=wait_time,
                 vis_task=vis_task)
 
-        print(drawn_img_3d)
         if out_file is not None:
             # check the suffix of the name of image file
             if not (out_file.endswith('.png') or out_file.endswith('.jpg')):
