@@ -1026,7 +1026,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                 # so we need to use .to('cpu')
                 pred_instances_3d = pred_instances_3d[pred_instances_3d.scores_3d > 0.02].to('cpu')
                 mask = []
-                for box in pred_instances_3d:
+                for box in pred_instances_3d.bboxes_3d.tensor:
                     center = box[:3]  # x, y, z
                     print(center)
                     distance = (center ** 2).sum().sqrt()
