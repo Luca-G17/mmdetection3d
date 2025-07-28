@@ -121,6 +121,7 @@ class MonoDet3DInferencer(Base3DInferencer):
                 K_4x4[:3, :3] = calib['K']
 
                 cam2img = K_4x4 @ rt_mat
+                print(cam2img.shape)
                 #cam2img = np.asarray(data_info['images'][cam_type]['cam2img'], dtype=np.float32)
                 # lidar2cam = np.asarray(
                 #     data_info['images'][cam_type]['lidar2cam'],
