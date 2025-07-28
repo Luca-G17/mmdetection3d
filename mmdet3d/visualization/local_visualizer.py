@@ -1024,14 +1024,8 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                 print(pred_instances_3d)
                 # .cpu can not be used for BaseInstance3DBoxes
                 # so we need to use .to('cpu')
-                pred_instances_3d = pred_instances_3d[pred_instances_3d.scores_3d > 0.02].to('cpu')
-                mask = []
-                for box in pred_instances_3d.bboxes_3d.tensor:
-                    center = box[:3]  # x, y, z
-                    distance = (center ** 2).sum().sqrt()
-                    mask.append(distance <= 2.0)
+                pred_instances_3d = pred_instances_3d[pred_instances_3d.scores_3d > pred_score_thr].to('cpu')
 
-                pred_instances_3d = pred_instances_3d[mask].to('cpu')
 
                 pred_data_3d = self._draw_instances_3d(data_input,
                                                        pred_instances_3d,

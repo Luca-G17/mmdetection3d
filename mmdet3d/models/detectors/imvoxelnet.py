@@ -146,7 +146,6 @@ class ImVoxelNet(Base3DDetector):
             data_samples.metainfo for data_samples in batch_data_samples
         ]
 
-        imgs.unsqueeze_(1)
         batch_size, n_views = len(imgs), len(imgs[0])
         all_volumes = [[] for _ in range(batch_size)]
         all_valid_preds = [[] for _ in range(batch_size)]
@@ -176,7 +175,7 @@ class ImVoxelNet(Base3DDetector):
                 if "imgs" in batch_inputs_dict.keys():
                     proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)
                 else:
-                    proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)
+                    proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)[i]
 
 
                 proj_mat = torch.tensor(proj_mat, dtype=points.dtype, device=points.device)
