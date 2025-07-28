@@ -1018,10 +1018,10 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                                        data_sample.gt_pts_seg, palette,
                                        keep_index)
 
-        print(data_sample["pred_instances_3d"])
         if draw_pred and data_sample is not None:
             if 'pred_instances_3d' in data_sample:
                 pred_instances_3d = data_sample.pred_instances_3d
+                print(pred_instances_3d)
                 # .cpu can not be used for BaseInstance3DBoxes
                 # so we need to use .to('cpu')
                 pred_instances_3d = pred_instances_3d[pred_instances_3d.scores_3d > pred_score_thr].to('cpu')
