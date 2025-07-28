@@ -215,7 +215,6 @@ class MonoDet3DInferencer(Base3DInferencer):
         if no_save_vis is True:
             img_out_dir = ''
 
-        print(return_vis)
         if not show and img_out_dir == '' and not return_vis:
             return None
 
@@ -242,6 +241,7 @@ class MonoDet3DInferencer(Base3DInferencer):
             out_file = osp.join(img_out_dir, 'vis_camera', cam_type_dir,
                                 img_name) if img_out_dir != '' else None
 
+            print(out_file)
             data_input = dict(img=img)
             self.visualizer.add_datasample(
                 img_name,
