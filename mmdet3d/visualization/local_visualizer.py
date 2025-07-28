@@ -1084,6 +1084,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                 wait_time=wait_time,
                 vis_task=vis_task)
 
+        print(drawn_img_3d)
         if out_file is not None:
             # check the suffix of the name of image file
             if not (out_file.endswith('.png') or out_file.endswith('.jpg')):
@@ -1091,7 +1092,6 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
             if drawn_img_3d is not None:
                 mmcv.imwrite(drawn_img_3d[..., ::-1], out_file)
             if drawn_img is not None:
-                mmcv.imwrite(drawn_img[..., ::-1],
-                             out_file[:-4] + '_2d' + out_file[-4:])
+                mmcv.imwrite(drawn_img[..., ::-1], out_file[:-4] + '_2d' + out_file[-4:])
         else:
             self.add_image(name, drawn_img_3d, step)
