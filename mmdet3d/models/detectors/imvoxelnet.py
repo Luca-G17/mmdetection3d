@@ -174,12 +174,13 @@ class ImVoxelNet(Base3DDetector):
                 img_flip = img_meta.get('flip', False)
                 img_crop_offset = torch.tensor(img_meta.get('img_crop_offset', 0), dtype=points.dtype, device=points.device)
                 if "imgs" in batch_inputs_dict.keys():
-                    proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)[i]
+                    proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)
                 else:
                     proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)[i]
                     
-                proj_mat = torch.tensor(proj_mat, dtype=points.dtype, device=points.device)
+                print(proj_mat)
 
+                proj_mat = torch.tensor(proj_mat, dtype=points.dtype, device=points.device)
                 volume = point_sample(
                     img_meta,
                     img_features=sharpend_feat,
