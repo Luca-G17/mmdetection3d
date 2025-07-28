@@ -45,7 +45,7 @@ model = dict(
     prior_generator=prior_generator,
     n_voxels=[40, 40, 16],
     coord_type='DEPTH',
-    train_cfg=dict(),
+    train_cfg=dict(max_iters=16),
     test_cfg=dict(nms_pre=1000, iou_thr=.15, score_thr=.01))
 
 dataset_type = 'SUNRGBDDataset'

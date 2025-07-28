@@ -1,18 +1,14 @@
+data_root = '/data/data/1000_3'
+
 _base_ = [
     '../_base_/schedules/mmdet-schedule-1x.py', '../_base_/default_runtime.py'
 ]
 prior_generator = dict(
     type='AlignedAnchor3DRangeGenerator',
-    ranges=[[-3.2, -0.2, -2.28, 3.2, 6.2, 0.28]],
+    ranges=[[-5, -5, 0, 5, 5, 5]],
     rotations=[.0])
 model = dict(
     type='ImVoxelNet',
-    data_preprocessor=dict(
-        type='Det3DDataPreprocessor',
-        mean=[123.675, 116.28, 103.53],
-        std=[58.395, 57.12, 57.375],
-        bgr_to_rgb=True,
-        pad_size_divisor=32),
     backbone=dict(
         type='mmdet.ResNet',
         depth=50,
@@ -31,49 +27,48 @@ model = dict(
     neck_3d=dict(
         type='IndoorImVoxelNeck',
         in_channels=256,
-        out_channels=64,
+        out_channels=128,
         n_blocks=[1, 1, 1]),
     bbox_head=dict(
         type='ImVoxelHead',
-        n_classes=10,
-        n_levels=3,
-        n_channels=64,
+        n_classes=1,
+        n_levels=4,
+        n_channels=128,
         n_reg_outs=7,
         pts_assign_threshold=27,
         pts_center_threshold=18,
         prior_generator=prior_generator),
     prior_generator=prior_generator,
-    n_voxels=[40, 40, 16],
-    coord_type='DEPTH',
+    n_voxels=[40, 40, 40],
+    coord_type='CAMERA',
     train_cfg=dict(),
-    test_cfg=dict(nms_pre=1000, iou_thr=.15, score_thr=.01))
+    test_cfg=dict(nms_pre=5000, iou_thr=0.8, score_thr=1e-6))
 
-dataset_type = 'SUNRGBDDataset'
-data_root = '/data/data/sunrgb'
+dataset_type = 'CustomVisualDataset'
 class_names = [
-    'bed', 'table', 'sofa', 'chair', 'toilet', 'desk', 'dresser',
-    'night_stand', 'bookshelf', 'bathtub'
+    'Cube'
 ]
 metainfo = dict(CLASSES=class_names)
 
 backend_args = None
 
+
 train_pipeline = [
     dict(type='LoadAnnotations3D', backend_args=backend_args),
     dict(type='LoadImageFromFile', backend_args=backend_args),
-    dict(type='RandomResize', scale=[(512, 384), (768, 576)], keep_ratio=True),
+    dict(type='Resize', scale=(640, 480), keep_ratio=True),
     dict(type='RandomFlip3D', flip_ratio_bev_horizontal=0.5),
     dict(type='Pack3DDetInputs', keys=['img', 'gt_bboxes_3d', 'gt_labels_3d'])
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile', backend_args=backend_args),
+    dict(type='LoadImageFromFileMono3D', backend_args=backend_args),
     dict(type='Resize', scale=(640, 480), keep_ratio=True),
     dict(type='Pack3DDetInputs', keys=['img'])
 ]
 
 train_dataloader = dict(
-    batch_size=4,
-    num_workers=4,
+    batch_size=3,
+    num_workers=1,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
@@ -82,11 +77,11 @@ train_dataloader = dict(
         dataset=dict(
             type=dataset_type,
             data_root=data_root,
-            ann_file='sunrgbd_infos_train.pkl',
+            ann_file='custom_visual_infos_train.pkl',
             pipeline=train_pipeline,
             test_mode=False,
             filter_empty_gt=True,
-            box_type_3d='Depth',
+            box_type_3d='Camera',
             metainfo=metainfo,
             backend_args=backend_args)))
 val_dataloader = dict(
@@ -98,25 +93,22 @@ val_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='sunrgbd_infos_val.pkl',
+        ann_file='custom_visual_infos_val.pkl',
         pipeline=test_pipeline,
         test_mode=True,
-        box_type_3d='Depth',
+        box_type_3d='Camera',
         metainfo=metainfo,
         backend_args=backend_args))
 test_dataloader = val_dataloader
 
-val_evaluator = dict(
-    type='IndoorMetric')
+val_evaluator = dict(type='IndoorMetric')
 test_evaluator = val_evaluator
 
 # optimizer
 optim_wrapper = dict(
     type='OptimWrapper',
-    optimizer=dict(
-        _delete_=True, type='AdamW', lr=0.0001, weight_decay=0.0001),
-    paramwise_cfg=dict(
-        custom_keys={'backbone': dict(lr_mult=0.1, decay_mult=1.0)}),
+    optimizer=dict(_delete_=True, type='AdamW', lr=0.0001, weight_decay=0.0001),
+    paramwise_cfg=dict(custom_keys={'backbone': dict(lr_mult=0.1, decay_mult=1.0)}),
     clip_grad=dict(max_norm=35., norm_type=2))
 param_scheduler = [
     dict(
@@ -128,10 +120,11 @@ param_scheduler = [
         gamma=0.1)
 ]
 
-# hooks
-default_hooks = dict(checkpoint=dict(type='CheckpointHook', max_keep_ckpts=1))
 vis_backends = [dict(type='LocalVisBackend')]  # Visualization backends. Refer to https://mmengine.readthedocs.io/en/latest/advanced_tutorials/visualization.html
 visualizer = dict(type='Det3DLocalVisualizer', vis_backends=vis_backends, name='visualizer')
+
+# hooks
+default_hooks = dict(checkpoint=dict(type='CheckpointHook', max_keep_ckpts=1), visualization=dict(type='Det3DVisualizationHook'))
 
 # runtime
 find_unused_parameters = True  # only 1 of 4 FPN outputs is used
