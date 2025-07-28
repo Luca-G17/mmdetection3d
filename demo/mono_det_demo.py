@@ -87,6 +87,7 @@ def main():
     inferencer = MonoDet3DInferencer(**init_args)
     inferencer(**call_args)
 
+    print(call_args['no_save_vis'])
     if call_args['out_dir'] != '' and not (call_args['no_save_vis']
                                            and call_args['no_save_pred']):
         print_log(
