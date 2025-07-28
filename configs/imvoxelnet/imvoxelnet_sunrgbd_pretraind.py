@@ -48,7 +48,7 @@ model = dict(
     train_cfg=dict(max_iters=16),
     test_cfg=dict(nms_pre=1000, iou_thr=.15, score_thr=.01))
 
-dataset_type = 'SUNRGBDDataset'
+dataset_type = 'SUNRGBDDatasetPartition'
 data_root = '/data/data/sunrgb'
 class_names = [
     'bed', 'table', 'sofa', 'chair', 'toilet', 'desk', 'dresser',

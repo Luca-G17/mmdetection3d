@@ -147,37 +147,46 @@ class SUNRGBDDataset(Det3DDataset):
         return ann_info
 
 
-# @DATASETS.register_module()
-# class SUNRGBDDatasetPartition(SUNRGBDDataset):
+@DATASETS.register_module()
+class SUNRGBDDatasetPartition(SUNRGBDDataset):
         
-#     def __init__(self,
-#                 data_root: str,
-#                 ann_file: str,
-#                 metainfo: Optional[dict] = None,
-#                 data_prefix: dict = dict(
-#                     pts='points', img='sunrgbd_trainval/image'),
-#                 pipeline: List[Union[dict, Callable]] = [],
-#                 default_cam_key: str = 'CAM0',
-#                 modality: dict = dict(use_camera=True, use_lidar=True),
-#                 box_type_3d: str = 'Depth',
-#                 filter_empty_gt: bool = True,
-#                 test_mode: bool = False,
-#                 **kwargs) -> None:
-#         super().__init__(
-#             data_root=data_root,
-#             ann_file=ann_file,
-#             metainfo=metainfo,
-#             data_prefix=data_prefix,
-#             pipeline=pipeline,
-#             default_cam_key=default_cam_key,
-#             modality=modality,
-#             box_type_3d=box_type_3d,
-#             filter_empty_gt=filter_empty_gt,
-#             test_mode=test_mode,
-#             **kwargs)
+    def __init__(self,
+                data_root: str,
+                ann_file: str,
+                metainfo: Optional[dict] = None,
+                data_prefix: dict = dict(
+                    pts='points', img='sunrgbd_trainval/image'),
+                pipeline: List[Union[dict, Callable]] = [],
+                default_cam_key: str = 'CAM0',
+                modality: dict = dict(use_camera=True, use_lidar=True),
+                box_type_3d: str = 'Depth',
+                filter_empty_gt: bool = True,
+                test_mode: bool = False,
+                **kwargs) -> None:
+        super().__init__(
+            data_root=data_root,
+            ann_file=ann_file,
+            metainfo=metainfo,
+            data_prefix=data_prefix,
+            pipeline=pipeline,
+            default_cam_key=default_cam_key,
+            modality=modality,
+            box_type_3d=box_type_3d,
+            filter_empty_gt=filter_empty_gt,
+            test_mode=test_mode,
+            **kwargs)
         
-#     def parse_data_info(self, info: dict) -> dict:
+        partition_ratio = 0.1
+        if partition_ratio < 1.0:
+            original_len = len(self.data_list)
+            partition_len = int(original_len * partition_ratio)
+            self.data_list = self.data_list[:partition_len]
+            print(f'Using {partition_len}/{original_len} samples '
+                  f'({partition_ratio * 100:.0f}% of the dataset)')
         
+    def parse_data_info(self, info: dict) -> dict:
+        return super().parse_data_info(info)
 
-#     def parse_ann_info(self, info: dict) -> dict:
+    def parse_ann_info(self, info: dict) -> dict:
+        return super().parse_ann_info(info)
 
