@@ -176,9 +176,8 @@ class ImVoxelNet(Base3DDetector):
                 if "imgs" in batch_inputs_dict.keys():
                     proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)
                 else:
-                    proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)[i]
+                    proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)
 
-                print(img_meta)
 
                 proj_mat = torch.tensor(proj_mat, dtype=points.dtype, device=points.device)
                 volume = point_sample(
