@@ -211,9 +211,11 @@ class MonoDet3DInferencer(Base3DInferencer):
             List[np.ndarray] or None: Returns visualization results only if
             applicable.
         """
+
         if no_save_vis is True:
             img_out_dir = ''
 
+        print(img_out_dir)
         if not show and img_out_dir == '' and not return_vis:
             return None
 
