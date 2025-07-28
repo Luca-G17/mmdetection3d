@@ -142,7 +142,7 @@ class ImVoxelNet(Base3DDetector):
             imgs = batch_inputs_dict['img']
             imgs = torch.stack(imgs, dim=0)
 
-        print(imgs.shape)
+        imgs.unsqueeze(1)
         batch_img_metas = [
             data_samples.metainfo for data_samples in batch_data_samples
         ]
