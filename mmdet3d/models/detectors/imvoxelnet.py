@@ -177,8 +177,8 @@ class ImVoxelNet(Base3DDetector):
                     proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)
                 else:
                     proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)[i]
-                    
-                print(proj_mat)
+
+                print(img_meta)
 
                 proj_mat = torch.tensor(proj_mat, dtype=points.dtype, device=points.device)
                 volume = point_sample(
