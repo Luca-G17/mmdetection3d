@@ -174,7 +174,7 @@ class ImVoxelNet(Base3DDetector):
                 img_flip = img_meta.get('flip', False)
                 img_crop_offset = torch.tensor(img_meta.get('img_crop_offset', 0), dtype=points.dtype, device=points.device)
                 if "imgs" in batch_inputs_dict.keys():
-                    proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)
+                    proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)[i]
                 else:
                     proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)[i]
                     
