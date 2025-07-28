@@ -103,12 +103,12 @@ class MonoDet3DInferencer(Base3DInferencer):
                 inputs = [inputs]
 
             # get cam2img, lidar2cam and lidar2img from infos
-            info_list = mmengine.load(infos)
+            info_list = mmengine.load(infos)[0]
             print(info_list)
             assert len(info_list) == len(inputs)
             for index, input in enumerate(inputs):
                 data_info = info_list[index]
-                img_path = data_info['images'][cam_type]['img_path']
+                img_path = data_info['images'][cam_type]['image_path']
                 if isinstance(input['img'], str) and \
                         osp.basename(img_path) != osp.basename(input['img']):
                     raise ValueError(
