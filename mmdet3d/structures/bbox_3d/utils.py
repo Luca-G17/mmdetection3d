@@ -199,7 +199,7 @@ def points_cam2img(points_3d: Union[Tensor, np.ndarray],
     """
     points_shape = list(points_3d.shape)
     points_shape[-1] = 1
-
+    proj_mat = proj_mat[0]
     assert len(proj_mat.shape) == 2, \
         'The dimension of the projection matrix should be 2 ' \
         f'instead of {len(proj_mat.shape)}.'
