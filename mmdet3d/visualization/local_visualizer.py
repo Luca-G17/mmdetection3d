@@ -1028,7 +1028,6 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                 mask = []
                 for box in pred_instances_3d.bboxes_3d.tensor:
                     center = box[:3]  # x, y, z
-                    print(center)
                     distance = (center ** 2).sum().sqrt()
                     mask.append(distance <= 2.0)
 
