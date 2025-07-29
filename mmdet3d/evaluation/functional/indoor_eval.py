@@ -113,7 +113,6 @@ def eval_det_cls(pred, gt, iou_thr=None):
     confidence = np.array(confidence)
 
 
-    yaw_errors = [[] for _ in iou_thr]
     # sort by confidence
     sorted_ind = np.argsort(-confidence)
     image_ids = [image_ids[x] for x in sorted_ind]
@@ -143,11 +142,6 @@ def eval_det_cls(pred, gt, iou_thr=None):
                 if not R['det'][iou_idx][jmax]:
                     tp_thr[iou_idx][d] = 1.
                     R['det'][iou_idx][jmax] = 1
-                    pred_yaw = pred_cur[d % len(pred_cur)].tensor[6].item()
-                    gt_yaw = BBGT[jmax].tensor[6].item()
-                    yaw_diff = abs(pred_yaw - gt_yaw)
-                    yaw_diff = min(yaw_diff, 2 * np.pi - yaw_diff)
-                    yaw_errors[iou_idx].append(yaw_diff)
                 else:
                     fp_thr[iou_idx][d] = 1.
             else:
@@ -163,8 +157,7 @@ def eval_det_cls(pred, gt, iou_thr=None):
         # ground truth
         precision = tp / np.maximum(tp + fp, np.finfo(np.float64).eps)
         ap = average_precision(recall, precision)
-        mean_yaw_error = np.mean(yaw_errors[iou_idx]) if yaw_errors[iou_idx] else 0.0
-        ret.append((recall, precision, ap, mean_yaw_error))
+        ret.append((recall, precision, ap))
     
     return ret
 
@@ -194,18 +187,17 @@ def eval_map_recall(pred, gt, ovthresh=None):
     recall = [{} for i in ovthresh]
     precision = [{} for i in ovthresh]
     ap = [{} for i in ovthresh]
-    mean_yaw = [{} for i in ovthresh]
 
     for label in gt.keys():
         for iou_idx, thresh in enumerate(ovthresh):
             if label in pred:
-                recall[iou_idx][label], precision[iou_idx][label], ap[iou_idx][label], mean_yaw[iou_idx][label] = ret_values[label][iou_idx]
+                recall[iou_idx][label], precision[iou_idx][label], ap[iou_idx][label] = ret_values[label][iou_idx]
             else:
                 recall[iou_idx][label] = np.zeros(1)
                 precision[iou_idx][label] = np.zeros(1)
                 ap[iou_idx][label] = np.zeros(1)
 
-    return recall, precision, ap, mean_yaw
+    return recall, precision, ap
 
 
 def indoor_eval(gt_annos,
@@ -236,7 +228,6 @@ def indoor_eval(gt_annos,
         dict[str, float]: Dict of results.
     """
 
-    save_yaw=True
     assert len(dt_annos) == len(gt_annos)
     pred = {}  # map {class_id: pred}
     gt = {}  # map {class_id: gt}
@@ -273,18 +264,11 @@ def indoor_eval(gt_annos,
                 gt[label][img_id] = []
             gt[label][img_id].append(bbox)
 
-    rec, prec, ap, mean_yaw = eval_map_recall(pred, gt, metric)
+    rec, prec, ap = eval_map_recall(pred, gt, metric)
 
     for i, label in enumerate(ap[0].keys()):
         if label not in label2cat:
             label2cat.append(f"unknown: {i}")
-
-    if save_yaw:
-        with open("yaw_errors.out", "w") as yawfile:
-            for i in range(len(metric)):
-                for label in ap[0].keys():
-                    yawfile.write(f"{mean_yaw[i][label]},")
-                yawfile.write("\n")
 
     ret_dict = dict()
     header = ['classes']

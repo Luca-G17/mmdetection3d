@@ -4,6 +4,8 @@ from typing import List, Tuple, Union
 import torch
 import torch.nn.functional as F
 from mmengine.structures import InstanceData
+from PIL import Image
+import torchvision.transforms as T
 
 from mmdet3d.models.detectors import Base3DDetector
 from mmdet3d.models.layers.fusion_layers.point_fusion import point_sample
@@ -225,6 +227,19 @@ class ImVoxelNet(Base3DDetector):
             valid_preds[0],
             filename=pc_filepath
         )
+
+        feature_map_dir = f"{img_filepath.split('images')[0]}/fm_vis/"
+        feature_map_path = f"{feature_map_dir}/{img_filepath.split('/')[-1].split('.')[0]}.png"
+        os.makedirs(feature_map_path, exist_ok=True) 
+        to_pil = T.ToPILImage()
+        img = imgs[0][0][:3]
+        img = img.detach.cpu()
+        img_min, img_max = img.min(), img.max()
+        img = (img - img_min) / (img_max - img_min + 1e-5)
+        img = to_pil(img)
+        img.save(feature_map_path)
+
+        
         x = torch.stack(fused_volumes, dim=0)
         x = self.neck_3d(x)
 
