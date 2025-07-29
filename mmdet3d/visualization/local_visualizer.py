@@ -1035,7 +1035,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                 new_label = torch.tensor([0])
 
                 # Concatenate to the existing data
-                pred_instances_3d.boxes_3d = pred_instances_3d.boxes_3d.cat([pred_instances_3d.boxes_3d, new_boxes_3d])
+                pred_instances_3d.bboxes_3d = pred_instances_3d.bboxes_3d.cat([pred_instances_3d.bboxes_3d, new_boxes_3d])
                 pred_instances_3d.scores_3d = torch.cat([pred_instances_3d.scores_3d, new_score])
                 pred_instances_3d.labels_3d = torch.cat([pred_instances_3d.labels_3d, new_label])
 
