@@ -233,13 +233,13 @@ class ImVoxelNet(Base3DDetector):
         os.makedirs(feature_map_path, exist_ok=True) 
         to_pil = T.ToPILImage()
         img = imgs[0][0][:3]
-        img = img.detach.cpu()
+        img = img.detach().cpu()
         img_min, img_max = img.min(), img.max()
         img = (img - img_min) / (img_max - img_min + 1e-5)
         img = to_pil(img)
         img.save(feature_map_path)
 
-        
+
         x = torch.stack(fused_volumes, dim=0)
         x = self.neck_3d(x)
 
