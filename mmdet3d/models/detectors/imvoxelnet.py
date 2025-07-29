@@ -119,6 +119,22 @@ class ImVoxelNet(Base3DDetector):
         pcd.colors = o3d.utility.Vector3dVector(colors)
         o3d.io.write_point_cloud(filename, pcd)
 
+    def save_feature_maps(self, x, img_filepath):
+        if "images" in img_filepath:
+            feature_map_dir = f"{img_filepath.split('images')[0]}/fm_vis/"
+        else:
+            feature_map_dir = f"{img_filepath.split('image')[0]}/fm_vis/"
+
+        feature_map_path = f"{feature_map_dir}/{img_filepath.split('/')[-1].split('.')[0]}.png"
+        os.makedirs(feature_map_dir, exist_ok=True) 
+        to_pil = T.ToPILImage()
+        img = x
+        img = img.detach().cpu()
+        img_min, img_max = img.min(), img.max()
+        img = (img - img_min) / (img_max - img_min + 1e-5)
+        img = to_pil(img)
+        img.save(feature_map_path)
+
     def extract_feat(self, batch_inputs_dict: dict, batch_data_samples: SampleList):
         """Extract 3d features from the backbone -> fpn -> 3d projection.
 
@@ -144,6 +160,17 @@ class ImVoxelNet(Base3DDetector):
             imgs = batch_inputs_dict['img']
             imgs = torch.stack(imgs, dim=0)
 
+
+        if "imgs" in batch_inputs_dict.keys():
+            img_filepath = batch_img_metas[0]['img_path']
+        else:
+            img_filepath = batch_img_metas[0]['img_path'][0]
+
+        if "images" in img_filepath:
+            dataset_path = f"{img_filepath.split('images')[0]}/pc_vis/"
+        else:
+            dataset_path = f"{img_filepath.split('image')[0]}/pc_vis/"
+
         batch_img_metas = [
             data_samples.metainfo for data_samples in batch_data_samples
         ]
@@ -163,6 +190,8 @@ class ImVoxelNet(Base3DDetector):
             for b in range(batch_size):
                 sharpen_filter = SharpeningFilter(x[b].shape[0]).to(x.device)
                 sharpend_feat = sharpen_filter(x[b][None, ...])
+                if i == 0 and b == 0:
+                    self.save_feature_maps(x[b], img_filepath)
 
                 img_meta = batch_img_metas[b]
 
@@ -219,16 +248,6 @@ class ImVoxelNet(Base3DDetector):
             valid_preds.append(final_valid_mask)
 
 
-        if "imgs" in batch_inputs_dict.keys():
-            img_filepath = batch_img_metas[0]['img_path']
-        else:
-            img_filepath = batch_img_metas[0]['img_path'][0]
-
-        if "images" in img_filepath:
-            dataset_path = f"{img_filepath.split('images')[0]}/pc_vis/"
-        else:
-            dataset_path = f"{img_filepath.split('image')[0]}/pc_vis/"
-
         pc_filepath = f"{dataset_path}/{img_filepath.split('/')[-1].split('.')[0]}.ply"
         os.makedirs(dataset_path, exist_ok=True) 
         self.save_pointcloud_from_voxels(
@@ -236,21 +255,6 @@ class ImVoxelNet(Base3DDetector):
             valid_preds[0],
             filename=pc_filepath
         )
-
-        if "images" in img_filepath:
-            feature_map_dir = f"{img_filepath.split('images')[0]}/fm_vis/"
-        else:
-            feature_map_dir = f"{img_filepath.split('image')[0]}/fm_vis/"
-
-        feature_map_path = f"{feature_map_dir}/{img_filepath.split('/')[-1].split('.')[0]}.png"
-        os.makedirs(feature_map_dir, exist_ok=True) 
-        to_pil = T.ToPILImage()
-        img = imgs[0][0][:3]
-        img = img.detach().cpu()
-        img_min, img_max = img.min(), img.max()
-        img = (img - img_min) / (img_max - img_min + 1e-5)
-        img = to_pil(img)
-        img.save(feature_map_path)
 
 
         x = torch.stack(fused_volumes, dim=0)
