@@ -20,6 +20,7 @@ from mmengine.visualization import Visualizer as MMENGINE_Visualizer
 from mmengine.visualization.utils import (check_type, color_val_matplotlib,
                                           tensor2ndarray)
 from torch import Tensor
+import torch
 
 from mmdet3d.registry import VISUALIZERS
 from mmdet3d.structures import (BaseInstance3DBoxes, Box3DMode,
@@ -1023,9 +1024,21 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                 pred_instances_3d = data_sample.pred_instances_3d
                 # .cpu can not be used for BaseInstance3DBoxes
                 # so we need to use .to('cpu')
-                pred_instances_3d = pred_instances_3d[pred_instances_3d.scores_3d > 0.015].to('cpu')
+                pred_instances_3d = pred_instances_3d[pred_instances_3d.scores_3d > pred_score_thr].to('cpu')
 
-                print(len(pred_instances_3d))
+
+                new_box_tensor = torch.tensor([[1.0, 2.0, 3.0, 1.5, 1.5, 1.5, 0.0]])  # shape (1, 7)
+                new_boxes_3d = BaseInstance3DBoxes(new_box_tensor, box_dim=7)
+
+                # Create corresponding score and label
+                new_score = torch.tensor([0.99])
+                new_label = torch.tensor([0])
+
+                # Concatenate to the existing data
+                pred_instances_3d.boxes_3d = pred_instances_3d.boxes_3d.cat([pred_instances_3d.boxes_3d, new_boxes_3d])
+                pred_instances_3d.scores_3d = torch.cat([pred_instances_3d.scores_3d, new_score])
+                pred_instances_3d.labels_3d = torch.cat([pred_instances_3d.labels_3d, new_label])
+
                 pred_data_3d = self._draw_instances_3d(data_input,
                                                        pred_instances_3d,
                                                        data_sample.metainfo,
