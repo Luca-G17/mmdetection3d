@@ -44,7 +44,7 @@ model = dict(
         prior_generator=prior_generator),
     prior_generator=prior_generator,
     n_voxels=[40, 40, 16],
-    coord_type='DEPTH',
+    coord_type='CAMERA',
     train_cfg=dict(),
     test_cfg=dict(nms_pre=1000, iou_thr=.15, score_thr=.01))
 
