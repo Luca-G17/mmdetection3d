@@ -1031,6 +1031,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                                                        data_sample.metainfo,
                                                        vis_task, show_pcd_rgb,
                                                        palette)
+                print(out_file)
             if 'pred_instances' in data_sample:
                 if 'img' in data_input and len(data_sample.pred_instances) > 0:
                     pred_instances = data_sample.pred_instances
