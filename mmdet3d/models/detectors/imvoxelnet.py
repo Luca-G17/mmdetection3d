@@ -223,8 +223,12 @@ class ImVoxelNet(Base3DDetector):
             img_filepath = batch_img_metas[0]['img_path']
         else:
             img_filepath = batch_img_metas[0]['img_path'][0]
-       
-        dataset_path = f"{img_filepath.split('images')[0]}/pc_vis/"
+
+        if "images" in img_filepath:
+            dataset_path = f"{img_filepath.split('images')[0]}/pc_vis/"
+        else:
+            dataset_path = f"{img_filepath.split('image')[0]}/pc_vis/"
+
         pc_filepath = f"{dataset_path}/{img_filepath.split('/')[-1].split('.')[0]}.ply"
         os.makedirs(dataset_path, exist_ok=True) 
         self.save_pointcloud_from_voxels(
