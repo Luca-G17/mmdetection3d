@@ -66,7 +66,7 @@ train_pipeline = [
     dict(type='Pack3DDetInputs', keys=['img', 'gt_bboxes_3d', 'gt_labels_3d'])
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile', backend_args=backend_args),
+    dict(type='LoadImageFromFileMono3D', backend_args=backend_args),
     dict(type='Resize', scale=(640, 480), keep_ratio=True),
     dict(type='Pack3DDetInputs', keys=['img'])
 ]
