@@ -236,8 +236,12 @@ class ImVoxelNet(Base3DDetector):
             valid_preds[0],
             filename=pc_filepath
         )
-        print(pc_filepath)
-        feature_map_dir = f"{img_filepath.split('images')[0]}/fm_vis/"
+
+        if "images" in img_filepath:
+            feature_map_dir = f"{img_filepath.split('images')[0]}/fm_vis/"
+        else:
+            feature_map_dir = f"{img_filepath.split('image')[0]}/fm_vis/"
+
         feature_map_path = f"{feature_map_dir}/{img_filepath.split('/')[-1].split('.')[0]}.png"
         os.makedirs(feature_map_dir, exist_ok=True) 
         to_pil = T.ToPILImage()
