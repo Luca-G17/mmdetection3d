@@ -154,6 +154,12 @@ class ImVoxelNet(Base3DDetector):
             - torch.Tensor: Features of shape (N, C_out, N_x, N_y, N_z).
             - torch.Tensor: Valid mask of shape (N, 1, N_x, N_y, N_z).
         """
+
+
+        batch_img_metas = [
+            data_samples.metainfo for data_samples in batch_data_samples
+        ]
+
         if "imgs" in batch_inputs_dict.keys():
             imgs = batch_inputs_dict['imgs'].unsqueeze(1)
         else:
@@ -171,9 +177,6 @@ class ImVoxelNet(Base3DDetector):
         else:
             dataset_path = f"{img_filepath.split('image')[0]}/pc_vis/"
 
-        batch_img_metas = [
-            data_samples.metainfo for data_samples in batch_data_samples
-        ]
 
         batch_size, n_views = len(imgs), len(imgs[0])
         all_volumes = [[] for _ in range(batch_size)]
