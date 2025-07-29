@@ -1023,6 +1023,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                 pred_instances_3d = data_sample.pred_instances_3d
                 # .cpu can not be used for BaseInstance3DBoxes
                 # so we need to use .to('cpu')
+                print(pred_instances_3d)
                 pred_instances_3d = pred_instances_3d[pred_instances_3d.scores_3d > 0.1].to('cpu')
 
 
