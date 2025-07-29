@@ -166,7 +166,7 @@ class ImVoxelNet(Base3DDetector):
             imgs = batch_inputs_dict['img']
             imgs = torch.stack(imgs, dim=0)
 
-        imgs.unsqueeze_(1)
+        #imgs.unsqueeze_(1)
 
         if "imgs" in batch_inputs_dict.keys():
             img_filepath = batch_img_metas[0]['img_path']
