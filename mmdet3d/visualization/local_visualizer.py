@@ -1026,19 +1026,6 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                 # so we need to use .to('cpu')
                 pred_instances_3d = pred_instances_3d[pred_instances_3d.scores_3d > pred_score_thr].to('cpu')
 
-
-                new_box_tensor = torch.tensor([[0.0, 0.0, 0.0, 1.5, 2, 1.5, 0.0]])  # shape (1, 7)
-                new_boxes_3d = CameraInstance3DBoxes(new_box_tensor)
-
-                # Create corresponding score and label
-                new_score = torch.tensor([0.99])
-                new_label = torch.tensor([0])
-
-                # Concatenate to the existing data
-                pred_instances_3d.bboxes_3d = pred_instances_3d.bboxes_3d.cat([pred_instances_3d.bboxes_3d, new_boxes_3d])
-                pred_instances_3d.scores_3d = torch.cat([pred_instances_3d.scores_3d, new_score])
-                pred_instances_3d.labels_3d = torch.cat([pred_instances_3d.labels_3d, new_label])
-
                 pred_data_3d = self._draw_instances_3d(data_input,
                                                        pred_instances_3d,
                                                        data_sample.metainfo,

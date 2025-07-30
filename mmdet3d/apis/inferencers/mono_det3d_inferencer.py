@@ -108,20 +108,20 @@ class MonoDet3DInferencer(Base3DInferencer):
             assert len(info_list) == len(inputs)
             for index, input in enumerate(inputs):
                 data_info = info_list[index]
-                img_path = data_info['images'][cam_type]['image_path']
+                img_path = data_info['images'][cam_type]['imag_path']
                 if isinstance(input['img'], str) and \
                         osp.basename(img_path) != osp.basename(input['img']):
                     raise ValueError(
                         f'the info file of {img_path} is not provided.')
                 
-                calib = data_info['calib'][cam_type]
-                rt_mat = calib['Rt']
+                # calib = data_info['calib'][cam_type]
+                # rt_mat = calib['Rt']
 
-                K_4x4 = np.eye(4)
-                K_4x4[:3, :3] = calib['K']
+                # K_4x4 = np.eye(4)
+                # K_4x4[:3, :3] = calib['K']
 
-                cam2img = K_4x4 @ rt_mat
-                # cam2img = np.asarray(data_info['images'][cam_type]['cam2img'], dtype=np.float32)
+                # cam2img = K_4x4 @ rt_mat
+                cam2img = np.asarray(data_info['images'][cam_type]['cam2img'], dtype=np.float32)
                 # lidar2cam = np.asarray(
                 #     data_info['images'][cam_type]['lidar2cam'],
                 #     dtype=np.float32)

@@ -31,7 +31,7 @@ model = dict(
         n_blocks=[1, 1, 1]),
     bbox_head=dict(
         type='ImVoxelHead',
-        n_classes=10,
+        n_classes=1,
         n_levels=4,
         n_channels=128,
         n_reg_outs=7,
@@ -105,7 +105,8 @@ test_evaluator = val_evaluator
 # optimizer
 optim_wrapper = dict(
     type='OptimWrapper',
-    optimizer=dict(_delete_=True, type='AdamW', lr=0.0001, weight_decay=0.0001),
+    #optimizer=dict(_delete_=True, type='AdamW', lr=0.0001, weight_decay=0.0001),
+    optimizer=dict(_delete_=True, type='SGD', lr=0.0001, weight_decay=0.0001),
     paramwise_cfg=dict(custom_keys={'backbone': dict(lr_mult=0.1, decay_mult=1.0)}),
     clip_grad=dict(max_norm=35., norm_type=2))
 param_scheduler = [

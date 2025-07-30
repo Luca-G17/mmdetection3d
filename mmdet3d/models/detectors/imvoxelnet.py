@@ -166,8 +166,6 @@ class ImVoxelNet(Base3DDetector):
             imgs = batch_inputs_dict['img']
             imgs = torch.stack(imgs, dim=0)
 
-        #imgs.unsqueeze_(1)
-
         if "imgs" in batch_inputs_dict.keys():
             img_filepath = batch_img_metas[0]['img_path']
         else:
@@ -210,7 +208,7 @@ class ImVoxelNet(Base3DDetector):
                 if "imgs" in batch_inputs_dict.keys():
                     proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)
                 else:
-                    proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)
+                    proj_mat = get_proj_mat_by_coord_type(img_meta, self.coord_type)[0]
 
 
                 proj_mat = torch.tensor(proj_mat, dtype=points.dtype, device=points.device)
