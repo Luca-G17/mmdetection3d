@@ -2683,3 +2683,39 @@ class LaserMix(BaseTransform):
         repr_str += f'pre_transform={self.pre_transform}, '
         repr_str += f'prob={self.prob})'
         return repr_str
+
+@TRANSFORMS.register_module()
+class RandomImageBlur(BaseTransform):
+    """Apply random Gaussian blur to image with a given probability.
+
+    This photometric augmentation simulates poor camera focus or motion blur.
+
+    Args:
+        prob (float): Probability of applying the blur. Defaults to 0.5.
+        kernel_size (int): Size of the Gaussian kernel. Must be odd. Defaults to 5.
+    """
+
+    def __init__(self, prob: float = 0.5, kernel_size: int = 5) -> None:
+        assert 0 <= prob <= 1, 'prob must be in [0, 1]'
+        assert kernel_size % 2 == 1, 'kernel_size must be odd'
+        self.prob = prob
+        self.kernel_size = kernel_size
+
+    def transform(self, input_dict: dict) -> dict:
+        """Apply Gaussian blur to the image in input_dict.
+
+        Args:
+            input_dict (dict): Result dict from the data pipeline.
+
+        Returns:
+            dict: Updated dict with possibly blurred image.
+        """
+        if 'img' in input_dict and np.random.rand() < self.prob:
+            img = input_dict['img']
+            input_dict['img'] = cv2.GaussianBlur(
+                img, (self.kernel_size, self.kernel_size), sigmaX=0)
+        return input_dict
+
+    def __repr__(self) -> str:
+        return (f'{self.__class__.__name__}(prob={self.prob}, '
+                f'kernel_size={self.kernel_size})')
